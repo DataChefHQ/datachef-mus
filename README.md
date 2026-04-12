@@ -18,8 +18,9 @@ function App() {
   return (
     <MusProvider
       config={{
+        projectName: 'My App',
         slack: {
-          proxyUrl: 'https://chefbot.services.datachef.co/',
+          proxyUrl: '/api/slack-proxy',
           supportTeamEmails: ['alireza.e@datachef.co'],
           feedbackChannelId: 'C0AFBB4HL7K',
         },
@@ -36,8 +37,6 @@ function App() {
   )
 }
 ```
-
-That's it. No server setup needed — the package calls the Chefbot proxy directly from the browser.
 
 ## How It Works
 
@@ -65,9 +64,12 @@ Wrap your app (or a subtree) with `<MusProvider>`:
 ```tsx
 <MusProvider
   config={{
+    // Required: project name (shown in Slack messages)
+    projectName: 'My App',
+
     // Required: Slack integration
     slack: {
-      proxyUrl: 'https://chefbot.services.datachef.co/',
+      proxyUrl: '/api/slack-proxy',
       supportTeamEmails: ['alireza.e@datachef.co'],
       feedbackChannelId: 'C0AFBB4HL7K',
       channelNamePrefix: 'support', // optional, default: "support"
@@ -112,6 +114,10 @@ Wrap any section you want to make feedback-able:
   sectionName="Dashboard"     // Human-readable name shown in dialogs
   videoUrl="/videos/intro.mp4" // Optional: video for the overview dialog
   className="custom-class"    // Optional: additional CSS classes
+  actions={[                  // Optional: override actions for this section
+    { type: 'thumbs-up' },
+    { type: 'thumbs-down' },
+  ]}
 >
   <YourContent />
 </FeedbackTarget>
@@ -142,7 +148,13 @@ Set the `SLACK_BOT_TOKEN` environment variable:
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 ```
 
-That's it. The handler reads the token from env, uploads the audio to Slack, and posts it to the configured feedback channel with a playable audio player.
+The handler converts WebM to MP3 (via `ffmpeg-static`) and uploads it to Slack as a playable audio file.
+
+Requires `ffmpeg-static` in your project:
+
+```bash
+npm install ffmpeg-static
+```
 
 ## Dialogs
 
@@ -176,6 +188,7 @@ Disable or reorder actions:
 ```tsx
 <MusProvider
   config={{
+    projectName: 'My App',
     slack: { ... },
     actions: [
       { type: 'voice' },
@@ -275,7 +288,8 @@ npx tsc --noEmit
 │   ├── FeedbackTrigger  — Lightbulb icon (appears on hover)
 │   ├── FeedbackToolbar  — Row of action icons (expands on click)
 │   └── Dialogs          — Support, Feedback, Video (opened by actions)
+├── server/              — Voice upload handler (exported as @datachef/mus/server)
 └── slack-client         — Calls Chefbot proxy directly from browser
 ```
 
-All Slack communication happens client-side through the Chefbot proxy. No server-side code or API routes needed.
+Text feedback, thumbs, and support channels work client-side through the Chefbot proxy. Voice upload requires the server handler (`@datachef/mus/server`) for converting WebM to MP3 and uploading to Slack.
