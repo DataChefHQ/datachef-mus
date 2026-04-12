@@ -36,6 +36,10 @@ export interface SlackConfig {
 
   /** Prefix for support channel names (default: "support") */
   channelNamePrefix?: string
+
+  /** URL for the voice upload endpoint (default: "/api/mus/voice-upload").
+   *  The package provides a ready-made handler — see `@datachef/mus/server`. */
+  voiceUploadUrl?: string
 }
 
 /* ── Configuration ───────────────────────────────────────── */

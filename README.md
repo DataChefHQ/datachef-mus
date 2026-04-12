@@ -125,6 +125,24 @@ Wrap any section you want to make feedback-able:
 | `supportTeamEmails` | `string[]` | Yes | Emails to invite to support channels |
 | `feedbackChannelId` | `string` | Yes | Slack channel for feedback messages |
 | `channelNamePrefix` | `string` | No | Prefix for support channels (default: `"support"`) |
+| `voiceUploadUrl` | `string` | No | Voice upload endpoint (default: `"/api/mus/voice-upload"`). Override if your app uses a different path. |
+
+## Voice Upload (Server)
+
+Voice recordings are uploaded to Slack as playable audio files. The package includes a ready-made server handler — just re-export it:
+
+```ts
+// app/api/mus/voice-upload/route.ts (Next.js App Router)
+export { POST } from '@datachef/mus/server'
+```
+
+Set the `SLACK_BOT_TOKEN` environment variable:
+
+```env
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+```
+
+That's it. The handler reads the token from env, uploads the audio to Slack, and posts it to the configured feedback channel with a playable audio player.
 
 ## Dialogs
 

@@ -9,7 +9,6 @@ export default defineConfig({
     react(),
     tailwindcss(),
     dts({
-      rollupTypes: true,
       tsconfigPath: './tsconfig.json',
       exclude: ['src/playground/**'],
     }),
@@ -26,11 +25,18 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/slack-proxy/, ''),
       },
+      '/api/mus/voice-upload': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        server: path.resolve(__dirname, 'src/server/index.ts'),
+      },
       formats: ['es', 'cjs'],
     },
     rollupOptions: {

@@ -66,19 +66,25 @@ export async function sendVoiceFeedback(
     audioBlob: Blob
   }
 ) {
-  // Post notification message to channel
-  const message = [
-    `:studio_microphone: *Voice Feedback*`,
-    `*Project:* ${projectName}`,
-    `*Name:* ${params.name}`,
-    `*Email:* ${params.email}`,
-    `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
-    `*Submitted:* ${new Date().toLocaleString()}`,
-  ].join('\n')
+  const uploadUrl = slack.voiceUploadUrl ?? '/api/mus/voice-upload'
 
-  await sendMessage(slack.proxyUrl, slack.feedbackChannelId, message)
-  // Note: audio file upload requires bot token (server-side).
-  // For now the notification is sent; file upload can be added later.
+  const formData = new FormData()
+  formData.append('audioFile', params.audioBlob, `voice-feedback-${params.sectionId}-${Date.now()}.webm`)
+  formData.append('sectionId', params.sectionId)
+  formData.append('sectionName', params.sectionName)
+  formData.append('name', params.name)
+  formData.append('email', params.email)
+  formData.append('projectName', projectName)
+  formData.append('channelId', slack.feedbackChannelId)
+
+  const response = await fetch(uploadUrl, {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Voice upload error: ${response.status}`)
+  }
 }
 
 export async function sendThumbsFeedback(
