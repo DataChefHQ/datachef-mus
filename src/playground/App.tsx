@@ -8,7 +8,7 @@ import {
   Users,
   Globe,
 } from 'lucide-react'
-import type { MusConfig } from '@/types'
+import type { MusConfig, FeedbackAction } from '@/types'
 
 const config: Omit<MusConfig, 'actions'> = {
   projectName: 'Mus Playground',
@@ -29,7 +29,13 @@ const config: Omit<MusConfig, 'actions'> = {
     console.log('Feedback:', type, sectionId),
 }
 
-const SECTIONS = [
+const SECTIONS: {
+  id: string
+  name: string
+  icon: typeof BarChart3
+  description: string
+  actions?: FeedbackAction[]
+}[] = [
   {
     id: 'dashboard-overview',
     name: 'Dashboard Overview',
@@ -43,6 +49,7 @@ const SECTIONS = [
     icon: Shield,
     description:
       'Manage access controls, API keys, and audit logs. Configure SSO and role-based permissions.',
+    actions: [{ type: 'support' }, { type: 'thumbs-up' }, { type: 'thumbs-down' }],
   },
   {
     id: 'performance-monitor',
@@ -50,6 +57,7 @@ const SECTIONS = [
     icon: Zap,
     description:
       'Monitor response times, throughput, and error rates across all services and endpoints.',
+    actions: [{ type: 'thumbs-up' }, { type: 'thumbs-down' }],
   },
   {
     id: 'system-config',
@@ -64,6 +72,7 @@ const SECTIONS = [
     icon: Users,
     description:
       'Invite team members, assign roles, and manage workspace access across projects.',
+    actions: [{ type: 'voice' }, { type: 'support' }],
   },
   {
     id: 'deployment-status',
@@ -123,6 +132,7 @@ export function App() {
                 key={section.id}
                 sectionId={section.id}
                 sectionName={section.name}
+                actions={section.actions}
               >
                 <div className="group h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/30">
                   <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10">
