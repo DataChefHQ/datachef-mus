@@ -41,6 +41,9 @@ export interface SlackConfig {
 /* ── Configuration ───────────────────────────────────────── */
 
 export interface MusConfig {
+  /** Project name — included in all Slack messages to identify the source app */
+  projectName: string
+
   /** Slack integration config — calls Chefbot proxy directly from the browser */
   slack: SlackConfig
 

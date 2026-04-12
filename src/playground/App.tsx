@@ -11,6 +11,7 @@ import {
 import type { MusConfig } from '@/types'
 
 const config: Omit<MusConfig, 'actions'> = {
+  projectName: 'Mus Playground',
   slack: {
     proxyUrl: '/api/slack-proxy',
     supportTeamEmails: ['alireza.e@datachef.co'],

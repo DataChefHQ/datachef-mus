@@ -34,6 +34,7 @@ function sendMessage(proxyUrl: string, channelId: string, message: string) {
 
 export async function sendTextFeedback(
   slack: SlackConfig,
+  projectName: string,
   params: {
     name: string
     email: string
@@ -44,6 +45,7 @@ export async function sendTextFeedback(
 ) {
   const message = [
     `:speech_balloon: *Text Feedback*`,
+    `*Project:* ${projectName}`,
     `*Name:* ${params.name}`,
     `*Email:* ${params.email}`,
     `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
@@ -55,6 +57,7 @@ export async function sendTextFeedback(
 
 export async function sendVoiceFeedback(
   slack: SlackConfig,
+  projectName: string,
   params: {
     name: string
     email: string
@@ -66,6 +69,7 @@ export async function sendVoiceFeedback(
   // Post notification message to channel
   const message = [
     `:studio_microphone: *Voice Feedback*`,
+    `*Project:* ${projectName}`,
     `*Name:* ${params.name}`,
     `*Email:* ${params.email}`,
     `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
@@ -79,6 +83,7 @@ export async function sendVoiceFeedback(
 
 export async function sendThumbsFeedback(
   slack: SlackConfig,
+  projectName: string,
   params: {
     type: 'thumbs-up' | 'thumbs-down'
     sectionId: string
@@ -89,6 +94,7 @@ export async function sendThumbsFeedback(
   const emoji = params.type === 'thumbs-up' ? ':+1:' : ':-1:'
   const message = [
     `${emoji} *${params.type === 'thumbs-up' ? 'Thumbs Up' : 'Thumbs Down'}*`,
+    `*Project:* ${projectName}`,
     `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
     params.email ? `*Email:* ${params.email}` : '',
   ]
@@ -100,6 +106,7 @@ export async function sendThumbsFeedback(
 
 export async function createSupportChannel(
   slack: SlackConfig,
+  projectName: string,
   params: {
     name: string
     email: string
@@ -116,6 +123,7 @@ export async function createSupportChannel(
   if (existingChannelId) {
     const followUp = [
       `:headphones: *Follow-up Support Request*`,
+      `*Project:* ${projectName}`,
       `*Name:* ${params.name}`,
       `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
       `*Topic:*\n${params.topic}`,
@@ -155,6 +163,7 @@ export async function createSupportChannel(
   // Post info message
   const infoMessage = [
     `:headphones: *New Support Request*`,
+    `*Project:* ${projectName}`,
     `*Name:* ${params.name}`,
     `*Email:* ${params.email}`,
     `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
@@ -168,7 +177,7 @@ export async function createSupportChannel(
   await sendMessage(
     slack.proxyUrl,
     slack.feedbackChannelId,
-    `:headphones: New support channel created: <#${channelId}> for *${params.name}* (${params.email}).`
+    `:headphones: New support channel created: <#${channelId}> for *${params.name}* (${params.email}) from *${projectName}*.`
   )
 
   return { channelId, existing: false }

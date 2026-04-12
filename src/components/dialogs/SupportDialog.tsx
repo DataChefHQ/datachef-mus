@@ -35,7 +35,7 @@ export function SupportDialog({
     setSubmitting(true)
 
     try {
-      await createSupportChannel(config.slack, {
+      await createSupportChannel(config.slack, config.projectName, {
         name: name.trim(),
         email: email.trim(),
         topic: explanation.trim(),

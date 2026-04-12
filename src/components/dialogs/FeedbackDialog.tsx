@@ -141,7 +141,7 @@ export function FeedbackDialog({
 
     try {
       if (audioBlob) {
-        await sendVoiceFeedback(config.slack, {
+        await sendVoiceFeedback(config.slack, config.projectName, {
           name: name.trim(),
           email: email.trim(),
           sectionId,
@@ -150,7 +150,7 @@ export function FeedbackDialog({
         })
         config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
       } else {
-        await sendTextFeedback(config.slack, {
+        await sendTextFeedback(config.slack, config.projectName, {
           name: name.trim(),
           email: email.trim(),
           message: message.trim(),

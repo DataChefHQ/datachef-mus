@@ -10,7 +10,7 @@ export function useFeedbackActions(sectionId: string, sectionName: string) {
       case 'thumbs-up':
       case 'thumbs-down':
         // Fire-and-forget — call Chefbot directly
-        sendThumbsFeedback(config.slack, {
+        sendThumbsFeedback(config.slack, config.projectName, {
           type: actionType,
           sectionId,
           sectionName,
