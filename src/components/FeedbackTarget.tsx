@@ -177,7 +177,7 @@ export function FeedbackTarget({
           onClose={handleDialogClose}
         />
       )}
-      {(activeDialog === 'text' || activeDialog === 'voice') && (
+      {activeDialog === 'voice' && (
         <FeedbackDialog
           sectionId={sectionId}
           sectionName={sectionName}

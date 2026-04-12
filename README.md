@@ -52,7 +52,7 @@ That's it. No server setup needed — the package calls the Chefbot proxy direct
 |--------|------|----------|
 | `support` | Headset | Opens dialog → creates a dedicated Slack channel |
 | `video` | Youtube | Opens dialog → shows an overview video |
-| `text` | MessageSquareText | Opens dialog → text + voice feedback form |
+| `voice` | Mic | Opens dialog → voice feedback form |
 | `thumbs-down` | ThumbsDown | Fire-and-forget → posts to Slack |
 | `thumbs-up` | ThumbsUp | Fire-and-forget → posts to Slack |
 
@@ -87,7 +87,7 @@ Wrap your app (or a subtree) with `<MusProvider>`:
     actions: [
       { type: 'support' },
       { type: 'video' },
-      { type: 'text' },
+      { type: 'voice' },
       { type: 'thumbs-down' },
       { type: 'thumbs-up' },
     ],
@@ -128,13 +128,13 @@ Wrap any section you want to make feedback-able:
 
 ## Dialogs
 
-### Feedback Dialog (text + voice)
+### Feedback Dialog (voice)
 
-Opened by the `text` or `voice` action. Includes:
+Opened by the `voice` action. Includes:
 - Full Name and Email inputs (pre-filled from `user` config)
 - Message textarea
 - Microphone selector and voice recorder (max 60 seconds)
-- Submit sends text or voice feedback to Slack
+- Submit sends voice feedback to Slack
 
 ### Support Dialog
 
@@ -160,7 +160,7 @@ Disable or reorder actions:
   config={{
     slack: { ... },
     actions: [
-      { type: 'text' },
+      { type: 'voice' },
       { type: 'thumbs-up' },
       { type: 'thumbs-down' },
       // support and video omitted — won't appear
@@ -173,7 +173,7 @@ Override labels:
 
 ```tsx
 actions: [
-  { type: 'text', label: 'Send message' },
+  { type: 'voice', label: 'Record feedback' },
   { type: 'support', label: 'Contact us' },
 ]
 ```

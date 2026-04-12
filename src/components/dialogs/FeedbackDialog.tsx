@@ -157,7 +157,7 @@ export function FeedbackDialog({
           sectionId,
           sectionName,
         })
-        config.onFeedbackSubmitted?.('text', sectionId, sectionName)
+        config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
       }
       onClose()
     } catch {

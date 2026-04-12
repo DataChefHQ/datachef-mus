@@ -4,7 +4,7 @@ import type { MusConfig, FeedbackAction } from '@/types'
 const DEFAULT_ACTIONS: FeedbackAction[] = [
   { type: 'support' },
   { type: 'video' },
-  { type: 'text' },
+  { type: 'voice' },
   { type: 'thumbs-down' },
   { type: 'thumbs-up' },
 ]

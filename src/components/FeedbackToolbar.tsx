@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import {
   Headset,
   Youtube,
-  MessageSquareText,
+  Mic,
   ThumbsDown,
   ThumbsUp,
   type LucideIcon,
@@ -11,9 +11,8 @@ import type { FeedbackAction, FeedbackActionType } from '@/types'
 
 const ACTION_ICONS: Record<FeedbackActionType, LucideIcon> = {
   support: Headset,
-  voice: Headset,
+  voice: Mic,
   video: Youtube,
-  text: MessageSquareText,
   'thumbs-down': ThumbsDown,
   'thumbs-up': ThumbsUp,
 }
@@ -22,7 +21,6 @@ const ACTION_LABELS: Record<FeedbackActionType, string> = {
   support: 'Get support',
   voice: 'Voice feedback',
   video: 'Introduction video',
-  text: 'Text feedback',
   'thumbs-down': 'Not helpful',
   'thumbs-up': 'Helpful',
 }

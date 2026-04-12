@@ -4,7 +4,6 @@ export type FeedbackActionType =
   | 'support'
   | 'voice'
   | 'video'
-  | 'text'
   | 'thumbs-up'
   | 'thumbs-down'
 
