@@ -1,8 +1,67 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import dts from 'vite-plugin-dts'
 import path from 'path'
+
+function voiceUploadPlugin(): Plugin {
+  let slackToken: string
+
+  return {
+    name: 'mus-voice-upload',
+    configResolved({ mode }) {
+      const env = loadEnv(mode, process.cwd(), '')
+      slackToken = env.SLACK_BOT_TOKEN ?? ''
+    },
+    configureServer(server) {
+      server.middlewares.use('/api/mus/voice-upload', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ success: false, error: 'Method not allowed' }))
+          return
+        }
+
+        if (!slackToken) {
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: 'SLACK_BOT_TOKEN not set in .env.local' }))
+          return
+        }
+
+        try {
+          // Collect request body
+          const chunks: Buffer[] = []
+          for await (const chunk of req) chunks.push(chunk)
+          const body = Buffer.concat(chunks)
+
+          // Build a Web API Request and forward to the server handler
+          const headers = new Headers()
+          for (const [key, value] of Object.entries(req.headers)) {
+            if (value) headers.set(key, Array.isArray(value) ? value[0] : value)
+          }
+
+          // Set SLACK_BOT_TOKEN for the handler
+          process.env.SLACK_BOT_TOKEN = slackToken
+
+          const { POST } = await server.ssrLoadModule('/src/server/index.ts')
+          const request = new Request('http://localhost/api/mus/voice-upload', {
+            method: 'POST',
+            headers,
+            body,
+          })
+
+          const response = await POST(request)
+          res.statusCode = response.status
+          res.setHeader('Content-Type', 'application/json')
+          res.end(await response.text())
+        } catch (err) {
+          console.error('Voice upload dev error:', err)
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: String(err) }))
+        }
+      })
+    },
+  }
+}
 
 export default defineConfig({
   plugins: [
@@ -12,6 +71,7 @@ export default defineConfig({
       tsconfigPath: './tsconfig.json',
       exclude: ['src/playground/**'],
     }),
+    voiceUploadPlugin(),
   ],
   resolve: {
     alias: {
@@ -25,10 +85,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/slack-proxy/, ''),
       },
-      '/api/mus/voice-upload': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      },
     },
   },
   build: {
@@ -40,7 +96,16 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'ffmpeg-static',
+        'child_process',
+        'fs/promises',
+        'path',
+        'os',
+      ],
       output: {
         globals: {
           react: 'React',

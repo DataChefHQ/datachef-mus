@@ -5,15 +5,56 @@
  *   // app/api/mus/voice-upload/route.ts
  *   export { POST } from '@datachef/mus/server'
  *
- * Requires SLACK_BOT_TOKEN environment variable.
+ * Requires:
+ *   - SLACK_BOT_TOKEN environment variable
+ *   - ffmpeg-static package: npm install ffmpeg-static
  */
 
+import { execFile } from 'child_process'
+import { writeFile, readFile, unlink } from 'fs/promises'
+import { join } from 'path'
+import { tmpdir } from 'os'
+
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+
+async function convertToMp3(inputBuffer: ArrayBuffer): Promise<Buffer> {
+  // Try to resolve ffmpeg-static, fall back to system ffmpeg
+  let ffmpegPath = 'ffmpeg'
+  try {
+    ffmpegPath = (await import('ffmpeg-static')).default as string
+  } catch {
+    // ffmpeg-static not installed — use system ffmpeg
+  }
+
+  const timestamp = Date.now()
+  const inputPath = join(tmpdir(), `mus-voice-in-${timestamp}.webm`)
+  const outputPath = join(tmpdir(), `mus-voice-out-${timestamp}.mp3`)
+
+  await writeFile(inputPath, Buffer.from(inputBuffer))
+
+  await new Promise<void>((resolve, reject) => {
+    execFile(
+      ffmpegPath,
+      ['-i', inputPath, '-codec:a', 'libmp3lame', '-qscale:a', '4', '-y', outputPath],
+      (error) => {
+        if (error) reject(error)
+        else resolve()
+      }
+    )
+  })
+
+  const mp3Buffer = await readFile(outputPath)
+
+  // Cleanup temp files
+  await Promise.all([unlink(inputPath), unlink(outputPath)]).catch(() => {})
+
+  return mp3Buffer
+}
 
 async function uploadToSlack(
   token: string,
   channelId: string,
-  fileBuffer: ArrayBuffer,
+  fileBuffer: Buffer,
   filename: string,
   comment: string
 ) {
@@ -45,7 +86,7 @@ async function uploadToSlack(
   const uploadRes = await fetch(getUrlData.upload_url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/octet-stream' },
-    body: fileBuffer,
+    body: new Uint8Array(fileBuffer),
   })
 
   if (!uploadRes.ok) {
@@ -108,8 +149,10 @@ export async function POST(request: Request): Promise<Response> {
       )
     }
 
+    // Convert WebM → MP3 for Slack inline audio player
     const arrayBuffer = await audioFile.arrayBuffer()
-    const filename = `voice-feedback-${sectionId}-${Date.now()}.webm`
+    const mp3Buffer = await convertToMp3(arrayBuffer)
+    const filename = `voice-feedback-${sectionId}-${Date.now()}.mp3`
 
     const comment = [
       `:studio_microphone: *Voice Feedback*`,
@@ -122,7 +165,7 @@ export async function POST(request: Request): Promise<Response> {
       .filter(Boolean)
       .join('\n')
 
-    await uploadToSlack(token, channelId, arrayBuffer, filename, comment)
+    await uploadToSlack(token, channelId, mp3Buffer, filename, comment)
 
     return Response.json({ success: true })
   } catch (error) {
