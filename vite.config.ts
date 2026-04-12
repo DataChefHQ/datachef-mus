@@ -19,6 +19,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api/slack-proxy': {
+        target: 'https://chefbot.services.datachef.co',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/slack-proxy/, ''),
+      },
+    },
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),

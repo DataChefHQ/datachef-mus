@@ -12,7 +12,7 @@ import type { MusConfig } from '@/types'
 
 const config: Omit<MusConfig, 'actions'> = {
   slack: {
-    proxyUrl: 'https://chefbot.services.datachef.co/',
+    proxyUrl: '/api/slack-proxy',
     supportTeamEmails: ['alireza.e@datachef.co'],
     feedbackChannelId: 'C0AFBB4HL7K',
   },
