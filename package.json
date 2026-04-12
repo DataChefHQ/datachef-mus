@@ -1,5 +1,5 @@
 {
-  "name": "@datachef/mus",
+  "name": "@datachefhq/mus",
   "version": "0.1.0",
   "description": "DataChef feedback & support widget — configurable React component library",
   "type": "module",

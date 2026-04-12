@@ -1,18 +1,18 @@
-# @datachef/mus
+# @datachefhq/mus
 
 Feedback & support widget for DataChef internal applications. Wrap any section of your app with `<FeedbackTarget>` and users can hover to leave feedback, record voice messages, request support, or rate sections — all sent directly to Slack.
 
 ## Installation
 
 ```bash
-npm install @datachef/mus
+npm install @datachefhq/mus
 ```
 
 ## Quick Start
 
 ```tsx
-import { MusProvider, FeedbackTarget } from '@datachef/mus'
-import '@datachef/mus/styles.css'
+import { MusProvider, FeedbackTarget } from '@datachefhq/mus'
+import '@datachefhq/mus/styles.css'
 
 function App() {
   return (
@@ -139,7 +139,7 @@ Voice recordings are uploaded to Slack as playable audio files. The package incl
 
 ```ts
 // app/api/mus/voice-upload/route.ts (Next.js App Router)
-export { POST } from '@datachef/mus/server'
+export { POST } from '@datachefhq/mus/server'
 ```
 
 Set the `SLACK_BOT_TOKEN` environment variable:
@@ -225,7 +225,7 @@ triggerPosition: 'bottom-left'
 The package uses DataChef's design system with CSS custom properties. Import the styles:
 
 ```tsx
-import '@datachef/mus/styles.css'
+import '@datachefhq/mus/styles.css'
 ```
 
 The styles include light and dark mode support. Add `class="dark"` to your `<html>` or a parent element to enable dark mode.
@@ -242,13 +242,13 @@ import {
   FeedbackDialog,
   VideoDialog,
   DialogShell,
-} from '@datachef/mus'
+} from '@datachefhq/mus'
 
 // Context
-import { MusProvider, useMusConfig } from '@datachef/mus'
+import { MusProvider, useMusConfig } from '@datachefhq/mus'
 
 // Hooks
-import { useFeedbackActions } from '@datachef/mus'
+import { useFeedbackActions } from '@datachefhq/mus'
 
 // Types
 import type {
@@ -257,10 +257,10 @@ import type {
   SlackConfig,
   FeedbackAction,
   FeedbackActionType,
-} from '@datachef/mus'
+} from '@datachefhq/mus'
 
 // Styles
-import '@datachef/mus/styles.css'
+import '@datachefhq/mus/styles.css'
 ```
 
 ## Development
@@ -282,14 +282,14 @@ npx tsc --noEmit
 ## Architecture
 
 ```
-@datachef/mus
+@datachefhq/mus
 ├── MusProvider          — Config context (Slack, user, actions)
 ├── FeedbackTarget       — Wraps a section, manages hover/trigger/toolbar
 │   ├── FeedbackTrigger  — Lightbulb icon (appears on hover)
 │   ├── FeedbackToolbar  — Row of action icons (expands on click)
 │   └── Dialogs          — Support, Feedback, Video (opened by actions)
-├── server/              — Voice upload handler (exported as @datachef/mus/server)
+├── server/              — Voice upload handler (exported as @datachefhq/mus/server)
 └── slack-client         — Calls Chefbot proxy directly from browser
 ```
 
-Text feedback, thumbs, and support channels work client-side through the Chefbot proxy. Voice upload requires the server handler (`@datachef/mus/server`) for converting WebM to MP3 and uploading to Slack.
+Text feedback, thumbs, and support channels work client-side through the Chefbot proxy. Voice upload requires the server handler (`@datachefhq/mus/server`) for converting WebM to MP3 and uploading to Slack.
