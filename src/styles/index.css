@@ -1,8 +1,8 @@
-@import 'tailwindcss/theme' layer(mus);
 @import 'tailwindcss/utilities' layer(mus);
 
 @layer mus {
   @theme inline {
+    /* ── Design tokens (resolve to --mus-* custom properties) ── */
     --color-background: var(--mus-background);
     --color-foreground: var(--mus-foreground);
 
@@ -41,6 +41,46 @@
     --radius-2xl: var(--mus-radius-2xl);
     --radius-3xl: var(--mus-radius-3xl);
     --radius-4xl: var(--mus-radius-4xl);
+
+    /* ── Tailwind defaults needed by utilities ── */
+    --color-black: #000;
+    --color-white: #fff;
+    --color-yellow-500: oklch(0.795 0.184 86.047);
+    --color-green-500: oklch(0.723 0.219 149.579);
+
+    --spacing: 0.25rem;
+
+    --container-md: 28rem;
+    --container-2xl: 42rem;
+    --container-6xl: 72rem;
+
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: 1.5;
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --aspect-video: 16 / 9;
+
+    --default-transition-duration: 0.15s;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --breakpoint-sm: 40rem;
+    --breakpoint-md: 48rem;
+    --breakpoint-lg: 64rem;
+    --breakpoint-xl: 80rem;
+    --breakpoint-2xl: 96rem;
   }
 }
 
