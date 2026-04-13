@@ -20,7 +20,7 @@ export function FeedbackTrigger({
       onClick={onClick}
       className={cn(
         'flex size-9 items-center justify-center rounded-[12px] transition-shadow duration-200',
-        'bg-accent-foreground text-accent',
+        'bg-mus-accent-foreground text-mus-accent',
         'shadow-xs',
         isActive && 'shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',
         'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',

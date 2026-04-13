@@ -2,47 +2,44 @@
 
 @layer mus {
   @theme inline {
-    /* ── Design tokens (resolve to --mus-* custom properties) ── */
-    --color-background: var(--mus-background);
-    --color-foreground: var(--mus-foreground);
+    /* ── Design tokens (namespaced to avoid collision with host Tailwind) ── */
+    --color-mus-background: var(--mus-background);
+    --color-mus-foreground: var(--mus-foreground);
 
-    --color-card: var(--mus-card);
-    --color-card-foreground: var(--mus-card-foreground);
+    --color-mus-card: var(--mus-card);
+    --color-mus-card-foreground: var(--mus-card-foreground);
 
-    --color-popover: var(--mus-popover);
-    --color-popover-foreground: var(--mus-popover-foreground);
+    --color-mus-popover: var(--mus-popover);
+    --color-mus-popover-foreground: var(--mus-popover-foreground);
 
-    --color-primary: var(--mus-primary);
-    --color-primary-foreground: var(--mus-primary-foreground);
+    --color-mus-primary: var(--mus-primary);
+    --color-mus-primary-foreground: var(--mus-primary-foreground);
 
-    --color-secondary: var(--mus-secondary);
-    --color-secondary-foreground: var(--mus-secondary-foreground);
+    --color-mus-secondary: var(--mus-secondary);
+    --color-mus-secondary-foreground: var(--mus-secondary-foreground);
 
-    --color-muted: var(--mus-muted);
-    --color-muted-foreground: var(--mus-muted-foreground);
+    --color-mus-muted: var(--mus-muted);
+    --color-mus-muted-foreground: var(--mus-muted-foreground);
 
-    --color-accent: var(--mus-accent);
-    --color-accent-foreground: var(--mus-accent-foreground);
+    --color-mus-accent: var(--mus-accent);
+    --color-mus-accent-foreground: var(--mus-accent-foreground);
 
-    --color-destructive: var(--mus-destructive);
+    --color-mus-destructive: var(--mus-destructive);
 
-    --color-border: var(--mus-border);
-    --color-input: var(--mus-input);
-    --color-ring: var(--mus-ring);
+    --color-mus-border: var(--mus-border);
+    --color-mus-input: var(--mus-input);
+    --color-mus-ring: var(--mus-ring);
 
-    --font-sans: var(--mus-font-sans);
-    --font-mono: var(--mus-font-mono);
+    --font-mus-sans: var(--mus-font-sans);
+    --font-mus-mono: var(--mus-font-mono);
 
-    --radius-xs: var(--mus-radius-xs);
-    --radius-sm: var(--mus-radius-sm);
-    --radius-md: var(--mus-radius-md);
-    --radius-lg: var(--mus-radius-lg);
-    --radius-xl: var(--mus-radius-xl);
-    --radius-2xl: var(--mus-radius-2xl);
-    --radius-3xl: var(--mus-radius-3xl);
-    --radius-4xl: var(--mus-radius-4xl);
+    --radius-mus-xs: var(--mus-radius-xs);
+    --radius-mus-sm: var(--mus-radius-sm);
+    --radius-mus-md: var(--mus-radius-md);
+    --radius-mus-lg: var(--mus-radius-lg);
+    --radius-mus-xl: var(--mus-radius-xl);
 
-    /* ── Tailwind defaults needed by utilities ── */
+    /* ── Tailwind defaults needed by generic utilities ── */
     --color-black: #000;
     --color-white: #fff;
     --color-yellow-500: oklch(0.795 0.184 86.047);

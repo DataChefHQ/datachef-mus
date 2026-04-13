@@ -193,7 +193,7 @@ export function FeedbackDialog({
 
         {/* Microphone select */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium leading-none text-foreground">
+          <label className="text-sm font-medium leading-none text-mus-foreground">
             Microphone
           </label>
           <div className="relative">
@@ -201,9 +201,9 @@ export function FeedbackDialog({
               value={selectedDevice}
               onChange={(e) => setSelectedDevice(e.target.value)}
               className={cn(
-                'h-10 w-full appearance-none rounded-md border border-input bg-background px-3 pr-8',
-                'text-sm text-muted-foreground shadow-xs',
-                'focus:outline-none focus:ring-2 focus:ring-ring'
+                'h-10 w-full appearance-none rounded-mus-md border border-mus-input bg-mus-background px-3 pr-8',
+                'text-sm text-mus-muted-foreground shadow-xs',
+                'focus:outline-none focus:ring-2 focus:ring-mus-ring'
               )}
             >
               {devices.length === 0 && (
@@ -215,26 +215,26 @@ export function FeedbackDialog({
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-mus-muted-foreground" />
           </div>
         </div>
 
         {/* Voice recorder */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-lg text-foreground">{formatTime(seconds)}</p>
+          <p className="text-lg text-mus-foreground">{formatTime(seconds)}</p>
           <button
             onClick={toggleRecording}
             className={cn(
-              'flex size-9 items-center justify-center rounded-md shadow-xs transition-colors',
+              'flex size-9 items-center justify-center rounded-mus-md shadow-xs transition-colors',
               recording
-                ? 'bg-destructive text-primary-foreground animate-pulse'
-                : 'bg-primary text-primary-foreground'
+                ? 'bg-mus-destructive text-mus-primary-foreground animate-pulse'
+                : 'bg-mus-primary text-mus-primary-foreground'
             )}
             aria-label={recording ? 'Stop recording' : 'Start recording'}
           >
             <Mic className="size-4" />
           </button>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-mus-muted-foreground">
             {audioBlob
               ? `Recorded ${formatTime(seconds)}`
               : recording

@@ -58,7 +58,7 @@ export function FeedbackToolbar({
             onClick={() => onAction(action.type)}
             className={cn(
               'flex size-7 items-center justify-center rounded-full',
-              'bg-accent-foreground text-accent',
+              'bg-mus-accent-foreground text-mus-accent',
               'shadow-xs transition-shadow duration-150',
               'hover:opacity-80',
               'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',

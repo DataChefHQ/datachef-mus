@@ -9,6 +9,8 @@ import {
   Globe,
 } from 'lucide-react'
 import type { MusConfig, FeedbackAction } from '@/types'
+import { version } from '../../package.json'
+import logo from './logo.png'
 
 const config: Omit<MusConfig, 'actions'> = {
   projectName: 'Mus Playground',
@@ -86,26 +88,24 @@ const SECTIONS: {
 export function App() {
   return (
     <MusProvider config={config}>
-      <div className="min-h-screen bg-background font-sans">
+      <div className="min-h-screen bg-mus-background font-mus-sans">
         {/* Header */}
-        <header className="border-b border-border bg-card">
+        <header className="border-b border-mus-border bg-mus-card">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold">
-                M
-              </div>
+              <img src={logo} alt="DataChef" className="size-8 rounded-full" />
               <div>
-                <h1 className="text-lg font-semibold text-foreground">
+                <h1 className="text-lg font-semibold text-mus-foreground">
                   @datachef/mus
                 </h1>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-mus-muted-foreground">
                   Playground
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="rounded-md bg-muted px-2 py-1 text-xs font-mono">
-                v0.1.0
+            <div className="flex items-center gap-2 text-sm text-mus-muted-foreground">
+              <span className="rounded-mus-md bg-mus-muted px-2 py-1 text-xs font-mus-mono">
+                v{version}
               </span>
             </div>
           </div>
@@ -113,11 +113,11 @@ export function App() {
 
         {/* Instructions */}
         <div className="mx-auto max-w-6xl px-6 py-6">
-          <div className="rounded-xl border border-border bg-card p-4">
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">How it works:</span>{' '}
+          <div className="rounded-mus-xl border border-mus-border bg-mus-card p-4">
+            <p className="text-sm text-mus-muted-foreground">
+              <span className="font-medium text-mus-foreground">How it works:</span>{' '}
               Hover over any card below for 500ms. A{' '}
-              <span className="font-medium text-primary">lightbulb icon</span>{' '}
+              <span className="font-medium text-mus-primary">lightbulb icon</span>{' '}
               will appear. Click it to expand the feedback toolbar with actions:
               support, voice, video, text feedback, thumbs up/down.
             </p>
@@ -134,28 +134,28 @@ export function App() {
                 sectionName={section.name}
                 actions={section.actions}
               >
-                <div className="group h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/30">
-                  <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                    <section.icon className="size-5 text-primary" />
+                <div className="group h-full rounded-mus-xl border border-mus-border bg-mus-card p-6 transition-colors hover:border-mus-primary/30">
+                  <div className="mb-4 flex size-10 items-center justify-center rounded-mus-lg bg-mus-primary/10">
+                    <section.icon className="size-5 text-mus-primary" />
                   </div>
-                  <h3 className="mb-2 text-sm font-semibold text-card-foreground">
+                  <h3 className="mb-2 text-sm font-semibold text-mus-card-foreground">
                     {section.name}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
+                  <p className="text-sm leading-relaxed text-mus-muted-foreground">
                     {section.description}
                   </p>
 
                   {/* Fake content to make cards feel real */}
                   <div className="mt-4 flex items-center gap-3">
-                    <div className="h-2 flex-1 rounded-full bg-muted">
+                    <div className="h-2 flex-1 rounded-full bg-mus-muted">
                       <div
-                        className="h-2 rounded-full bg-primary/60"
+                        className="h-2 rounded-full bg-mus-primary/60"
                         style={{
                           width: `${Math.floor(40 + Math.random() * 55)}%`,
                         }}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-mus-muted-foreground">
                       Active
                     </span>
                   </div>
@@ -166,18 +166,18 @@ export function App() {
         </main>
 
         {/* Full-width section example */}
-        <div className="border-t border-border bg-card">
+        <div className="border-t border-mus-border bg-mus-card">
           <div className="mx-auto max-w-6xl px-6 py-8">
             <FeedbackTarget
               sectionId="assessments-table"
               sectionName="Assessments"
             >
-              <div className="rounded-xl border border-border bg-background p-6">
+              <div className="rounded-mus-xl border border-mus-border bg-mus-background p-6">
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-foreground">
+                  <h2 className="text-base font-semibold text-mus-foreground">
                     Assessments
                   </h2>
-                  <button className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90">
+                  <button className="rounded-mus-lg bg-mus-primary px-4 py-2 text-sm font-medium text-mus-primary-foreground transition-colors hover:opacity-90">
                     + Start New Assessment
                   </button>
                 </div>
@@ -191,27 +191,27 @@ export function App() {
                   ].map((row) => (
                     <div
                       key={row.assessor}
-                      className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
+                      className="flex items-center justify-between rounded-mus-lg border border-mus-border bg-mus-card px-4 py-3"
                     >
                       <div className="flex items-center gap-6">
                         <div>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-mus-muted-foreground">
                             Assessor
                           </span>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="text-sm font-medium text-mus-foreground">
                             {row.assessor}
                           </p>
                         </div>
                         <div>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-mus-muted-foreground">
                             Date
                           </span>
-                          <p className="text-sm text-foreground">{row.date}</p>
+                          <p className="text-sm text-mus-foreground">{row.date}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <span
-                          className={`rounded-md px-2 py-1 text-xs font-medium ${
+                          className={`rounded-mus-md px-2 py-1 text-xs font-medium ${
                             row.status === 'Completed'
                               ? 'bg-green-500/10 text-green-500'
                               : 'bg-yellow-500/10 text-yellow-500'
@@ -219,7 +219,7 @@ export function App() {
                         >
                           {row.status}
                         </span>
-                        <button className="text-sm text-muted-foreground hover:text-foreground">
+                        <button className="text-sm text-mus-muted-foreground hover:text-mus-foreground">
                           Show Details →
                         </button>
                       </div>

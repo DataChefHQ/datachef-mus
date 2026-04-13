@@ -81,9 +81,9 @@ export function VideoDialog({
       className="max-w-2xl"
       footer={<CancelButton onClick={onClose} />}
     >
-      <div className="flex flex-col gap-2 rounded-md overflow-hidden">
+      <div className="flex flex-col gap-2 rounded-mus-md overflow-hidden">
         {videoUrl ? (
-          <div className="relative aspect-video w-full rounded-md overflow-hidden bg-black">
+          <div className="relative aspect-video w-full rounded-mus-md overflow-hidden bg-black">
             <video
               ref={videoRef}
               src={videoUrl}
@@ -128,8 +128,8 @@ export function VideoDialog({
             </div>
           </div>
         ) : (
-          <div className="flex aspect-video w-full items-center justify-center rounded-md bg-card">
-            <p className="text-sm text-muted-foreground">
+          <div className="flex aspect-video w-full items-center justify-center rounded-mus-md bg-mus-card">
+            <p className="text-sm text-mus-muted-foreground">
               No video available for &ldquo;{sectionName}&rdquo;
             </p>
           </div>

@@ -29,7 +29,7 @@ export function DialogShell({
         className={cn(
           'relative w-full max-w-md',
           'flex flex-col gap-4',
-          'rounded-lg border border-border bg-background p-6',
+          'rounded-mus-lg border border-mus-border bg-mus-background p-6',
           'shadow-lg',
           'mus-grow',
           className
@@ -39,7 +39,7 @@ export function DialogShell({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-foreground/70 transition-opacity hover:opacity-100"
+          className="absolute right-4 top-4 text-mus-foreground/70 transition-opacity hover:opacity-100"
           aria-label="Close"
         >
           <X className="size-4" />
@@ -47,10 +47,10 @@ export function DialogShell({
 
         {/* Header */}
         <div className="flex flex-col gap-1.5">
-          <h3 className="text-lg font-semibold leading-none text-foreground">
+          <h3 className="text-lg font-semibold leading-none text-mus-foreground">
             {title}
           </h3>
-          <p className="text-sm leading-normal text-muted-foreground">
+          <p className="text-sm leading-normal text-mus-muted-foreground">
             {description}
           </p>
         </div>
@@ -73,7 +73,7 @@ export function DialogShell({
 
 export function DialogFormSection({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-4 rounded-lg bg-card p-4">
+    <div className="flex flex-col gap-4 rounded-mus-lg bg-mus-card p-4">
       {children}
     </div>
   )
@@ -96,7 +96,7 @@ export function DialogInput({
 }: DialogInputProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium leading-none text-foreground">
+      <label className="text-sm font-medium leading-none text-mus-foreground">
         {label}
       </label>
       <input
@@ -105,10 +105,10 @@ export function DialogInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={cn(
-          'h-10 w-full rounded-md border border-input bg-background px-3',
-          'text-sm text-foreground shadow-xs',
-          'placeholder:text-muted-foreground',
-          'focus:outline-none focus:ring-2 focus:ring-ring'
+          'h-10 w-full rounded-mus-md border border-mus-input bg-mus-background px-3',
+          'text-sm text-mus-foreground shadow-xs',
+          'placeholder:text-mus-muted-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-mus-ring'
         )}
       />
     </div>
@@ -132,7 +132,7 @@ export function DialogTextarea({
 }: DialogTextareaProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium leading-none text-foreground">
+      <label className="text-sm font-medium leading-none text-mus-foreground">
         {label}
       </label>
       <textarea
@@ -141,10 +141,10 @@ export function DialogTextarea({
         placeholder={placeholder}
         rows={rows}
         className={cn(
-          'min-h-[60px] w-full resize-none rounded-md border border-input bg-background px-3 py-2',
-          'text-sm text-foreground shadow-xs',
-          'placeholder:text-muted-foreground',
-          'focus:outline-none focus:ring-2 focus:ring-ring'
+          'min-h-[60px] w-full resize-none rounded-mus-md border border-mus-input bg-mus-background px-3 py-2',
+          'text-sm text-mus-foreground shadow-xs',
+          'placeholder:text-mus-muted-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-mus-ring'
         )}
       />
     </div>
@@ -156,9 +156,9 @@ export function CancelButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       className={cn(
-        'h-9 rounded-md border border-input bg-background px-4',
-        'text-sm font-medium text-foreground shadow-xs',
-        'hover:bg-accent hover:text-accent-foreground',
+        'h-9 rounded-mus-md border border-mus-input bg-mus-background px-4',
+        'text-sm font-medium text-mus-foreground shadow-xs',
+        'hover:bg-mus-accent hover:text-mus-accent-foreground',
         'transition-colors'
       )}
     >
@@ -181,8 +181,8 @@ export function SubmitButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'h-9 rounded-md bg-primary px-4',
-        'text-sm font-medium text-primary-foreground shadow-xs',
+        'h-9 rounded-mus-md bg-mus-primary px-4',
+        'text-sm font-medium text-mus-primary-foreground shadow-xs',
         'hover:opacity-90 transition-opacity',
         'disabled:opacity-50 disabled:cursor-not-allowed'
       )}
