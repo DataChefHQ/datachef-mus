@@ -12,6 +12,7 @@ export { MusProvider, useMusConfig } from './context/MusContext'
 
 /* ── Hooks ───────────────────────────────────────────────── */
 export { useFeedbackActions } from './hooks/useFeedbackActions'
+export { useThumbsStore } from './hooks/useThumbsStore'
 
 /* ── Types ───────────────────────────────────────────────── */
 export type {

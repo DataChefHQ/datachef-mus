@@ -57,6 +57,9 @@ export interface MusConfig {
   /** Pre-filled user context — if provided, forms auto-fill and may hide fields */
   user?: MusUser
 
+  /** Color theme for mus widgets: 'light' | 'dark' | 'auto' (default: 'auto') */
+  theme?: 'light' | 'dark' | 'auto'
+
   /** Delay in ms before showing the trigger icon on hover (default: 500) */
   hoverDelay?: number
 

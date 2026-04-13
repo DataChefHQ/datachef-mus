@@ -31,7 +31,7 @@ export function FeedbackTarget({
   actions,
 }: FeedbackTargetProps) {
   const config = useMusConfig()
-  const { handleAction } = useFeedbackActions(sectionId, sectionName)
+  const { handleAction, activeThumb } = useFeedbackActions(sectionId, sectionName)
   const resolvedActions = actions ?? config.actions
 
   const [showTrigger, setShowTrigger] = useState(false)
@@ -164,6 +164,7 @@ export function FeedbackTarget({
               actions={resolvedActions}
               onAction={handleActionClick}
               growOrigin={position.includes('right') ? 'right center' : 'left center'}
+              activeThumb={activeThumb}
             />
           )}
         </div>

@@ -1,7 +1,14 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useMusConfig } from '@/context/MusContext'
 import { sendTextFeedback, sendVoiceFeedback } from '@/lib/slack-client'
-import { Mic, ChevronDown } from 'lucide-react'
+import {
+  Mic,
+  ChevronDown,
+  CircleStop,
+  CirclePlay,
+  RotateCcw,
+  Pause,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   DialogShell,
@@ -11,6 +18,8 @@ import {
   CancelButton,
   SubmitButton,
 } from './DialogShell'
+
+const MAX_SECONDS = 60
 
 interface FeedbackDialogProps {
   sectionId: string
@@ -37,9 +46,15 @@ export function FeedbackDialog({
   const [seconds, setSeconds] = useState(0)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
 
+  // Playback state
+  const [playing, setPlaying] = useState(false)
+  const [playbackTime, setPlaybackTime] = useState(0)
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioUrlRef = useRef<string | null>(null)
 
   // Enumerate microphones on mount
   useEffect(() => {
@@ -55,6 +70,18 @@ export function FeedbackDialog({
   }, [selectedDevice])
 
   const startRecording = useCallback(async () => {
+    // Stop any active playback
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current)
+      audioUrlRef.current = null
+    }
+    setPlaying(false)
+    setPlaybackTime(0)
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: selectedDevice ? { deviceId: { exact: selectedDevice } } : true,
@@ -86,9 +113,9 @@ export function FeedbackDialog({
 
       timerRef.current = setInterval(() => {
         setSeconds((prev) => {
-          if (prev >= 59) {
+          if (prev >= MAX_SECONDS - 1) {
             stopRecording()
-            return 60
+            return MAX_SECONDS
           }
           return prev + 1
         })
@@ -109,13 +136,63 @@ export function FeedbackDialog({
     setRecording(false)
   }, [])
 
-  const toggleRecording = () => {
-    if (recording) {
-      stopRecording()
-    } else {
-      startRecording()
+  const reRecord = useCallback(() => {
+    setAudioBlob(null)
+    setSeconds(0)
+    setPlaybackTime(0)
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
     }
-  }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current)
+      audioUrlRef.current = null
+    }
+    setPlaying(false)
+    startRecording()
+  }, [startRecording])
+
+  const togglePlayback = useCallback(() => {
+    if (!audioBlob) return
+
+    if (playing && audioRef.current) {
+      audioRef.current.pause()
+      setPlaying(false)
+      return
+    }
+
+    // Create audio element if needed
+    if (!audioRef.current) {
+      const url = URL.createObjectURL(audioBlob)
+      audioUrlRef.current = url
+      const audio = new Audio(url)
+      audioRef.current = audio
+
+      audio.addEventListener('timeupdate', () => {
+        setPlaybackTime(audio.currentTime)
+      })
+
+      audio.addEventListener('ended', () => {
+        setPlaying(false)
+        setPlaybackTime(0)
+      })
+    }
+
+    audioRef.current.play()
+    setPlaying(true)
+  }, [audioBlob, playing])
+
+  const handleProgressClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!audioRef.current || !audioBlob) return
+      const rect = e.currentTarget.getBoundingClientRect()
+      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+      const newTime = ratio * audioRef.current.duration
+      audioRef.current.currentTime = newTime
+      setPlaybackTime(newTime)
+    },
+    [audioBlob]
+  )
 
   // Cleanup on unmount
   useEffect(() => {
@@ -124,16 +201,27 @@ export function FeedbackDialog({
       if (mediaRecorderRef.current?.state === 'recording') {
         mediaRecorderRef.current.stop()
       }
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current)
+      }
     }
   }, [])
 
   const formatTime = (s: number) => {
     const mins = Math.floor(s / 60).toString().padStart(2, '0')
-    const secs = (s % 60).toString().padStart(2, '0')
+    const secs = Math.floor(s % 60).toString().padStart(2, '0')
     return `${mins}:${secs}`
   }
 
-  const canSubmit = name.trim() && email.trim() && (message.trim() || audioBlob)
+  const canSubmit =
+    name.trim() && email.trim() && (message.trim() || audioBlob) && !recording
+
+  const recordingProgress = seconds / MAX_SECONDS
+  const playbackProgress =
+    audioRef.current?.duration ? playbackTime / audioRef.current.duration : 0
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return
@@ -176,7 +264,7 @@ export function FeedbackDialog({
         <>
           <CancelButton onClick={onClose} />
           <SubmitButton onClick={handleSubmit} disabled={!canSubmit || submitting}>
-            {submitting ? 'Sending...' : 'Submit feedback'}
+            {submitting ? 'Sending...' : 'Submit Feedback'}
           </SubmitButton>
         </>
       }
@@ -220,27 +308,87 @@ export function FeedbackDialog({
         </div>
 
         {/* Voice recorder */}
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-lg text-mus-foreground">{formatTime(seconds)}</p>
-          <button
-            onClick={toggleRecording}
-            className={cn(
-              'flex size-9 items-center justify-center rounded-mus-md shadow-xs transition-colors',
-              recording
-                ? 'bg-mus-destructive text-mus-primary-foreground animate-pulse'
-                : 'bg-mus-primary text-mus-primary-foreground'
-            )}
-            aria-label={recording ? 'Stop recording' : 'Start recording'}
-          >
-            <Mic className="size-4" />
-          </button>
+        <div className="flex flex-col items-center gap-2 px-8">
+          {/* Timer */}
+          <p className="text-lg text-mus-foreground">
+            {audioBlob && !recording
+              ? formatTime(playing ? playbackTime : seconds)
+              : formatTime(seconds)}
+          </p>
+
+          {/* Controls */}
+          {recording ? (
+            /* ── Recording state: red stop button ── */
+            <button
+              onClick={stopRecording}
+              className="flex size-9 items-center justify-center rounded-mus-md bg-mus-destructive text-white shadow-xs"
+              aria-label="Stop recording"
+            >
+              <CircleStop className="size-4" />
+            </button>
+          ) : audioBlob ? (
+            /* ── Recorded state: re-record + play/pause ── */
+            <div className="flex items-center gap-2">
+              <button
+                onClick={reRecord}
+                className={cn(
+                  'flex size-9 items-center justify-center rounded-mus-md shadow-xs',
+                  'border border-mus-input bg-mus-background text-mus-foreground',
+                  'hover:bg-mus-accent hover:text-mus-accent-foreground transition-colors'
+                )}
+                aria-label="Re-record"
+              >
+                <RotateCcw className="size-4" />
+              </button>
+              <button
+                onClick={togglePlayback}
+                className="flex size-9 items-center justify-center rounded-mus-md bg-[#63a0e5] text-white shadow-xs"
+                aria-label={playing ? 'Pause playback' : 'Play recording'}
+              >
+                {playing ? (
+                  <Pause className="size-4" />
+                ) : (
+                  <CirclePlay className="size-4" />
+                )}
+              </button>
+            </div>
+          ) : (
+            /* ── Idle state: mic button ── */
+            <button
+              onClick={startRecording}
+              className="flex size-9 items-center justify-center rounded-mus-md bg-mus-primary text-mus-primary-foreground shadow-xs"
+              aria-label="Start recording"
+            >
+              <Mic className="size-4" />
+            </button>
+          )}
+
+          {/* Helper text */}
           <p className="text-xs text-mus-muted-foreground">
-            {audioBlob
-              ? `Recorded ${formatTime(seconds)}`
-              : recording
-                ? 'Recording... tap to stop'
+            {recording
+              ? 'Recording... tap the square to stop recording'
+              : audioBlob
+                ? 'tap the mic to re-record (Max 60 seconds)'
                 : 'tap the mic to start recording (Max 60 seconds)'}
           </p>
+
+          {/* Progress bar — visible during recording or when a recording exists */}
+          {(recording || audioBlob) && (
+            <div
+              className={cn(
+                'h-2 w-full overflow-hidden rounded-full bg-black/80',
+                audioBlob && !recording && 'cursor-pointer'
+              )}
+              onClick={audioBlob && !recording ? handleProgressClick : undefined}
+            >
+              <div
+                className="h-full bg-mus-foreground transition-[width] duration-200"
+                style={{
+                  width: `${(recording ? recordingProgress : playbackProgress) * 100}%`,
+                }}
+              />
+            </div>
+          )}
         </div>
       </DialogFormSection>
     </DialogShell>
