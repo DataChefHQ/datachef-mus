@@ -1,6 +1,18 @@
 import { useStytchUser } from '@stytch/react'
+import { useMusConfig } from '@/context/MusContext'
 
 export function useMusUser() {
+  const config = useMusConfig()
+
+  // 1. Config override takes priority
+  if (config.user) {
+    return {
+      name: config.user.name?.trim() || 'Anonymous',
+      email: config.user.email?.trim() || '',
+    }
+  }
+
+  // 2. Try Stytch session
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { user } = useStytchUser()

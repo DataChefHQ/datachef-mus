@@ -47,6 +47,9 @@ export interface MusConfig {
   /** Actions to show in the toolbar (order matters) */
   actions: FeedbackAction[]
 
+  /** Override user info — if not provided, falls back to Stytch session */
+  user?: { name?: string; email?: string }
+
   /** Color theme for mus widgets: 'light' | 'dark' | 'auto' (default: 'auto') */
   theme?: 'light' | 'dark' | 'auto'
 
