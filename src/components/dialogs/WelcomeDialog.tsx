@@ -78,10 +78,10 @@ export function WelcomeDialog() {
           <Youtube className="size-4 shrink-0" /> Watch a quick explanation
         </p>
         <br />
-        <p>
-          2- Click the{' '}
-          <Lightbulb className="inline size-4 align-text-bottom" />{' '}
-          to share your thoughts.
+        <p className="flex flex-wrap items-center gap-x-1">
+          <span>2- Click the</span>
+          <Lightbulb className="size-4 shrink-0" />
+          <span>to share your thoughts.</span>
         </p>
         <p>3- Choose an option and send us your feedback.</p>
       </div>
