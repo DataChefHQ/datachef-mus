@@ -42,7 +42,10 @@ export function FeedbackToolbar({
   growOrigin = 'right center',
   activeThumb,
 }: FeedbackToolbarProps) {
-  const enabledActions = actions.filter((a) => a.enabled !== false)
+  // Video is rendered separately by FeedbackTarget — filter it out
+  const enabledActions = actions.filter(
+    (a) => a.enabled !== false && a.type !== 'video'
+  )
 
   return (
     <div

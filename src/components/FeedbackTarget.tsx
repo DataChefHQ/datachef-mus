@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { Youtube } from 'lucide-react'
 import { useMusConfig } from '@/context/MusContext'
 import { useFeedbackActions } from '@/hooks/useFeedbackActions'
 import { FeedbackTrigger } from '@/components/FeedbackTrigger'
@@ -125,6 +126,9 @@ export function FeedbackTarget({
   // Toolbar expands in the opposite direction of the trigger's corner
   const toolbarDirection = position.includes('right') ? 'flex-row-reverse' : 'flex-row'
 
+  // Align video button to the same side as the trigger
+  const columnAlign = position.includes('right') ? 'items-end' : 'items-start'
+
   // Transform origin for grow animation — grows from the trigger's corner
   const growOrigin: Record<string, string> = {
     'top-left': 'top left',
@@ -132,6 +136,11 @@ export function FeedbackTarget({
     'bottom-left': 'bottom left',
     'bottom-right': 'bottom right',
   }
+
+  // Check if video action is enabled
+  const hasVideo = resolvedActions.some(
+    (a) => a.type === 'video' && a.enabled !== false
+  )
 
   return (
     <div
@@ -142,30 +151,52 @@ export function FeedbackTarget({
     >
       {children}
 
-      {/* Trigger + Toolbar row */}
+      {/* Feedback module — vertical layout */}
       {showTrigger && (
         <div
           className={cn(
-            'absolute z-40 flex items-center gap-3',
+            'absolute z-40 flex flex-col gap-3',
             positionClasses[position],
-            toolbarDirection
+            columnAlign
           )}
         >
-          {/* Trigger (lightbulb) */}
-          <FeedbackTrigger
-            onClick={handleTriggerClick}
-            isActive={showToolbar}
-            style={{ transformOrigin: growOrigin[position] }}
-          />
-
-          {/* Toolbar — expands opposite to trigger */}
-          {showToolbar && (
-            <FeedbackToolbar
-              actions={resolvedActions}
-              onAction={handleActionClick}
-              growOrigin={position.includes('right') ? 'right center' : 'left center'}
-              activeThumb={activeThumb}
+          {/* Row 1: Toolbar actions + Trigger */}
+          <div className={cn('flex items-center gap-3', toolbarDirection)}>
+            {/* Trigger (lightbulb) */}
+            <FeedbackTrigger
+              onClick={handleTriggerClick}
+              isActive={showToolbar}
+              style={{ transformOrigin: growOrigin[position] }}
             />
+
+            {/* Toolbar — expands opposite to trigger */}
+            {showToolbar && (
+              <FeedbackToolbar
+                actions={resolvedActions}
+                onAction={handleActionClick}
+                growOrigin={position.includes('right') ? 'right center' : 'left center'}
+                activeThumb={activeThumb}
+              />
+            )}
+          </div>
+
+          {/* Row 2: Video button (visible on hover, independent of toolbar) */}
+          {hasVideo && (
+            <button
+              onClick={() => handleActionClick('video')}
+              className={cn(
+                'flex size-9 items-center justify-center rounded-[12px]',
+                'bg-mus-accent-foreground text-mus-accent',
+                'shadow-[0_3px_3px_0_rgba(0,0,0,0.12)]',
+                'hover:opacity-80 transition-opacity',
+                'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',
+                'mus-grow'
+              )}
+              aria-label="Introduction video"
+              title="Introduction video"
+            >
+              <Youtube className="size-4 pointer-events-none" />
+            </button>
           )}
         </div>
       )}

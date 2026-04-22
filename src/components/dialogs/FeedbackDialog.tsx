@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useMusConfig } from '@/context/MusContext'
-import { sendTextFeedback, sendVoiceFeedback } from '@/lib/slack-client'
+import { useMusUser } from '@/hooks/useMusUser'
+import { sendVoiceFeedback } from '@/lib/slack-client'
 import {
   Mic,
   ChevronDown,
@@ -10,16 +11,9 @@ import {
   Pause,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  DialogShell,
-  DialogFormSection,
-  DialogInput,
-  DialogTextarea,
-  CancelButton,
-  SubmitButton,
-} from './DialogShell'
+import { DialogShell } from './DialogShell'
 
-const MAX_SECONDS = 60
+const MAX_SECONDS = 180 // 3 minutes
 
 interface FeedbackDialogProps {
   sectionId: string
@@ -33,10 +27,8 @@ export function FeedbackDialog({
   onClose,
 }: FeedbackDialogProps) {
   const config = useMusConfig()
+  const { name, email } = useMusUser()
 
-  const [name, setName] = useState(config.user?.name ?? '')
-  const [email, setEmail] = useState(config.user?.email ?? '')
-  const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   // Voice recording state
@@ -45,6 +37,7 @@ export function FeedbackDialog({
   const [recording, setRecording] = useState(false)
   const [seconds, setSeconds] = useState(0)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+  const [showPermissionAlert, setShowPermissionAlert] = useState(false)
 
   // Playback state
   const [playing, setPlaying] = useState(false)
@@ -56,13 +49,26 @@ export function FeedbackDialog({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const audioUrlRef = useRef<string | null>(null)
 
-  // Enumerate microphones on mount
+  // Check mic permission and enumerate devices on mount
   useEffect(() => {
+    // Query permission status via Permissions API
+    navigator.permissions?.query({ name: 'microphone' as PermissionName }).then((status) => {
+      if (status.state === 'prompt') {
+        setShowPermissionAlert(true)
+      }
+    }).catch(() => {
+      // Permissions API not supported — fall back to device label check
+    })
+
     navigator.mediaDevices?.enumerateDevices().then((all) => {
       const mics = all.filter((d) => d.kind === 'audioinput')
       setDevices(mics)
       if (mics.length > 0 && !selectedDevice) {
         setSelectedDevice(mics[0].deviceId)
+      }
+      // Labeled devices = permission already granted
+      if (mics.some((d) => d.label)) {
+        setShowPermissionAlert(false)
       }
     }).catch(() => {
       // Permission not granted yet — will enumerate after recording starts
@@ -87,7 +93,8 @@ export function FeedbackDialog({
         audio: selectedDevice ? { deviceId: { exact: selectedDevice } } : true,
       })
 
-      // Re-enumerate after permission granted
+      // Permission granted — hide alert and re-enumerate
+      setShowPermissionAlert(false)
       const all = await navigator.mediaDevices.enumerateDevices()
       const mics = all.filter((d) => d.kind === 'audioinput')
       setDevices(mics)
@@ -122,6 +129,7 @@ export function FeedbackDialog({
       }, 1000)
     } catch {
       // Microphone access denied
+      setShowPermissionAlert(false)
     }
   }, [selectedDevice])
 
@@ -216,37 +224,23 @@ export function FeedbackDialog({
     return `${mins}:${secs}`
   }
 
-  const canSubmit =
-    name.trim() && email.trim() && (message.trim() || audioBlob) && !recording
-
   const recordingProgress = seconds / MAX_SECONDS
   const playbackProgress =
     audioRef.current?.duration ? playbackTime / audioRef.current.duration : 0
 
   const handleSubmit = async () => {
-    if (!canSubmit || submitting) return
+    if (!audioBlob || submitting) return
     setSubmitting(true)
 
     try {
-      if (audioBlob) {
-        await sendVoiceFeedback(config.slack, config.projectName, {
-          name: name.trim(),
-          email: email.trim(),
-          sectionId,
-          sectionName,
-          audioBlob,
-        })
-        config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
-      } else {
-        await sendTextFeedback(config.slack, config.projectName, {
-          name: name.trim(),
-          email: email.trim(),
-          message: message.trim(),
-          sectionId,
-          sectionName,
-        })
-        config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
-      }
+      await sendVoiceFeedback(config.slack, config.projectName, {
+        name,
+        email,
+        sectionId,
+        sectionName,
+        audioBlob,
+      })
+      config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
       onClose()
     } catch {
       // TODO: error handling
@@ -260,137 +254,145 @@ export function FeedbackDialog({
       title="Feedback"
       description="Let us know what you think about this section"
       onClose={onClose}
-      footer={
-        <>
-          <CancelButton onClick={onClose} />
-          <SubmitButton onClick={handleSubmit} disabled={!canSubmit || submitting}>
-            {submitting ? 'Sending...' : 'Submit Feedback'}
-          </SubmitButton>
-        </>
-      }
     >
-      <DialogFormSection>
-        <DialogInput label="Full Name" value={name} onChange={setName} placeholder="John Doe" />
-        <DialogInput label="Email address" value={email} onChange={setEmail} placeholder="johndoe@mail.com" type="email" />
-        <DialogTextarea
-          label="Message Your feedback"
-          value={message}
-          onChange={setMessage}
-          placeholder="Send text message or tap the mic to start recording"
-        />
+      {/* Microphone select */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium leading-none text-mus-foreground">
+          Microphone
+        </label>
+        <div className="relative">
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className={cn(
+              'h-10 w-full appearance-none rounded-mus-md border border-mus-input bg-mus-background px-3 pr-8',
+              'text-sm text-mus-muted-foreground shadow-xs',
+              'focus:outline-none focus:ring-2 focus:ring-mus-ring'
+            )}
+          >
+            {devices.length === 0 && (
+              <option value="">Default</option>
+            )}
+            {devices.map((d) => (
+              <option key={d.deviceId} value={d.deviceId}>
+                {d.label || `Microphone ${d.deviceId.slice(0, 8)}`}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-mus-muted-foreground" />
+        </div>
+      </div>
 
-        {/* Microphone select */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium leading-none text-mus-foreground">
-            Microphone
-          </label>
-          <div className="relative">
-            <select
-              value={selectedDevice}
-              onChange={(e) => setSelectedDevice(e.target.value)}
+      {/* Voice recorder */}
+      <div className="flex flex-col items-center gap-2 px-8">
+        {/* Timer */}
+        <p className="text-lg text-mus-foreground">
+          {audioBlob && !recording
+            ? formatTime(playing ? playbackTime : seconds)
+            : formatTime(seconds)}
+        </p>
+
+        {/* Controls */}
+        {recording ? (
+          /* ── Recording: red stop button ── */
+          <button
+            onClick={stopRecording}
+            className="flex size-9 items-center justify-center rounded-mus-md bg-mus-destructive text-white shadow-xs"
+            aria-label="Stop recording"
+          >
+            <CircleStop className="size-4" />
+          </button>
+        ) : audioBlob ? (
+          /* ── Recorded: re-record + play + submit inline ── */
+          <div className="flex items-center gap-2">
+            <button
+              onClick={reRecord}
               className={cn(
-                'h-10 w-full appearance-none rounded-mus-md border border-mus-input bg-mus-background px-3 pr-8',
-                'text-sm text-mus-muted-foreground shadow-xs',
-                'focus:outline-none focus:ring-2 focus:ring-mus-ring'
+                'flex size-9 items-center justify-center rounded-mus-md shadow-xs',
+                'border border-mus-input bg-mus-background text-mus-foreground',
+                'hover:bg-mus-accent hover:text-mus-accent-foreground transition-colors'
+              )}
+              aria-label="Re-record"
+            >
+              <RotateCcw className="size-4" />
+            </button>
+            <button
+              onClick={togglePlayback}
+              className="flex size-9 items-center justify-center rounded-mus-md bg-[#63a0e5] text-white shadow-xs"
+              aria-label={playing ? 'Pause playback' : 'Play recording'}
+            >
+              {playing ? (
+                <Pause className="size-4" />
+              ) : (
+                <CirclePlay className="size-4" />
+              )}
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className={cn(
+                'h-9 rounded-mus-md bg-mus-primary px-4',
+                'text-sm font-medium text-mus-primary-foreground shadow-xs',
+                'hover:opacity-90 transition-opacity',
+                'disabled:opacity-50 disabled:cursor-not-allowed'
               )}
             >
-              {devices.length === 0 && (
-                <option value="">Default</option>
-              )}
-              {devices.map((d) => (
-                <option key={d.deviceId} value={d.deviceId}>
-                  {d.label || `Microphone ${d.deviceId.slice(0, 8)}`}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-mus-muted-foreground" />
+              {submitting ? 'Sending...' : 'Submit'}
+            </button>
+          </div>
+        ) : (
+          /* ── Idle: green mic button ── */
+          <button
+            onClick={startRecording}
+            className="flex size-9 items-center justify-center rounded-mus-md bg-[#4bb052] text-white shadow-xs"
+            aria-label="Start recording"
+          >
+            <Mic className="size-4" />
+          </button>
+        )}
+
+        {/* Helper text */}
+        <p className="text-xs text-mus-muted-foreground">
+          {recording
+            ? 'Recording... tap the square to stop recording'
+            : 'tap the mic to start recording (Max 3 mins)'}
+        </p>
+
+        {/* Progress bar — visible during recording or when a recording exists */}
+        {(recording || audioBlob) && (
+          <div
+            className={cn(
+              'h-2 w-full overflow-hidden rounded-full bg-black/80',
+              audioBlob && !recording && 'cursor-pointer'
+            )}
+            onClick={audioBlob && !recording ? handleProgressClick : undefined}
+          >
+            <div
+              className="h-full bg-mus-foreground transition-[width] duration-200"
+              style={{
+                width: `${(recording ? recordingProgress : playbackProgress) * 100}%`,
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Permission alert — shown before first recording */}
+      {showPermissionAlert && !recording && !audioBlob && (
+        <div className="rounded-mus-lg border border-mus-border bg-mus-card px-4 py-3">
+          <div className="flex items-start gap-3">
+            <Mic className="mt-0.5 size-4 shrink-0 text-mus-foreground" />
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-medium text-mus-foreground">
+                Microphone permission
+              </p>
+              <p className="text-sm text-mus-muted-foreground">
+                Your browser will ask for permission. please allow it to continue
+              </p>
+            </div>
           </div>
         </div>
-
-        {/* Voice recorder */}
-        <div className="flex flex-col items-center gap-2 px-8">
-          {/* Timer */}
-          <p className="text-lg text-mus-foreground">
-            {audioBlob && !recording
-              ? formatTime(playing ? playbackTime : seconds)
-              : formatTime(seconds)}
-          </p>
-
-          {/* Controls */}
-          {recording ? (
-            /* ── Recording state: red stop button ── */
-            <button
-              onClick={stopRecording}
-              className="flex size-9 items-center justify-center rounded-mus-md bg-mus-destructive text-white shadow-xs"
-              aria-label="Stop recording"
-            >
-              <CircleStop className="size-4" />
-            </button>
-          ) : audioBlob ? (
-            /* ── Recorded state: re-record + play/pause ── */
-            <div className="flex items-center gap-2">
-              <button
-                onClick={reRecord}
-                className={cn(
-                  'flex size-9 items-center justify-center rounded-mus-md shadow-xs',
-                  'border border-mus-input bg-mus-background text-mus-foreground',
-                  'hover:bg-mus-accent hover:text-mus-accent-foreground transition-colors'
-                )}
-                aria-label="Re-record"
-              >
-                <RotateCcw className="size-4" />
-              </button>
-              <button
-                onClick={togglePlayback}
-                className="flex size-9 items-center justify-center rounded-mus-md bg-[#63a0e5] text-white shadow-xs"
-                aria-label={playing ? 'Pause playback' : 'Play recording'}
-              >
-                {playing ? (
-                  <Pause className="size-4" />
-                ) : (
-                  <CirclePlay className="size-4" />
-                )}
-              </button>
-            </div>
-          ) : (
-            /* ── Idle state: mic button ── */
-            <button
-              onClick={startRecording}
-              className="flex size-9 items-center justify-center rounded-mus-md bg-mus-primary text-mus-primary-foreground shadow-xs"
-              aria-label="Start recording"
-            >
-              <Mic className="size-4" />
-            </button>
-          )}
-
-          {/* Helper text */}
-          <p className="text-xs text-mus-muted-foreground">
-            {recording
-              ? 'Recording... tap the square to stop recording'
-              : audioBlob
-                ? 'tap the mic to re-record (Max 60 seconds)'
-                : 'tap the mic to start recording (Max 60 seconds)'}
-          </p>
-
-          {/* Progress bar — visible during recording or when a recording exists */}
-          {(recording || audioBlob) && (
-            <div
-              className={cn(
-                'h-2 w-full overflow-hidden rounded-full bg-black/80',
-                audioBlob && !recording && 'cursor-pointer'
-              )}
-              onClick={audioBlob && !recording ? handleProgressClick : undefined}
-            >
-              <div
-                className="h-full bg-mus-foreground transition-[width] duration-200"
-                style={{
-                  width: `${(recording ? recordingProgress : playbackProgress) * 100}%`,
-                }}
-              />
-            </div>
-          )}
-        </div>
-      </DialogFormSection>
+      )}
     </DialogShell>
   )
 }

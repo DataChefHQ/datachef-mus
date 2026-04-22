@@ -39,7 +39,7 @@ export function DialogShell({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-mus-foreground/70 transition-opacity hover:opacity-100"
+          className="absolute right-4 top-4 text-mus-foreground/70 transition-colors hover:text-mus-foreground"
           aria-label="Close"
         >
           <X className="size-4" />

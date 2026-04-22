@@ -15,13 +15,6 @@ export interface FeedbackAction {
   enabled?: boolean
 }
 
-/* ── User context ────────────────────────────────────────── */
-
-export interface MusUser {
-  name?: string
-  email?: string
-}
-
 /* ── Slack configuration ─────────────────────────────────── */
 
 export interface SlackConfig {
@@ -53,9 +46,6 @@ export interface MusConfig {
 
   /** Actions to show in the toolbar (order matters) */
   actions: FeedbackAction[]
-
-  /** Pre-filled user context — if provided, forms auto-fill and may hide fields */
-  user?: MusUser
 
   /** Color theme for mus widgets: 'light' | 'dark' | 'auto' (default: 'auto') */
   theme?: 'light' | 'dark' | 'auto'

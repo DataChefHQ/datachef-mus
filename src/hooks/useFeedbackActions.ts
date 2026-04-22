@@ -1,10 +1,12 @@
 import { useMusConfig } from '@/context/MusContext'
 import { sendThumbsFeedback } from '@/lib/slack-client'
 import type { FeedbackActionType } from '@/types'
+import { useMusUser } from './useMusUser'
 import { useThumbsStore } from './useThumbsStore'
 
 export function useFeedbackActions(sectionId: string, sectionName: string) {
   const config = useMusConfig()
+  const { email } = useMusUser()
   const { vote: activeThumb, setVote: setActiveThumb } = useThumbsStore(sectionId)
 
   const handleAction = (actionType: FeedbackActionType): 'dialog' | 'done' => {
@@ -21,7 +23,7 @@ export function useFeedbackActions(sectionId: string, sectionName: string) {
             type: actionType,
             sectionId,
             sectionName,
-            email: config.user?.email,
+            email,
           }).catch(() => {
             // Thumbs feedback is fire-and-forget
           })

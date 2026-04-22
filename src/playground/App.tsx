@@ -21,10 +21,6 @@ const config: Omit<MusConfig, 'actions'> = {
   },
   hoverDelay: 500,
   triggerPosition: 'top-right',
-  user: {
-    name: '',
-    email: '',
-  },
   onThumbsUp: (sectionId) => console.log('👍', sectionId),
   onThumbsDown: (sectionId) => console.log('👎', sectionId),
   onFeedbackSubmitted: (type, sectionId) =>

@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import type { MusConfig, FeedbackAction } from '@/types'
+import { WelcomeDialog } from '@/components/dialogs/WelcomeDialog'
 
 const DEFAULT_ACTIONS: FeedbackAction[] = [
   { type: 'support' },
@@ -24,7 +25,12 @@ export function MusProvider({ config, children }: MusProviderProps) {
     ...config,
   }
 
-  return <MusContext.Provider value={fullConfig}>{children}</MusContext.Provider>
+  return (
+    <MusContext.Provider value={fullConfig}>
+      {children}
+      <WelcomeDialog />
+    </MusContext.Provider>
+  )
 }
 
 export function useMusConfig(): MusConfig {
