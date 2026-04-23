@@ -134,6 +134,7 @@ export async function POST(request: Request): Promise<Response> {
     const name = (formData.get('name') as string) || 'Anonymous'
     const email = (formData.get('email') as string) || ''
     const projectName = (formData.get('projectName') as string) || ''
+    const note = (formData.get('note') as string) || ''
 
     if (!audioFile || !sectionId || !sectionName || !channelId) {
       return Response.json(
@@ -160,6 +161,7 @@ export async function POST(request: Request): Promise<Response> {
       `*Name:* ${name}`,
       email ? `*Email:* ${email}` : '',
       `*Section:* ${sectionName} (\`${sectionId}\`)`,
+      note ? `*Note:*\n${note}` : '',
       `*Submitted:* ${new Date().toISOString()}`,
     ]
       .filter(Boolean)

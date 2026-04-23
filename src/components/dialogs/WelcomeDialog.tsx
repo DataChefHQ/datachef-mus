@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Lightbulb, Youtube } from 'lucide-react'
 import { DialogShell } from './DialogShell'
+import welcomeGif from '@/assets/welcome.gif'
 
 const STORAGE_KEY = 'mus-welcome-seen'
 
@@ -52,6 +53,18 @@ function DataChefLogo() {
   )
 }
 
+function WelcomeGif() {
+  return (
+    <div className="w-full overflow-hidden rounded-mus-md border border-mus-border bg-mus-card">
+      <img
+        src={welcomeGif}
+        alt="How to use feedback"
+        className="w-full h-auto"
+      />
+    </div>
+  )
+}
+
 export function WelcomeDialog() {
   const [open, setOpen] = useState(() => !hasSeenWelcome())
 
@@ -69,21 +82,25 @@ export function WelcomeDialog() {
       onClose={handleClose}
       className="gap-6 pb-3"
     >
-      <div className="text-sm leading-[20px] text-mus-card-foreground">
-        <p>1- Hover on any section to see these options</p>
-        <p className="flex items-center gap-1.5">
-          <Lightbulb className="size-4 shrink-0" /> Give feedback
-        </p>
-        <p className="flex items-center gap-1.5">
-          <Youtube className="size-4 shrink-0" /> Watch a quick explanation
-        </p>
-        <br />
-        <p className="flex flex-wrap items-center gap-x-1">
-          <span>2- Click the</span>
-          <Lightbulb className="size-4 shrink-0" />
-          <span>to share your thoughts.</span>
-        </p>
-        <p>3- Choose an option and send us your feedback.</p>
+      <div className="flex flex-col gap-4 px-0">
+        <WelcomeGif />
+
+        <div className="text-sm leading-[20px] text-mus-card-foreground">
+          <p>1- Hover on any section to see these options</p>
+          <p className="flex items-center gap-1.5">
+            <Lightbulb className="size-4 shrink-0" /> Give feedback
+          </p>
+          <p className="flex items-center gap-1.5">
+            <Youtube className="size-4 shrink-0" /> Watch a quick explanation
+          </p>
+          <br />
+          <p className="flex flex-wrap items-center gap-x-1">
+            <span>2- Click the</span>
+            <Lightbulb className="size-4 shrink-0" />
+            <span>to share your thoughts.</span>
+          </p>
+          <p>3- Choose an option and send us your feedback.</p>
+        </div>
       </div>
 
       <div className="flex items-center justify-center gap-1 text-[11px] leading-[16px]">

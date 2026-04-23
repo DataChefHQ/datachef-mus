@@ -4,8 +4,8 @@ import { WelcomeDialog } from '@/components/dialogs/WelcomeDialog'
 
 const DEFAULT_ACTIONS: FeedbackAction[] = [
   { type: 'support' },
-  { type: 'video' },
   { type: 'voice' },
+  { type: 'video' },
   { type: 'thumbs-down' },
   { type: 'thumbs-up' },
 ]

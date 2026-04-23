@@ -1,6 +1,6 @@
 {
   "name": "@datachefhq/mus",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "DataChef feedback & support widget — configurable React component library",
   "type": "module",
   "main": "./dist/index.cjs",

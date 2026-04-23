@@ -64,6 +64,7 @@ export async function sendVoiceFeedback(
     sectionId: string
     sectionName: string
     audioBlob: Blob
+    note?: string
   }
 ) {
   const uploadUrl = slack.voiceUploadUrl ?? '/api/mus/voice-upload'
@@ -76,6 +77,7 @@ export async function sendVoiceFeedback(
   formData.append('email', params.email)
   formData.append('projectName', projectName)
   formData.append('channelId', slack.feedbackChannelId)
+  if (params.note) formData.append('note', params.note)
 
   const response = await fetch(uploadUrl, {
     method: 'POST',

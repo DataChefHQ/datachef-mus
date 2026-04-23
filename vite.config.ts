@@ -115,5 +115,6 @@ export default defineConfig({
       },
     },
     cssCodeSplit: false,
+    assetsInlineLimit: 300000,
   },
 })
