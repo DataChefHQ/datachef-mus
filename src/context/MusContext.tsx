@@ -28,7 +28,7 @@ export function MusProvider({ config, children }: MusProviderProps) {
   return (
     <MusContext.Provider value={fullConfig}>
       {children}
-      <WelcomeDialog />
+      {fullConfig.mode !== 'standalone' && <WelcomeDialog />}
     </MusContext.Provider>
   )
 }

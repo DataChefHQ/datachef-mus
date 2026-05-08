@@ -112,6 +112,50 @@ export async function sendThumbsFeedback(
   await sendMessage(slack.proxyUrl, slack.feedbackChannelId, message)
 }
 
+export async function sendStandaloneFeedback(
+  slack: SlackConfig,
+  projectName: string,
+  params: {
+    name: string
+    email: string
+    audioBlob?: Blob | null
+    screenshotDataUrl?: string | null
+    note?: string
+    uploadUrl?: string
+    sectionId?: string
+    sectionName?: string
+  }
+) {
+  const url = params.uploadUrl ?? '/api/mus/standalone-upload'
+
+  const formData = new FormData()
+  formData.append('name', params.name)
+  formData.append('email', params.email)
+  formData.append('projectName', projectName)
+  formData.append('channelId', slack.feedbackChannelId)
+  if (params.note) formData.append('note', params.note)
+  if (params.sectionId) formData.append('sectionId', params.sectionId)
+  if (params.sectionName) formData.append('sectionName', params.sectionName)
+
+  if (params.audioBlob) {
+    formData.append('audioFile', params.audioBlob, `standalone-voice-${Date.now()}.webm`)
+  }
+
+  if (params.screenshotDataUrl) {
+    // Convert base64 data URL to a Blob for upload
+    const res = await fetch(params.screenshotDataUrl)
+    const blob = await res.blob()
+    const ext = blob.type.includes('jpeg') ? 'jpg' : 'png'
+    formData.append('screenshotFile', blob, `screenshot-${Date.now()}.${ext}`)
+  }
+
+  const response = await fetch(url, { method: 'POST', body: formData })
+
+  if (!response.ok) {
+    throw new Error(`Standalone upload error: ${response.status}`)
+  }
+}
+
 export async function createSupportChannel(
   slack: SlackConfig,
   projectName: string,

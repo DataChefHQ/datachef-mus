@@ -28,18 +28,15 @@ function voiceUploadPlugin(): Plugin {
         }
 
         try {
-          // Collect request body
           const chunks: Buffer[] = []
           for await (const chunk of req) chunks.push(chunk)
           const body = Buffer.concat(chunks)
 
-          // Build a Web API Request and forward to the server handler
           const headers = new Headers()
           for (const [key, value] of Object.entries(req.headers)) {
             if (value) headers.set(key, Array.isArray(value) ? value[0] : value)
           }
 
-          // Set SLACK_BOT_TOKEN for the handler
           process.env.SLACK_BOT_TOKEN = slackToken
 
           const { POST } = await server.ssrLoadModule('/src/server/index.ts')
@@ -55,6 +52,49 @@ function voiceUploadPlugin(): Plugin {
           res.end(await response.text())
         } catch (err) {
           console.error('Voice upload dev error:', err)
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: String(err) }))
+        }
+      })
+
+      server.middlewares.use('/api/mus/standalone-upload', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ success: false, error: 'Method not allowed' }))
+          return
+        }
+
+        if (!slackToken) {
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: 'SLACK_BOT_TOKEN not set in .env.local' }))
+          return
+        }
+
+        try {
+          const chunks: Buffer[] = []
+          for await (const chunk of req) chunks.push(chunk)
+          const body = Buffer.concat(chunks)
+
+          const headers = new Headers()
+          for (const [key, value] of Object.entries(req.headers)) {
+            if (value) headers.set(key, Array.isArray(value) ? value[0] : value)
+          }
+
+          process.env.SLACK_BOT_TOKEN = slackToken
+
+          const { POSTStandalone } = await server.ssrLoadModule('/src/server/index.ts')
+          const request = new Request('http://localhost/api/mus/standalone-upload', {
+            method: 'POST',
+            headers,
+            body,
+          })
+
+          const response = await POSTStandalone(request)
+          res.statusCode = response.status
+          res.setHeader('Content-Type', 'application/json')
+          res.end(await response.text())
+        } catch (err) {
+          console.error('Standalone upload dev error:', err)
           res.statusCode = 500
           res.end(JSON.stringify({ success: false, error: String(err) }))
         }

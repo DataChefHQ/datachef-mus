@@ -7,6 +7,8 @@ export { FeedbackDialog } from './components/dialogs/FeedbackDialog'
 export { VideoDialog } from './components/dialogs/VideoDialog'
 export { DialogShell } from './components/dialogs/DialogShell'
 export { WelcomeDialog } from './components/dialogs/WelcomeDialog'
+export { StandaloneWidget } from './components/StandaloneWidget'
+export { StandaloneFeedbackDialog } from './components/dialogs/StandaloneFeedbackDialog'
 
 /* ── Context / Provider ──────────────────────────────────── */
 export { MusProvider, useMusConfig } from './context/MusContext'
@@ -20,6 +22,7 @@ export { useThumbsStore } from './hooks/useThumbsStore'
 export type {
   MusConfig,
   SlackConfig,
+  StandaloneConfig,
   FeedbackAction,
   FeedbackActionType,
 } from './types'

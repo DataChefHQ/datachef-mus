@@ -8,6 +8,7 @@ import { FeedbackToolbar } from '@/components/FeedbackToolbar'
 import { SupportDialog } from '@/components/dialogs/SupportDialog'
 import { FeedbackDialog } from '@/components/dialogs/FeedbackDialog'
 import { VideoDialog } from '@/components/dialogs/VideoDialog'
+import { StandaloneFeedbackDialog } from '@/components/dialogs/StandaloneFeedbackDialog'
 import type { FeedbackAction, FeedbackActionType } from '@/types'
 
 interface FeedbackTargetProps {
@@ -39,6 +40,11 @@ export function FeedbackTarget({
   const [showToolbar, setShowToolbar] = useState(false)
   const [activeDialog, setActiveDialog] = useState<FeedbackActionType | null>(null)
 
+  // Standalone mode state
+  const [capturing, setCapturing] = useState(false)
+  const [standaloneOpen, setStandaloneOpen] = useState(false)
+  const [standaloneScreenshot, setStandaloneScreenshot] = useState<string | null>(null)
+
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -55,14 +61,41 @@ export function FeedbackTarget({
       clearTimeout(hoverTimerRef.current)
       hoverTimerRef.current = null
     }
-    if (!showToolbar && !activeDialog) {
+    if (!showToolbar && !activeDialog && !standaloneOpen && !capturing) {
       setShowTrigger(false)
     }
-  }, [showToolbar, activeDialog])
+  }, [showToolbar, activeDialog, standaloneOpen, capturing])
 
-  const handleTriggerClick = useCallback(() => {
+  const handleTriggerClick = useCallback(async () => {
+    if (config.mode === 'standalone') {
+      if (capturing) return
+      setCapturing(true)
+      try {
+        let dataUrl: string | null = null
+        if (config.standalone?.onCaptureScreenshot) {
+          // Wait one frame so the trigger turns invisible before the screenshot
+          await new Promise<void>((r) => requestAnimationFrame(() => { requestAnimationFrame(() => r()) }))
+          const result = await config.standalone.onCaptureScreenshot()
+          if (typeof result === 'string') {
+            dataUrl = result
+          } else {
+            dataUrl = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader()
+              reader.onload = () => resolve(reader.result as string)
+              reader.onerror = reject
+              reader.readAsDataURL(result)
+            })
+          }
+        }
+        setStandaloneScreenshot(dataUrl)
+        setStandaloneOpen(true)
+      } finally {
+        setCapturing(false)
+      }
+      return
+    }
     setShowToolbar((prev) => !prev)
-  }, [])
+  }, [config.mode, config.standalone, capturing])
 
   const handleActionClick = useCallback(
     (type: FeedbackActionType) => {
@@ -79,6 +112,12 @@ export function FeedbackTarget({
     setActiveDialog(null)
     setShowTrigger(false)
     setShowToolbar(false)
+  }, [])
+
+  const handleStandaloneClose = useCallback(() => {
+    setStandaloneOpen(false)
+    setStandaloneScreenshot(null)
+    setShowTrigger(false)
   }, [])
 
   // Close toolbar when clicking outside
@@ -98,19 +137,21 @@ export function FeedbackTarget({
 
   // Close on ESC
   useEffect(() => {
-    if (!showToolbar && !activeDialog) return
+    if (!showToolbar && !activeDialog && !standaloneOpen) return
 
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setShowToolbar(false)
         setActiveDialog(null)
+        setStandaloneOpen(false)
+        setStandaloneScreenshot(null)
         setShowTrigger(false)
       }
     }
 
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
-  }, [showToolbar, activeDialog])
+  }, [showToolbar, activeDialog, standaloneOpen])
 
   const position = config.triggerPosition ?? 'top-right'
 
@@ -151,13 +192,14 @@ export function FeedbackTarget({
     >
       {children}
 
-      {/* Feedback module — vertical layout */}
+      {/* Feedback module — vertical layout; invisible during screenshot capture */}
       {showTrigger && (
         <div
           className={cn(
             'absolute z-40 flex flex-col gap-3',
             positionClasses[position],
-            columnAlign
+            columnAlign,
+            capturing && 'invisible'
           )}
         >
           {/* Row 1: Toolbar actions + Trigger */}
@@ -166,11 +208,12 @@ export function FeedbackTarget({
             <FeedbackTrigger
               onClick={handleTriggerClick}
               isActive={showToolbar}
+              loading={capturing}
               style={{ transformOrigin: growOrigin[position] }}
             />
 
-            {/* Toolbar — expands opposite to trigger */}
-            {showToolbar && (
+            {/* Toolbar — expands opposite to trigger (default mode only) */}
+            {showToolbar && config.mode !== 'standalone' && (
               <FeedbackToolbar
                 actions={resolvedActions}
                 onAction={handleActionClick}
@@ -180,8 +223,8 @@ export function FeedbackTarget({
             )}
           </div>
 
-          {/* Row 2: Video button (visible on hover, independent of toolbar) */}
-          {hasVideo && (
+          {/* Row 2: Video button (default mode only) */}
+          {hasVideo && config.mode !== 'standalone' && (
             <button
               onClick={() => handleActionClick('video')}
               className={cn(
@@ -201,7 +244,7 @@ export function FeedbackTarget({
         </div>
       )}
 
-      {/* Dialogs */}
+      {/* Dialogs — default mode */}
       {activeDialog === 'support' && (
         <SupportDialog
           sectionId={sectionId}
@@ -222,6 +265,16 @@ export function FeedbackTarget({
           sectionName={sectionName}
           onClose={handleDialogClose}
           videoUrl={videoUrl}
+        />
+      )}
+
+      {/* Dialog — standalone mode */}
+      {standaloneOpen && (
+        <StandaloneFeedbackDialog
+          sectionId={sectionId}
+          sectionName={sectionName}
+          screenshot={standaloneScreenshot}
+          onClose={handleStandaloneClose}
         />
       )}
     </div>

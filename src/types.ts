@@ -1,3 +1,19 @@
+/* ── Standalone mode ─────────────────────────────────────── */
+
+export interface StandaloneConfig {
+  /** Async callback that captures the current page screenshot.
+   *  Should return a base64 data URL (e.g. "data:image/png;base64,…") or a Blob.
+   *  If omitted, the dialog opens without a screenshot. */
+  onCaptureScreenshot?: () => Promise<string | Blob>
+
+  /** Where the floating button appears on the page (default: 'bottom-right') */
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+
+  /** Upload endpoint for screenshot + voice (default: '/api/mus/standalone-upload').
+   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTStandalone). */
+  uploadUrl?: string
+}
+
 /* ── Action types ─────────────────────────────────────────── */
 
 export type FeedbackActionType =
@@ -38,6 +54,13 @@ export interface SlackConfig {
 /* ── Configuration ───────────────────────────────────────── */
 
 export interface MusConfig {
+  /** 'default' — embedded section widgets (existing behaviour).
+   *  'standalone' — floating FAB button with screenshot + voice feedback. */
+  mode?: 'default' | 'standalone'
+
+  /** Configuration for standalone mode — only used when mode is 'standalone'. */
+  standalone?: StandaloneConfig
+
   /** Project name — included in all Slack messages to identify the source app */
   projectName: string
 

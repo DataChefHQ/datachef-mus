@@ -114,6 +114,81 @@ async function uploadToSlack(
   }
 }
 
+/**
+ * Next.js App Router POST handler for standalone feedback.
+ *
+ * Usage:
+ *   // app/api/mus/standalone-upload/route.ts
+ *   export { POSTStandalone as POST } from '@datachef/mus/server'
+ *
+ * Accepts multipart/form-data with:
+ *   - screenshotFile  (optional, image/png or image/jpeg)
+ *   - audioFile       (optional, audio/webm)
+ *   - channelId, projectName, name, email, note
+ */
+export async function POSTStandalone(request: Request): Promise<Response> {
+  try {
+    const token = process.env.SLACK_BOT_TOKEN
+    if (!token) {
+      return Response.json(
+        { success: false, error: 'SLACK_BOT_TOKEN is not configured' },
+        { status: 500 }
+      )
+    }
+
+    const formData = await request.formData()
+    const screenshotFile = formData.get('screenshotFile') as File | null
+    const audioFile = formData.get('audioFile') as File | null
+    const channelId = formData.get('channelId') as string | null
+    const name = (formData.get('name') as string) || 'Anonymous'
+    const email = (formData.get('email') as string) || ''
+    const projectName = (formData.get('projectName') as string) || ''
+    const note = (formData.get('note') as string) || ''
+    const sectionId = (formData.get('sectionId') as string) || ''
+    const sectionName = (formData.get('sectionName') as string) || ''
+
+    if (!channelId) {
+      return Response.json({ success: false, error: 'Missing channelId' }, { status: 400 })
+    }
+
+    if (!screenshotFile && !audioFile) {
+      return Response.json({ success: false, error: 'No files provided' }, { status: 400 })
+    }
+
+    const metaComment = [
+      `:camera: *Standalone Feedback*`,
+      projectName ? `*Project:* ${projectName}` : '',
+      `*Name:* ${name}`,
+      email ? `*Email:* ${email}` : '',
+      sectionName ? `*Section:* ${sectionName}${sectionId ? ` (\`${sectionId}\`)` : ''}` : '',
+      note ? `*Note:*\n${note}` : '',
+      `*Submitted:* ${new Date().toISOString()}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+
+    if (screenshotFile) {
+      const buffer = Buffer.from(await screenshotFile.arrayBuffer())
+      await uploadToSlack(token, channelId, buffer, screenshotFile.name || `screenshot-${Date.now()}.png`, metaComment)
+    }
+
+    if (audioFile) {
+      const arrayBuffer = await audioFile.arrayBuffer()
+      const mp3Buffer = await convertToMp3(arrayBuffer)
+      const audioComment = screenshotFile
+        ? `:studio_microphone: *Voice recording for the above screenshot*`
+        : metaComment
+      await uploadToSlack(token, channelId, mp3Buffer, `voice-${Date.now()}.mp3`, audioComment)
+    }
+
+    return Response.json({ success: true })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Standalone upload error:', message)
+    return Response.json({ success: false, error: message }, { status: 500 })
+  }
+}
+
 /** Next.js App Router POST handler */
 export async function POST(request: Request): Promise<Response> {
   try {
