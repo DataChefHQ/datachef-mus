@@ -90,7 +90,7 @@ git tag "v$NEW_VERSION" -m "Release v$NEW_VERSION"
 # Push
 echo ""
 echo "Pushing commit and tag v$NEW_VERSION..."
-git push
+git push -u origin HEAD
 git push origin "v$NEW_VERSION"
 
 # Build and publish to GitHub npm registry

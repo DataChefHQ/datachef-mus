@@ -17,6 +17,11 @@
       "types": "./dist/server/index.d.ts",
       "import": "./dist/server.js",
       "require": "./dist/server.cjs"
+    },
+    "./chrome": {
+      "types": "./dist/chrome.d.ts",
+      "import": "./dist/chrome.js",
+      "require": "./dist/chrome.cjs"
     }
   },
   "files": [

@@ -132,6 +132,7 @@ export default defineConfig({
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
         server: path.resolve(__dirname, 'src/server/index.ts'),
+        chrome: path.resolve(__dirname, 'src/chrome.ts'),
       },
       formats: ['es', 'cjs'],
     },
