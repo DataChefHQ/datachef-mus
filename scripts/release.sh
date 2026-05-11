@@ -92,11 +92,3 @@ echo ""
 echo "Pushing commit and tag v$NEW_VERSION..."
 git push -u origin HEAD
 git push origin "v$NEW_VERSION"
-
-# Build and publish to GitHub npm registry
-echo ""
-echo "Publishing @datachefhq/mus@$NEW_VERSION to GitHub npm registry..."
-npm publish
-
-echo ""
-echo "Released and published v$NEW_VERSION"

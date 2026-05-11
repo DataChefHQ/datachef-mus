@@ -22,6 +22,8 @@ interface FeedbackTargetProps {
   videoUrl?: string
   /** Override global actions for this section */
   actions?: FeedbackAction[]
+  /** When true, trigger sits inside the container instead of straddling its edge */
+  inset?: boolean
 }
 
 export function FeedbackTarget({
@@ -31,6 +33,7 @@ export function FeedbackTarget({
   className,
   videoUrl,
   actions,
+  inset = false,
 }: FeedbackTargetProps) {
   const config = useMusConfig()
   const { handleAction, activeThumb } = useFeedbackActions(sectionId, sectionName)
@@ -155,14 +158,21 @@ export function FeedbackTarget({
 
   const position = config.triggerPosition ?? 'top-right'
 
-  // Position the trigger+toolbar row at the chosen corner
-  // Trigger straddles the edge: offset by half its size (18px) so it's half-outside
-  const positionClasses: Record<string, string> = {
-    'top-left': '-top-[18px] -left-[18px]',
-    'top-right': '-top-[18px] -right-[18px]',
-    'bottom-left': '-bottom-[18px] -left-[18px]',
-    'bottom-right': '-bottom-[18px] -right-[18px]',
-  }
+  // Straddling: trigger half-outside the container edge (default for card-level targets)
+  // Inset: trigger fully inside the container, near the corner (for page-level targets)
+  const positionClasses: Record<string, string> = inset
+    ? {
+        'top-left': 'top-2 left-2',
+        'top-right': 'top-2 right-2',
+        'bottom-left': 'bottom-2 left-2',
+        'bottom-right': 'bottom-2 right-2',
+      }
+    : {
+        'top-left': '-top-[18px] -left-[18px]',
+        'top-right': '-top-[18px] -right-[18px]',
+        'bottom-left': '-bottom-[18px] -left-[18px]',
+        'bottom-right': '-bottom-[18px] -right-[18px]',
+      }
 
   // Toolbar expands in the opposite direction of the trigger's corner
   const toolbarDirection = position.includes('right') ? 'flex-row-reverse' : 'flex-row'
