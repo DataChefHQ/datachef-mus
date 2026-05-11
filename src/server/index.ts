@@ -129,14 +129,26 @@ export async function POSTSupportChannel(request: Request): Promise<Response> {
     const projectSlug = slugify(body.projectSlug ?? projectName)
     const isAuthenticated = email.trim().length > 0
 
-    // Deterministic channel name
-    let channelName: string
-    if (isAuthenticated) {
-      const emailSlug = slugify(email.trim())
-      channelName = `${channelNamePrefix}-${projectSlug}-${emailSlug}`.slice(0, 80)
-    } else {
-      channelName = `${projectSlug}-general-support`.slice(0, 80)
+    if (!isAuthenticated) {
+      // No email — post directly to feedback channel without a dedicated channel
+      if (!feedbackChannelId) {
+        return Response.json({ success: false, error: 'feedbackChannelId required for anonymous support' }, { status: 400 })
+      }
+      const messageLines = [
+        `:headphones: *Anonymous Support Request*`,
+        projectName ? `*Project:* ${projectName}` : '',
+        `*Name:* ${name}`,
+        sectionName ? `*Section:* ${sectionName}${sectionId ? ` (\`${sectionId}\`)` : ''}` : '',
+        `*Topic:*\n${topic}`,
+        `*Submitted:* ${new Date().toISOString()}`,
+      ].filter(Boolean).join('\n')
+      await postMessage(token, feedbackChannelId, messageLines)
+      return Response.json({ success: true })
     }
+
+    // Authenticated — deterministic private channel per user per project
+    const emailSlug = slugify(email.trim())
+    const channelName = `${channelNamePrefix}-${projectSlug}-${emailSlug}`.slice(0, 80)
 
     // Find or create channel
     let channelId: string
@@ -165,12 +177,10 @@ export async function POSTSupportChannel(request: Request): Promise<Response> {
 
     // Post support message to channel
     const messageLines = [
-      isNewChannel
-        ? `:headphones: *${isAuthenticated ? 'New' : 'Anonymous'} Support Request*`
-        : `:headphones: *Follow-up Support Request*`,
+      isNewChannel ? `:headphones: *New Support Request*` : `:headphones: *Follow-up Support Request*`,
       projectName ? `*Project:* ${projectName}` : '',
       `*Name:* ${name}`,
-      isAuthenticated ? `*Email:* ${email}` : '',
+      `*Email:* ${email}`,
       sectionName ? `*Section:* ${sectionName}${sectionId ? ` (\`${sectionId}\`)` : ''}` : '',
       `*Topic:*\n${topic}`,
       `*Submitted:* ${new Date().toISOString()}`,
@@ -180,11 +190,10 @@ export async function POSTSupportChannel(request: Request): Promise<Response> {
 
     // Notify feedback channel on new channel creation
     if (isNewChannel && feedbackChannelId) {
-      const who = isAuthenticated ? `*${name}* (${email})` : `*Anonymous user*`
       await postMessage(
         token,
         feedbackChannelId,
-        `:headphones: New support channel created: <#${channelId}> for ${who} from *${projectName}*.`
+        `:headphones: New support channel created: <#${channelId}> for *${name}* (${email}) from *${projectName}*.`
       )
     }
 

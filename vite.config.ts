@@ -99,6 +99,46 @@ function voiceUploadPlugin(): Plugin {
           res.end(JSON.stringify({ success: false, error: String(err) }))
         }
       })
+
+      server.middlewares.use('/api/mus/support-channel', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ success: false, error: 'Method not allowed' }))
+          return
+        }
+
+        if (!slackToken) {
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: 'SLACK_BOT_TOKEN not set in .env.local' }))
+          return
+        }
+
+        try {
+          const chunks: Buffer[] = []
+          for await (const chunk of req) chunks.push(chunk)
+          const body = Buffer.concat(chunks)
+
+          const headers = new Headers({ 'content-type': req.headers['content-type'] ?? 'application/json' })
+
+          process.env.SLACK_BOT_TOKEN = slackToken
+
+          const { POSTSupportChannel } = await server.ssrLoadModule('/src/server/index.ts')
+          const request = new Request('http://localhost/api/mus/support-channel', {
+            method: 'POST',
+            headers,
+            body,
+          })
+
+          const response = await POSTSupportChannel(request)
+          res.statusCode = response.status
+          res.setHeader('Content-Type', 'application/json')
+          res.end(await response.text())
+        } catch (err) {
+          console.error('Support channel dev error:', err)
+          res.statusCode = 500
+          res.end(JSON.stringify({ success: false, error: String(err) }))
+        }
+      })
     },
   }
 }
@@ -133,6 +173,7 @@ export default defineConfig({
         index: path.resolve(__dirname, 'src/index.ts'),
         server: path.resolve(__dirname, 'src/server/index.ts'),
         chrome: path.resolve(__dirname, 'src/chrome.ts'),
+        'vite-plugin': path.resolve(__dirname, 'src/vite-plugin.ts'),
       },
       formats: ['es', 'cjs'],
     },
@@ -142,10 +183,12 @@ export default defineConfig({
         'react-dom',
         'react/jsx-runtime',
         'ffmpeg-static',
+        'vite',
         'child_process',
         'fs/promises',
         'path',
         'os',
+        /^node:/,
       ],
       output: {
         globals: {
