@@ -159,20 +159,23 @@ export function FeedbackTarget({
   const position = config.triggerPosition ?? 'top-right'
 
   // Straddling: trigger half-outside the container edge (default for card-level targets)
-  // Inset: trigger fully inside the container, near the corner (for page-level targets)
-  const positionClasses: Record<string, string> = inset
+  const positionClasses: Record<string, string> = {
+    'top-left': '-top-[18px] -left-[18px]',
+    'top-right': '-top-[18px] -right-[18px]',
+    'bottom-left': '-bottom-[18px] -left-[18px]',
+    'bottom-right': '-bottom-[18px] -right-[18px]',
+  }
+
+  // Inset: trigger fully inside the container — use inline styles to avoid Tailwind
+  // scan issues (node_modules classes may not be compiled in the consuming app)
+  const insetStyle: React.CSSProperties | undefined = inset
     ? {
-        'top-left': 'top-2 left-2',
-        'top-right': 'top-2 right-2',
-        'bottom-left': 'bottom-2 left-2',
-        'bottom-right': 'bottom-2 right-2',
+        top: position.includes('top') ? '8px' : undefined,
+        bottom: position.includes('bottom') ? '8px' : undefined,
+        left: position.includes('left') ? '8px' : undefined,
+        right: position.includes('right') ? '8px' : undefined,
       }
-    : {
-        'top-left': '-top-[18px] -left-[18px]',
-        'top-right': '-top-[18px] -right-[18px]',
-        'bottom-left': '-bottom-[18px] -left-[18px]',
-        'bottom-right': '-bottom-[18px] -right-[18px]',
-      }
+    : undefined
 
   // Toolbar expands in the opposite direction of the trigger's corner
   const toolbarDirection = position.includes('right') ? 'flex-row-reverse' : 'flex-row'
@@ -207,10 +210,11 @@ export function FeedbackTarget({
         <div
           className={cn(
             'absolute z-40 flex flex-col gap-3',
-            positionClasses[position],
+            !inset && positionClasses[position],
             columnAlign,
             capturing && 'invisible'
           )}
+          style={insetStyle}
         >
           {/* Row 1: Toolbar actions + Trigger */}
           <div className={cn('flex items-center gap-3', toolbarDirection)}>
