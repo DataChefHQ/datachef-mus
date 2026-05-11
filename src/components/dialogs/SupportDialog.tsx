@@ -50,7 +50,7 @@ export function SupportDialog({
   return (
     <DialogShell
       title="Get Support"
-      description="Describe your issue and our support team will follow up with you shortly."
+      description="Need help? We'll create a dedicated Slack channel and invite you to chat directly with our support team."
       onClose={onClose}
     >
       <div className="flex flex-col gap-4 px-0">
