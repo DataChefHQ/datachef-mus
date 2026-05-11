@@ -1,19 +1,200 @@
 /**
- * Server-side voice upload handler for @datachef/mus.
+ * Server-side handlers for @datachef/mus.
  *
- * Usage in Next.js App Router:
+ * Voice upload usage:
  *   // app/api/mus/voice-upload/route.ts
  *   export { POST } from '@datachef/mus/server'
  *
+ * Support channel usage:
+ *   // app/api/mus/support-channel/route.ts
+ *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
+ *
  * Requires:
  *   - SLACK_BOT_TOKEN environment variable
- *   - ffmpeg-static package: npm install ffmpeg-static
+ *   - ffmpeg-static package (voice upload only): npm install ffmpeg-static
  */
 
 import { execFile } from 'child_process'
 import { writeFile, readFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
+
+/* ── Support channel helpers ─────────────────────────────── */
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 40)
+}
+
+async function slackApi<T>(token: string, path: string, body?: Record<string, unknown>): Promise<T> {
+  const res = body
+    ? await fetch(`https://slack.com/api/${path}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+    : await fetch(`https://slack.com/api/${path}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+  return res.json() as Promise<T>
+}
+
+async function findChannelByName(token: string, name: string): Promise<string | null> {
+  let cursor: string | undefined
+  do {
+    const params = new URLSearchParams({ types: 'private_channel', limit: '200', exclude_archived: 'true' })
+    if (cursor) params.set('cursor', cursor)
+    const data = await slackApi<{
+      ok: boolean
+      channels: { id: string; name: string }[]
+      response_metadata?: { next_cursor?: string }
+      error?: string
+    }>(token, `conversations.list?${params}`)
+    if (!data.ok) throw new Error(`conversations.list failed: ${data.error}`)
+    const found = data.channels.find((c) => c.name === name)
+    if (found) return found.id
+    cursor = data.response_metadata?.next_cursor || undefined
+  } while (cursor)
+  return null
+}
+
+async function inviteUsersToChannel(token: string, channelId: string, emails: string[]): Promise<void> {
+  const userIds: string[] = []
+  for (const email of emails) {
+    try {
+      const data = await slackApi<{ ok: boolean; user?: { id: string } }>(
+        token,
+        `users.lookupByEmail?email=${encodeURIComponent(email)}`
+      )
+      if (data.ok && data.user) userIds.push(data.user.id)
+    } catch { /* skip users not in workspace */ }
+  }
+  if (userIds.length === 0) return
+  await slackApi(token, 'conversations.invite', { channel: channelId, users: userIds.join(',') })
+}
+
+async function postMessage(token: string, channelId: string, text: string): Promise<void> {
+  const data = await slackApi<{ ok: boolean; error?: string }>(token, 'chat.postMessage', {
+    channel: channelId,
+    text,
+  })
+  if (!data.ok) throw new Error(`chat.postMessage failed: ${data.error}`)
+}
+
+/**
+ * Next.js App Router POST handler for support channel creation.
+ *
+ * Usage:
+ *   // app/api/mus/support-channel/route.ts
+ *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
+ *
+ * Authenticated users get a private per-user channel (idempotent by name).
+ * Unauthenticated users route to a shared {projectSlug}-general-support channel.
+ */
+export async function POSTSupportChannel(request: Request): Promise<Response> {
+  try {
+    const token = process.env.SLACK_BOT_TOKEN
+    if (!token) {
+      return Response.json({ success: false, error: 'SLACK_BOT_TOKEN is not configured' }, { status: 500 })
+    }
+
+    const body = await request.json() as {
+      name?: string
+      email?: string
+      projectName?: string
+      projectSlug?: string
+      topic?: string
+      sectionId?: string
+      sectionName?: string
+      supportTeamEmails?: string[]
+      feedbackChannelId?: string
+      channelNamePrefix?: string
+    }
+
+    const {
+      name = 'Anonymous',
+      email = '',
+      projectName = '',
+      topic = '',
+      sectionId = '',
+      sectionName = '',
+      supportTeamEmails = [],
+      feedbackChannelId,
+      channelNamePrefix = 'support',
+    } = body
+
+    const projectSlug = slugify(body.projectSlug ?? projectName)
+    const isAuthenticated = email.trim().length > 0
+
+    // Deterministic channel name
+    let channelName: string
+    if (isAuthenticated) {
+      const emailSlug = slugify(email.trim())
+      channelName = `${channelNamePrefix}-${projectSlug}-${emailSlug}`.slice(0, 80)
+    } else {
+      channelName = `${projectSlug}-general-support`.slice(0, 80)
+    }
+
+    // Find or create channel
+    let channelId: string
+    let isNewChannel = false
+
+    const createData = await slackApi<{ ok: boolean; channel?: { id: string }; error?: string }>(
+      token,
+      'conversations.create',
+      { name: channelName, is_private: true }
+    )
+
+    if (createData.ok && createData.channel) {
+      channelId = createData.channel.id
+      isNewChannel = true
+      // Invite support team (bot is already a member as creator)
+      if (supportTeamEmails.length > 0) {
+        await inviteUsersToChannel(token, channelId, supportTeamEmails)
+      }
+    } else if (createData.error === 'name_taken') {
+      const existing = await findChannelByName(token, channelName)
+      if (!existing) throw new Error(`Channel "${channelName}" not found after name_taken`)
+      channelId = existing
+    } else {
+      throw new Error(`conversations.create failed: ${createData.error}`)
+    }
+
+    // Post support message to channel
+    const messageLines = [
+      isNewChannel
+        ? `:headphones: *${isAuthenticated ? 'New' : 'Anonymous'} Support Request*`
+        : `:headphones: *Follow-up Support Request*`,
+      projectName ? `*Project:* ${projectName}` : '',
+      `*Name:* ${name}`,
+      isAuthenticated ? `*Email:* ${email}` : '',
+      sectionName ? `*Section:* ${sectionName}${sectionId ? ` (\`${sectionId}\`)` : ''}` : '',
+      `*Topic:*\n${topic}`,
+      `*Submitted:* ${new Date().toISOString()}`,
+    ].filter(Boolean).join('\n')
+
+    await postMessage(token, channelId, messageLines)
+
+    // Notify feedback channel on new channel creation
+    if (isNewChannel && feedbackChannelId) {
+      const who = isAuthenticated ? `*${name}* (${email})` : `*Anonymous user*`
+      await postMessage(
+        token,
+        feedbackChannelId,
+        `:headphones: New support channel created: <#${channelId}> for ${who} from *${projectName}*.`
+      )
+    }
+
+    return Response.json({ success: true, channelId })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Support channel error:', message)
+    return Response.json({ success: false, error: message }, { status: 500 })
+  }
+}
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
 

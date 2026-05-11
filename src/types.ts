@@ -49,6 +49,10 @@ export interface SlackConfig {
   /** URL for the voice upload endpoint (default: "/api/mus/voice-upload").
    *  The package provides a ready-made handler — see `@datachef/mus/server`. */
   voiceUploadUrl?: string
+
+  /** URL for the support channel endpoint (default: "/api/mus/support-channel").
+   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTSupportChannel). */
+  supportChannelUrl?: string
 }
 
 /* ── Configuration ───────────────────────────────────────── */
@@ -66,6 +70,10 @@ export interface MusConfig {
 
   /** Project name — included in all Slack messages to identify the source app */
   projectName: string
+
+  /** URL-safe slug used in support channel names (e.g. "impevia").
+   *  Falls back to a slugified version of projectName if omitted. */
+  projectSlug?: string
 
   /** Slack integration config — calls Chefbot proxy directly from the browser */
   slack: SlackConfig

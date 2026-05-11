@@ -35,6 +35,7 @@ export function SupportDialog({
         topic: message.trim(),
         sectionId,
         sectionName,
+        projectSlug: config.projectSlug,
       })
 
       config.onFeedbackSubmitted?.('support', sectionId, sectionName)
@@ -49,7 +50,7 @@ export function SupportDialog({
   return (
     <DialogShell
       title="Get Support"
-      description="Need help? We'll create a dedicated Slack channel and invite you to chat directly with our support team."
+      description="Describe your issue and our support team will follow up with you shortly."
       onClose={onClose}
     >
       <div className="flex flex-col gap-4 px-0">

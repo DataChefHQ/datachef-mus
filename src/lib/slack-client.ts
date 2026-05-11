@@ -1,13 +1,5 @@
 import type { SlackConfig } from '@/types'
 
-/**
- * Client-side Slack service that calls the Chefbot proxy directly.
- * No server needed — all calls happen from the browser.
- */
-
-/** Map of email → channelId for idempotent support channel creation */
-const channelCache = new Map<string, string>()
-
 async function callProxy<T>(
   proxyUrl: string,
   func: string,
@@ -165,72 +157,30 @@ export async function createSupportChannel(
     topic: string
     sectionId: string
     sectionName: string
+    projectSlug?: string
   }
-): Promise<{ channelId: string; existing: boolean }> {
-  const normalizedEmail = params.email.trim().toLowerCase()
-  const prefix = slack.channelNamePrefix ?? 'support'
+): Promise<void> {
+  const url = slack.supportChannelUrl ?? '/api/mus/support-channel'
 
-  // Idempotent — return existing channel for this email
-  const existingChannelId = channelCache.get(normalizedEmail)
-  if (existingChannelId) {
-    const followUp = [
-      `:headphones: *Follow-up Support Request*`,
-      `*Project:* ${projectName}`,
-      `*Name:* ${params.name}`,
-      `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
-      `*Topic:*\n${params.topic}`,
-    ].join('\n')
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: params.name,
+      email: params.email,
+      projectName,
+      projectSlug: params.projectSlug,
+      topic: params.topic,
+      sectionId: params.sectionId,
+      sectionName: params.sectionName,
+      supportTeamEmails: slack.supportTeamEmails,
+      feedbackChannelId: slack.feedbackChannelId,
+      channelNamePrefix: slack.channelNamePrefix,
+    }),
+  })
 
-    await sendMessage(slack.proxyUrl, existingChannelId, followUp)
-    return { channelId: existingChannelId, existing: true }
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Support channel error: ${response.status}`)
   }
-
-  // Generate channel name
-  const sanitizedName = params.name
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 30)
-  const timestamp = Math.floor(Date.now() / 1000)
-  const channelName = `${prefix}-${sanitizedName}-${timestamp}`
-
-  // Create channel with support team + user
-  const allEmails = [
-    ...new Set([...slack.supportTeamEmails, normalizedEmail]),
-  ]
-
-  const res = await callProxy<{ success: boolean; channel: string }>(
-    slack.proxyUrl,
-    'create_tha_channel',
-    {
-      channel_name: channelName,
-      user_emails: allEmails.join(', '),
-    }
-  )
-
-  const channelId = res.channel
-  channelCache.set(normalizedEmail, channelId)
-
-  // Post info message
-  const infoMessage = [
-    `:headphones: *New Support Request*`,
-    `*Project:* ${projectName}`,
-    `*Name:* ${params.name}`,
-    `*Email:* ${params.email}`,
-    `*Section:* ${params.sectionName} (\`${params.sectionId}\`)`,
-    `*Topic:*\n${params.topic}`,
-    `*Created:* ${new Date().toISOString()}`,
-  ].join('\n')
-
-  await sendMessage(slack.proxyUrl, channelId, infoMessage)
-
-  // Notify feedback channel
-  await sendMessage(
-    slack.proxyUrl,
-    slack.feedbackChannelId,
-    `:headphones: New support channel created: <#${channelId}> for *${params.name}* (${params.email}) from *${projectName}*.`
-  )
-
-  return { channelId, existing: false }
 }
