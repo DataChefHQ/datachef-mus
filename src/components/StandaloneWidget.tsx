@@ -72,7 +72,6 @@ async function defaultCaptureScreenshot(): Promise<string> {
 export function StandaloneWidget() {
   const config = useMusConfig()
   const standalone = config.standalone ?? {}
-
   const position = standalone.position ?? 'bottom-right'
   const positionClass = POSITION_CLASSES[position]
 
@@ -111,6 +110,8 @@ export function StandaloneWidget() {
     setDialogOpen(false)
     setScreenshot(null)
   }, [])
+
+  if (config.enabled === false) return null
 
   return (
     <>

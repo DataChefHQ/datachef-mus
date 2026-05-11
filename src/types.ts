@@ -54,6 +54,9 @@ export interface SlackConfig {
 /* ── Configuration ───────────────────────────────────────── */
 
 export interface MusConfig {
+  /** Master switch — set to false to disable all mus widgets globally (default: true) */
+  enabled?: boolean
+
   /** 'default' — embedded section widgets (existing behaviour).
    *  'standalone' — floating FAB button with screenshot + voice feedback. */
   mode?: 'default' | 'standalone'

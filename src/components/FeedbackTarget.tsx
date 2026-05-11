@@ -196,6 +196,10 @@ export function FeedbackTarget({
     (a) => a.type === 'video' && a.enabled !== false
   )
 
+  if (config.enabled === false) {
+    return <div className={cn(className)}>{children}</div>
+  }
+
   return (
     <div
       ref={containerRef}
