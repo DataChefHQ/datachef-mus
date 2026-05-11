@@ -1,3 +1,8 @@
+## 0.2.3 (2026-05-11)
+
+### Bug Fixes
+- fix: feedback target component position style
+
 ## 0.2.2 (2026-05-11)
 
 ### Features
