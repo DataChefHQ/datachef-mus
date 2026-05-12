@@ -101,7 +101,7 @@ export async function POSTSupportChannel(request: Request): Promise<Response> {
       return Response.json({ success: false, error: 'SLACK_BOT_TOKEN is not configured' }, { status: 500 })
     }
 
-    const body = await request.json() as {
+    const body = await request.json().catch(() => ({})) as {
       name?: string
       email?: string
       projectName?: string

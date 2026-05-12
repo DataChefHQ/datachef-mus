@@ -133,28 +133,124 @@ Wrap any section you want to make feedback-able:
 | `channelNamePrefix` | `string` | No | Prefix for support channels (default: `"support"`) |
 | `voiceUploadUrl` | `string` | No | Voice upload endpoint (default: `"/api/mus/voice-upload"`). Override if your app uses a different path. |
 
-## Voice Upload (Server)
+## Server Setup
 
-Voice recordings are uploaded to Slack as playable audio files. The package includes a ready-made server handler — just re-export it:
+The package includes server-side handlers for voice upload, standalone feedback, and support channel creation. These handlers keep `SLACK_BOT_TOKEN` on the server — never in the browser.
+
+Pick the path that matches your stack:
+
+---
+
+### Next.js (App Router)
+
+Create three route files — that's the entire backend setup:
 
 ```ts
-// app/api/mus/voice-upload/route.ts (Next.js App Router)
+// app/api/mus/voice-upload/route.ts
 export { POST } from '@datachefhq/mus/server'
+
+// app/api/mus/standalone-upload/route.ts
+export { POSTStandalone as POST } from '@datachefhq/mus/server'
+
+// app/api/mus/support-channel/route.ts
+export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
 ```
 
-Set the `SLACK_BOT_TOKEN` environment variable:
+```env
+# .env.local
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+```
+
+---
+
+### Express / Fastify / Hono
+
+Wire the handlers into your existing server:
+
+```ts
+import express from 'express'
+import { POST, POSTStandalone, POSTSupportChannel } from '@datachefhq/mus/server'
+
+// helper — adapts express req/res to the Web Request/Response API
+function handler(fn) {
+  return async (req, res) => {
+    const chunks = []
+    for await (const chunk of req) chunks.push(chunk)
+    const webReq = new Request(`http://localhost${req.url}`, {
+      method: req.method,
+      headers: { 'content-type': req.headers['content-type'] ?? '' },
+      ...(chunks.length ? { body: Buffer.concat(chunks), duplex: 'half' } : {}),
+    })
+    const webRes = await fn(webReq)
+    res.status(webRes.status).json(await webRes.json())
+  }
+}
+
+app.post('/api/mus/voice-upload',     handler(POST))
+app.post('/api/mus/standalone-upload', handler(POSTStandalone))
+app.post('/api/mus/support-channel',  handler(POSTSupportChannel))
+```
 
 ```env
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 ```
 
-The handler converts WebM to MP3 (via `ffmpeg-static`) and uploads it to Slack as a playable audio file.
+---
 
-Requires `ffmpeg-static` in your project:
+### Vite SPA (React, no backend)
 
-```bash
-npm install ffmpeg-static
+**Development** — add the Vite plugin and set the token in `.env`:
+
+```ts
+// vite.config.ts
+import { musVitePlugins } from '@datachefhq/mus/vite'
+
+export default defineConfig({
+  plugins: [react(), ...musVitePlugins()],
+})
 ```
+
+```env
+# .env
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+```
+
+**Production** — add the pre-built `mus-server` image alongside your app. No build step, no auth token needed:
+
+```yaml
+# docker-compose.yml
+services:
+  mus-server:
+    image: ghcr.io/datachefhq/mus-server:latest
+    environment:
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+```
+
+Then proxy `/api/mus/` to `mus-server:3001` in nginx:
+
+```nginx
+location /api/mus/ {
+    set $mus http://mus-server:3001;
+    proxy_pass $mus;
+    client_max_body_size 15m;
+}
+```
+
+For Kubernetes, `mus-server` runs as a sidecar in the same pod — nginx reaches it at `127.0.0.1:3001`.
+
+---
+
+### Available server exports
+
+```ts
+import {
+  POST,               // voice upload → Slack
+  POSTStandalone,     // screenshot + voice → Slack
+  POSTSupportChannel, // create/find private support channel
+} from '@datachefhq/mus/server'
+```
+
+All handlers read `SLACK_BOT_TOKEN` from `process.env`. The voice handlers convert WebM to MP3 using system `ffmpeg` (or `ffmpeg-static` if installed).
 
 ## Dialogs
 
