@@ -1,3 +1,8 @@
+## 0.3.1 (2026-05-12)
+
+### Features
+- feat(mus-server): add standalone server image and publish on release
+
 ## 0.3.0 (2026-05-11)
 
 ### Features
