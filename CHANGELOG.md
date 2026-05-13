@@ -1,3 +1,8 @@
+## 0.3.2 (2026-05-13)
+
+### Other Changes
+- chore: update order and icons
+
 ## 0.3.1 (2026-05-12)
 
 ### Features
