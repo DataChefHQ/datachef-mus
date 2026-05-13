@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import {
-  Headset,
+  Slack,
   Youtube,
   Mic,
   ThumbsDown,
@@ -10,7 +10,7 @@ import {
 import type { FeedbackAction, FeedbackActionType } from '@/types'
 
 const ACTION_ICONS: Record<FeedbackActionType, LucideIcon> = {
-  support: Headset,
+  support: Slack,
   voice: Mic,
   video: Youtube,
   'thumbs-down': ThumbsDown,
@@ -18,7 +18,7 @@ const ACTION_ICONS: Record<FeedbackActionType, LucideIcon> = {
 }
 
 const ACTION_LABELS: Record<FeedbackActionType, string> = {
-  support: 'Get support',
+  support: 'Teleport me to Slack',
   voice: 'Voice feedback',
   video: 'Introduction video',
   'thumbs-down': 'Not helpful',
@@ -61,17 +61,19 @@ export function FeedbackToolbar({
           action.type === 'thumbs-down' && activeThumb === 'thumbs-down'
         const isActiveThumbsUp =
           action.type === 'thumbs-up' && activeThumb === 'thumbs-up'
+        const isVoice = action.type === 'voice'
 
         return (
           <button
             key={action.type}
             onClick={() => onAction(action.type)}
             className={cn(
-              'flex size-7 items-center justify-center rounded-full',
+              'flex items-center justify-center rounded-full',
               'shadow-xs transition-all duration-150',
               'hover:opacity-80',
               'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',
               'mus-grow',
+              isVoice ? 'size-8' : 'size-7',
               isActiveThumbsDown
                 ? 'bg-mus-destructive text-white shadow-[0_0_0_3px_rgba(220,38,38,0.2)]'
                 : isActiveThumbsUp
@@ -85,7 +87,7 @@ export function FeedbackToolbar({
             aria-label={label}
             title={label}
           >
-            <Icon className="size-4 pointer-events-none" />
+            <Icon className={cn('pointer-events-none', isVoice ? 'size-5' : 'size-4')} />
           </button>
         )
       })}
