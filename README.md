@@ -2,6 +2,14 @@
 
 Feedback & support widget for DataChef internal applications. Wrap any section of your app with `<FeedbackTarget>` and users can hover to leave feedback, record voice messages, request support, or rate sections — all sent directly to Slack.
 
+## Documentation
+
+Full integration guide (install → Docker Compose → nginx → Kubernetes):
+📖 [MUS Integration Guide](https://www.notion.so/datachef/MUS-Integration-3661627952688086b38fe2f316f880c6)
+
+Want Claude to integrate MUS into your project automatically?
+🤖 [Claude Prompt — Integrate MUS into My App](https://www.notion.so/datachef/36616279526880c6b389ecc0aef32a56)
+
 ## Installation
 
 ```bash
@@ -389,3 +397,23 @@ npx tsc --noEmit
 ```
 
 Text feedback, thumbs, and support channels work client-side through the Chefbot proxy. Voice upload requires the server handler (`@datachefhq/mus/server`) for converting WebM to MP3 and uploading to Slack.
+
+## Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/AlirezaEbrahimkhani">
+        <img src="https://github.com/AlirezaEbrahimkhani.png" width="80px" style="border-radius:50%" alt="Alireza Ebrahimkhani"/><br/>
+        <sub><b>Alireza Ebrahimkhani</b></sub>
+      </a><br/>
+      <sub>Creator & maintainer</sub>
+    </td>
+  </tr>
+</table>
+
+Want to contribute? Read [CONTRIBUTING.md](./CONTRIBUTING.md) and open a PR.
+
+## License
+
+MIT © [DataChef HQ](https://github.com/DataChefHQ)

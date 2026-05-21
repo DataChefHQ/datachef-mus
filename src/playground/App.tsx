@@ -89,8 +89,8 @@ async function capturePageScreenshot(): Promise<string> {
 /* ── Shared config base ───────────────────────────────────── */
 const BASE_SLACK = {
   proxyUrl: '/api/slack-proxy',
-  supportTeamEmails: ['alireza.e@datachef.co'],
-  feedbackChannelId: 'C0AFBB4HL7K',
+  supportTeamEmails: ['your-email@example.com'],
+  feedbackChannelId: 'YOUR_CHANNEL_ID',
 }
 
 const defaultConfig: Omit<MusConfig, 'actions'> = {
@@ -108,7 +108,7 @@ const standaloneConfig: MusConfig = {
   projectName: 'Mus Playground',
   slack: BASE_SLACK,
   actions: [],
-  user: { name: 'Playground User', email: 'playground@datachef.co' },
+  user: { name: 'Playground User', email: 'playground@example.com' },
   standalone: {
     position: 'bottom-right',
     uploadUrl: '/api/mus/standalone-upload',

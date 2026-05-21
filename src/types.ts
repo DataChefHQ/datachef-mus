@@ -34,7 +34,7 @@ export interface FeedbackAction {
 /* ── Slack configuration ─────────────────────────────────── */
 
 export interface SlackConfig {
-  /** Chefbot proxy URL (e.g. "https://chefbot.services.datachef.co/") */
+  /** Server-side proxy URL that forwards to your Slack delivery service (e.g. "/api/slack-proxy") */
   proxyUrl: string
 
   /** Emails of team members to add to support channels */

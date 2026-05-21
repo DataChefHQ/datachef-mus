@@ -1,7 +1,7 @@
 {
   "name": "@datachefhq/mus",
   "version": "0.3.2",
-  "description": "DataChef feedback & support widget — configurable React component library",
+  "description": "Contextual feedback toolbar for React apps — voice recording, thumbs, and Slack support exactly where interpretation happens.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -30,7 +30,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
   "sideEffects": [
     "**/*.css"
@@ -81,10 +82,13 @@
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.5.0"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "publishConfig": {
-    "access": "restricted",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "bin": {
+    "mus": "./bin/init.js"
   },
   "repository": {
     "type": "git",
