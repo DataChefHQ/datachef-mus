@@ -1,0 +1,69 @@
+---
+title: MUS — Contextual Feedback for React
+description: Add a voice-recording, thumbs, and support toolbar to any section of your React app — messages delivered to Slack, Discord, or any webhook.
+template: splash
+hero:
+  tagline: Contextual feedback toolbar for React apps. Voice recording, thumbs, and Slack support exactly where interpretation happens.
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Get started
+      link: /getting-started
+      icon: right-arrow
+      variant: primary
+    - text: GitHub
+      link: https://github.com/DataChefHQ/datachef-mus
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What is MUS?
+
+MUS is a React library that adds a contextual feedback toolbar to any section of your app. Users hover over a `<FeedbackTarget>` section and a lightbulb icon appears — clicking it reveals actions: voice recording, thumbs up/down, and Slack support channel creation. All feedback is routed server-side through a small sidecar image (`mus-server`).
+
+```tsx
+import { MusProvider, FeedbackTarget } from '@datachefhq/mus'
+import '@datachefhq/mus/styles.css'
+
+function App() {
+  return (
+    <MusProvider config={{
+      projectName: 'My App',
+      slack: {
+        proxyUrl: '/api/slack-proxy',
+        supportTeamEmails: ['you@company.com'],
+        feedbackChannelId: 'C0XXXXXXXXX',
+      },
+    }}>
+      <FeedbackTarget sectionId="dashboard" sectionName="Dashboard">
+        <DashboardContent />
+      </FeedbackTarget>
+    </MusProvider>
+  )
+}
+```
+
+## Features
+
+<CardGrid stagger>
+  <Card title="Voice feedback" icon="microphone">
+    Record audio directly in the browser. Automatically converted from WebM to MP3 and posted to Slack.
+  </Card>
+  <Card title="Thumbs & text" icon="approve-check">
+    One-click thumbs up/down and text feedback — posts instantly to your feedback channel.
+  </Card>
+  <Card title="Support channels" icon="comment">
+    Creates a dedicated Slack channel per user, idempotent — same email always gets the same channel.
+  </Card>
+  <Card title="Pluggable adapters" icon="puzzle">
+    Send to Slack, Discord, Teams, or any webhook. Multiple adapters run in parallel.
+  </Card>
+  <Card title="Auth-system agnostic" icon="approve-check-circle">
+    Works without any auth system. Plug in Stytch, Clerk, Auth0, NextAuth — or write your own resolver.
+  </Card>
+  <Card title="Zero-config server" icon="rocket">
+    `mus-server` Docker image handles all server-side logic. Drop it in as a Docker Compose service or Kubernetes sidecar.
+  </Card>
+</CardGrid>
