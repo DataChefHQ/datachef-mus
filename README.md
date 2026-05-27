@@ -1,4 +1,4 @@
-# @datachefhq/mus
+# @datachefhq/mus 
 
 Feedback & support widget for DataChef internal applications. Wrap any section of your app with `<FeedbackTarget>` and users can hover to leave feedback, record voice messages, request support, or rate sections — all sent directly to Slack.
 
