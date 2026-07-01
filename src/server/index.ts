@@ -1,13 +1,13 @@
 /**
- * Server-side handlers for @datachef/mus.
+ * Server-side handlers for @datachefhq/mus.
  *
  * Voice upload usage:
  *   // app/api/mus/voice-upload/route.ts
- *   export { POST } from '@datachef/mus/server'
+ *   export { POST } from '@datachefhq/mus/server'
  *
  * Support channel usage:
  *   // app/api/mus/support-channel/route.ts
- *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
+ *   export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
  *
  * Requires:
  *   - SLACK_BOT_TOKEN environment variable
@@ -89,7 +89,7 @@ async function postMessage(token: string, channelId: string, text: string): Prom
  *
  * Usage:
  *   // app/api/mus/support-channel/route.ts
- *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
+ *   export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
  *
  * Authenticated users get a private per-user channel (idempotent by name).
  * Unauthenticated users route to a shared {projectSlug}-general-support channel.
@@ -309,7 +309,7 @@ async function uploadToSlack(
  *
  * Usage:
  *   // app/api/mus/standalone-upload/route.ts
- *   export { POSTStandalone as POST } from '@datachef/mus/server'
+ *   export { POSTStandalone as POST } from '@datachefhq/mus/server'
  *
  * Accepts multipart/form-data with:
  *   - screenshotFile  (optional, image/png or image/jpeg)
@@ -442,5 +442,242 @@ export async function POST(request: Request): Promise<Response> {
       { success: false, error: message },
       { status: 500 }
     )
+  }
+}
+
+/* ── Adapter-based factory ───────────────────────────────── */
+
+export type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '../adapters/types'
+
+/**
+ * Factory that returns Next.js App Router handlers backed by one or more adapters.
+ *
+ * Usage:
+ *   import { createMusHandlers } from '@datachefhq/mus/server'
+ *   import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+ *
+ *   export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
+ *     adapter: slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
+ *   })
+ *
+ * Multiple adapters run in parallel — a failure in one does not block the others:
+ *   export const { POST } = createMusHandlers({
+ *     adapter: [slackAdapter({ ... }), discordAdapter({ ... })],
+ *   })
+ */
+export function createMusHandlers(config: {
+  adapter: import('../adapters/types').MusAdapter | import('../adapters/types').MusAdapter[]
+}): {
+  POST: (request: Request) => Promise<Response>
+  POSTStandalone: (request: Request) => Promise<Response>
+  POSTSupportChannel: (request: Request) => Promise<Response>
+} {
+  const adapters = Array.isArray(config.adapter) ? config.adapter : [config.adapter]
+
+  async function runAdapters<K extends keyof import('../adapters/types').MusAdapter>(
+    method: K,
+    event: Parameters<NonNullable<import('../adapters/types').MusAdapter[K]>>[0]
+  ): Promise<ReturnType<NonNullable<import('../adapters/types').MusAdapter[K]>>[]> {
+    const results = await Promise.all(
+      adapters
+        .filter((a) => typeof a[method] === 'function')
+        .map((a) => (a[method] as (e: typeof event) => Promise<unknown>)(event))
+    )
+    return results as ReturnType<NonNullable<import('../adapters/types').MusAdapter[K]>>[]
+  }
+
+  async function adapterPOST(request: Request): Promise<Response> {
+    try {
+      const formData = await request.formData()
+
+      const audioFile = formData.get('audioFile') as File | null
+      const sectionId = formData.get('sectionId') as string | null
+      const sectionName = formData.get('sectionName') as string | null
+      const channelId = formData.get('channelId') as string | null
+      const name = (formData.get('name') as string) || 'Anonymous'
+      const email = (formData.get('email') as string) || ''
+      const projectName = (formData.get('projectName') as string) || ''
+      const note = (formData.get('note') as string) || ''
+
+      if (!audioFile || !sectionId || !sectionName || !channelId) {
+        return Response.json({ success: false, error: 'Missing required fields' }, { status: 400 })
+      }
+
+      if (audioFile.size > MAX_FILE_SIZE) {
+        return Response.json({ success: false, error: 'File must be under 10 MB' }, { status: 400 })
+      }
+
+      const arrayBuffer = await audioFile.arrayBuffer()
+      const mp3Buffer = await convertToMp3(arrayBuffer)
+      const filename = `voice-feedback-${sectionId}-${Date.now()}.mp3`
+
+      const comment = [
+        `:studio_microphone: *Voice Feedback*`,
+        projectName ? `*Project:* ${projectName}` : '',
+        `*Name:* ${name}`,
+        email ? `*Email:* ${email}` : '',
+        `*Section:* ${sectionName} (\`${sectionId}\`)`,
+        note ? `*Note:*\n${note}` : '',
+        `*Submitted:* ${new Date().toISOString()}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      await runAdapters('onVoiceUpload', {
+        mp3Buffer,
+        filename,
+        channelId,
+        sectionName,
+        sectionId,
+        name,
+        email,
+        projectName,
+        note,
+        comment,
+      })
+
+      return Response.json({ success: true })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      console.error('Voice upload error:', message)
+      return Response.json({ success: false, error: message }, { status: 500 })
+    }
+  }
+
+  async function adapterPOSTSupportChannel(request: Request): Promise<Response> {
+    try {
+      const body = await request.json().catch(() => ({})) as {
+        name?: string
+        email?: string
+        projectName?: string
+        projectSlug?: string
+        topic?: string
+        sectionId?: string
+        sectionName?: string
+        supportTeamEmails?: string[]
+        feedbackChannelId?: string
+        channelNamePrefix?: string
+      }
+
+      const {
+        name = 'Anonymous',
+        email = '',
+        projectName = '',
+        topic = '',
+        sectionId = '',
+        sectionName = '',
+        supportTeamEmails = [],
+        feedbackChannelId,
+        channelNamePrefix = 'support',
+      } = body
+
+      const projectSlug = slugify(body.projectSlug ?? projectName)
+      const isAuthenticated = email.trim().length > 0
+
+      const results = await Promise.all(
+        adapters
+          .filter((a) => typeof a.onSupportRequest === 'function')
+          .map((a) => a.onSupportRequest!({
+            name,
+            email,
+            projectName,
+            projectSlug,
+            topic,
+            sectionId,
+            sectionName,
+            supportTeamEmails,
+            feedbackChannelId,
+            channelNamePrefix,
+            isAuthenticated,
+          }))
+      )
+
+      // Return the channelId from the first adapter that provided one
+      const channelId = results.find((r) => r?.channelId)?.channelId
+
+      return Response.json({ success: true, ...(channelId ? { channelId } : {}) })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      console.error('Support channel error:', message)
+      return Response.json({ success: false, error: message }, { status: 500 })
+    }
+  }
+
+  async function adapterPOSTStandalone(request: Request): Promise<Response> {
+    try {
+      const formData = await request.formData()
+      const screenshotFile = formData.get('screenshotFile') as File | null
+      const audioFile = formData.get('audioFile') as File | null
+      const channelId = formData.get('channelId') as string | null
+      const name = (formData.get('name') as string) || 'Anonymous'
+      const email = (formData.get('email') as string) || ''
+      const projectName = (formData.get('projectName') as string) || ''
+      const note = (formData.get('note') as string) || ''
+      const sectionId = (formData.get('sectionId') as string) || ''
+      const sectionName = (formData.get('sectionName') as string) || ''
+
+      if (!channelId) {
+        return Response.json({ success: false, error: 'Missing channelId' }, { status: 400 })
+      }
+
+      if (!screenshotFile && !audioFile) {
+        return Response.json({ success: false, error: 'No files provided' }, { status: 400 })
+      }
+
+      const metaComment = [
+        `:camera: *Standalone Feedback*`,
+        projectName ? `*Project:* ${projectName}` : '',
+        `*Name:* ${name}`,
+        email ? `*Email:* ${email}` : '',
+        sectionName ? `*Section:* ${sectionName}${sectionId ? ` (\`${sectionId}\`)` : ''}` : '',
+        note ? `*Note:*\n${note}` : '',
+        `*Submitted:* ${new Date().toISOString()}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      let screenshotBuffer: Buffer | undefined
+      let screenshotFilename: string | undefined
+      let mp3Buffer: Buffer | undefined
+      let audioFilename: string | undefined
+
+      if (screenshotFile) {
+        screenshotBuffer = Buffer.from(await screenshotFile.arrayBuffer())
+        screenshotFilename = screenshotFile.name || `screenshot-${Date.now()}.png`
+      }
+
+      if (audioFile) {
+        const arrayBuffer = await audioFile.arrayBuffer()
+        mp3Buffer = await convertToMp3(arrayBuffer)
+        audioFilename = `voice-${Date.now()}.mp3`
+      }
+
+      await runAdapters('onStandaloneFeedback', {
+        screenshotBuffer,
+        screenshotFilename,
+        mp3Buffer,
+        audioFilename,
+        channelId,
+        name,
+        email,
+        projectName,
+        note,
+        sectionId,
+        sectionName,
+        metaComment,
+      })
+
+      return Response.json({ success: true })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      console.error('Standalone upload error:', message)
+      return Response.json({ success: false, error: message }, { status: 500 })
+    }
+  }
+
+  return {
+    POST: adapterPOST,
+    POSTStandalone: adapterPOSTStandalone,
+    POSTSupportChannel: adapterPOSTSupportChannel,
   }
 }

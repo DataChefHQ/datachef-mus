@@ -1,13 +1,47 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import react from '@astrojs/react';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
 	site: 'https://mus.datachef.co',
+	vite: {
+		resolve: {
+			alias: [
+				// Point main entry directly at source TS — no dist rebuild needed for component changes
+				{ find: '@datachefhq/mus', replacement: path.resolve(__dirname, '../src/index.ts') },
+				// Resolve the package's internal @/ alias
+				{ find: '@/', replacement: path.resolve(__dirname, '../src/') + '/' },
+				// styles.css resolves via package exports to dist/mus.css (pre-compiled Tailwind)
+			],
+		},
+	},
 	integrations: [
+		react(),
 		starlight({
 			title: 'MUS',
-			description: 'Contextual feedback toolbar for React apps — voice recording, thumbs, and Slack support exactly where it matters.',
+			description: 'Explainability and feedback, embedded exactly where AI output is served.',
+			head: [
+				// Open Graph
+				{ tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
+				{ tag: 'meta', attrs: { property: 'og:url', content: 'https://mus.datachef.co' } },
+				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS — Explainability and feedback, embedded exactly where AI output is served' } },
+				{ tag: 'meta', attrs: { property: 'og:description', content: 'When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen. Not in a form. Not in a meeting.' } },
+				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://mus.datachef.co/og-image.png' } },
+				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+				// Twitter card
+				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS — Explainability and feedback, embedded exactly where AI output is served' } },
+				{ tag: 'meta', attrs: { name: 'twitter:description', content: 'When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen.' } },
+				{ tag: 'meta', attrs: { name: 'twitter:image', content: 'https://mus.datachef.co/og-image.png' } },
+				// Theme color
+				{ tag: 'meta', attrs: { name: 'theme-color', content: '#2d6a4f' } },
+			],
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/DataChefHQ/datachef-mus' },
 				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachefhq/mus' },
@@ -15,7 +49,7 @@ export default defineConfig({
 			logo: {
 				light: './src/assets/logo-light.svg',
 				dark: './src/assets/logo-dark.svg',
-				replacesTitle: false,
+				replacesTitle: true,
 			},
 			sidebar: [
 				{
@@ -72,14 +106,18 @@ export default defineConfig({
 				{
 					label: 'Guides',
 					items: [
+						{ label: 'Theming & Icons', slug: 'guides/theming' },
 						{ label: 'Customizing Actions', slug: 'guides/actions' },
 						{ label: 'Message Formatting', slug: 'guides/formatting' },
 						{ label: 'CLI (mus init)', slug: 'guides/cli' },
 						{ label: 'Troubleshooting', slug: 'guides/troubleshooting' },
 					],
 				},
-				{ label: 'Migration (v0.x → v1.0)', slug: 'migration' },
+				{ label: 'Upgrade Guide', slug: 'migration' },
 			],
+			components: {
+				Header: './src/components/Header.astro',
+			},
 			customCss: ['./src/styles/custom.css'],
 		}),
 	],

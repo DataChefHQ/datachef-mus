@@ -149,7 +149,7 @@ export default defineConfig({
     tailwindcss(),
     dts({
       tsconfigPath: './tsconfig.json',
-      exclude: ['src/playground/**'],
+      exclude: ['src/playground/**', 'src/__tests__/**'],
     }),
     voiceUploadPlugin(),
   ],
@@ -174,6 +174,18 @@ export default defineConfig({
         server: path.resolve(__dirname, 'src/server/index.ts'),
         chrome: path.resolve(__dirname, 'src/chrome.ts'),
         'vite-plugin': path.resolve(__dirname, 'src/vite-plugin.ts'),
+        // Adapters barrel + individual sub-paths
+        adapters: path.resolve(__dirname, 'src/adapters/index.ts'),
+        'adapters/slack': path.resolve(__dirname, 'src/adapters/slack.ts'),
+        'adapters/discord': path.resolve(__dirname, 'src/adapters/discord.ts'),
+        'adapters/teams': path.resolve(__dirname, 'src/adapters/teams.ts'),
+        'adapters/webhook': path.resolve(__dirname, 'src/adapters/webhook.ts'),
+        // Resolvers barrel + individual sub-paths
+        resolvers: path.resolve(__dirname, 'src/resolvers/index.ts'),
+        'resolvers/stytch': path.resolve(__dirname, 'src/resolvers/stytch.ts'),
+        'resolvers/clerk': path.resolve(__dirname, 'src/resolvers/clerk.ts'),
+        'resolvers/auth0': path.resolve(__dirname, 'src/resolvers/auth0.ts'),
+        'resolvers/next-auth': path.resolve(__dirname, 'src/resolvers/next-auth.ts'),
       },
       formats: ['es', 'cjs'],
     },
@@ -189,6 +201,12 @@ export default defineConfig({
         'path',
         'os',
         /^node:/,
+        // Auth peer deps — only loaded when user explicitly imports a resolver sub-path
+        '@stytch/react',
+        '@clerk/clerk-react',
+        '@auth0/auth0-react',
+        'next-auth',
+        'next-auth/react',
       ],
       output: {
         globals: {

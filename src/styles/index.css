@@ -1,3 +1,6 @@
+/* Declare layer order: mus-reset is lower priority than mus, so mus utilities always win */
+@layer mus-reset, mus;
+
 @import 'tailwindcss/utilities' layer(mus);
 
 @layer mus {
@@ -78,10 +81,18 @@
     --breakpoint-lg: 64rem;
     --breakpoint-xl: 80rem;
     --breakpoint-2xl: 96rem;
+
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 }
 
-:root {
+/* :host targets the shadow host when this CSS is injected into a shadow root.
+   In a regular document context the browser silently ignores :host selectors. */
+:root,
+:host {
   --mus-primary: oklch(0.643 0.215 28.806);
   --mus-accent: oklch(0.961 0.018 269.09);
   --mus-background: oklch(1 0 0);
@@ -114,28 +125,89 @@
   --mus-radius-4xl: 2.5rem;
 }
 
-.dark {
-  --mus-primary: oklch(0.643 0.215 28.806);
-  --mus-accent: oklch(0.284 0.034 269.915);
-  --mus-accent-foreground: oklch(0.978 0.007 260.732);
-  --mus-background: oklch(0.222 0.034 261.473);
-  --mus-border: oklch(1 0 0 / 0.1);
-  --mus-card: oklch(0.235 0.031 262.556);
-  --mus-card-foreground: oklch(0.978 0.007 260.732);
-  --mus-destructive: oklch(0.505 0.19 27.518);
-  --mus-foreground: oklch(0.978 0.007 260.732);
-  --mus-input: oklch(1 0 0 / 0.15);
-  --mus-muted: oklch(0.284 0.034 269.915);
-  --mus-muted-foreground: oklch(0.785 0.032 273.53);
-  --mus-popover: oklch(1 0 0 / 0.05);
-  --mus-popover-foreground: oklch(0.978 0.007 260.732);
-  --mus-primary-foreground: oklch(0.978 0.007 260.732);
-  --mus-ring: oklch(0.683 0.033 275.367);
-  --mus-secondary: oklch(0.978 0.007 260.732);
-  --mus-secondary-foreground: oklch(0.235 0.031 262.556);
+/* .dark  — light-DOM path (MusProvider wrapper class, playground)
+   [data-mus-theme="dark"] — shadow-DOM path (set by MusThemeRoot inner container) */
+.dark,
+[data-mus-theme="dark"] {
+  /* Exact Figma tokens — see node 422:4940/4991 variable_defs */
+  --mus-primary: #f44336;
+  --mus-primary-foreground: #f5f8fd;
+  --mus-background: #121b2b;
+  --mus-foreground: #f5f8fd;
+  --mus-card: #161e2d;
+  --mus-card-foreground: #f5f8fd;
+  --mus-border: rgba(255, 255, 255, 0.1);
+  --mus-input: rgba(255, 255, 255, 0.15);
+  --mus-muted: #161e2d;
+  --mus-muted-foreground: #b2b8ce;
+  --mus-accent: rgba(255, 255, 255, 0.05);
+  --mus-accent-foreground: #f5f8fd;
+  --mus-destructive: #f87171;
+  --mus-popover: rgba(18, 27, 43, 0.95);
+  --mus-popover-foreground: #f5f8fd;
+  --mus-ring: rgba(255, 255, 255, 0.3);
+  --mus-secondary: #f5f8fd;
+  --mus-secondary-foreground: #161e2d;
 }
 
-/* MUI-style Grow transition */
+/* ── Shadow DOM baseline reset ─────────────────────────────────────────
+   Lives in @layer mus-reset (declared before @layer mus above), so every
+   Tailwind utility in @layer mus automatically wins in the cascade.
+   :where() further zeroes attribute-selector specificity so element type
+   selectors (specificity 0-0-1) never beat a Tailwind class (0-1-0). */
+@layer mus-reset {
+  :host {
+    font-family: var(--mus-font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :where([data-mus-theme]) *,
+  :where([data-mus-theme]) *::before,
+  :where([data-mus-theme]) *::after {
+    box-sizing: border-box;
+    /* Tailwind border utilities rely on border-width:0 + border-style:solid as base */
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
+  }
+
+  /* Form elements — inherit font, strip browser chrome (white bg, inset borders, etc.) */
+  :where([data-mus-theme]) button,
+  :where([data-mus-theme]) input,
+  :where([data-mus-theme]) optgroup,
+  :where([data-mus-theme]) select,
+  :where([data-mus-theme]) textarea {
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+  }
+
+  :where([data-mus-theme]) button {
+    background-color: transparent;
+    background-image: none;
+    cursor: pointer;
+  }
+
+  :where([data-mus-theme]) select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    background-image: none;
+  }
+
+  /* SVGs inherit currentColor for stroke/fill */
+  :where([data-mus-theme]) svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+/* ── MUI-style Grow transition ─────────────────────────── */
 @keyframes mus-grow {
   from {
     opacity: 0;

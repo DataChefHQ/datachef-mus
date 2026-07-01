@@ -200,7 +200,7 @@ Next steps:
 
 4. Wrap your app with <MusProvider>
 
-Full guide: https://www.notion.so/datachef/MUS-Integration-3661627952688086b38fe2f316f880c6
+Full guide: https://mus.datachef.co
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `)
 }

@@ -58,9 +58,8 @@ Every adapter implements this interface. Only the methods you define are called 
 
 ```ts
 interface MusAdapter {
-  onFeedback?(event: ThumbsEvent | TextEvent): Promise<void>
   onVoiceUpload?(event: VoiceEvent): Promise<void>
-  onSupportRequest?(event: SupportEvent): Promise<void>
+  onSupportRequest?(event: SupportEvent): Promise<{ channelId?: string }>
   onStandaloneFeedback?(event: StandaloneEvent): Promise<void>
 }
 ```

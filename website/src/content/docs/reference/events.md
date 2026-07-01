@@ -3,70 +3,71 @@ title: Event Types
 description: TypeScript interfaces for all MUS adapter events.
 ---
 
-All events extend `BaseEvent`:
+These are the event objects passed to adapter methods. All types are importable from `@datachefhq/mus/server`.
 
 ```ts
-interface BaseEvent {
-  type: 'voice' | 'thumbs-up' | 'thumbs-down' | 'support' | 'standalone'
-  projectName: string
-  projectSlug: string
-  user: {
-    name: string
-    email: string
-  }
-  section: {
-    id: string
-    name: string
-  }
-  timestamp: string   // ISO 8601, e.g. "2026-05-21T10:00:00.000Z"
-  note?: string       // Optional message from the user
-}
+import type { VoiceEvent, SupportEvent, StandaloneEvent } from '@datachefhq/mus/server'
 ```
 
 ## VoiceEvent
 
-Fired when a user submits a voice recording.
+Passed to `onVoiceUpload` when a user submits a voice recording.
 
 ```ts
-interface VoiceEvent extends BaseEvent {
-  type: 'voice'
-  audioBuffer: Buffer   // MP3 — converted from WebM by ffmpeg
-}
-```
-
-## ThumbsEvent
-
-Fired when a user clicks thumbs up or thumbs down.
-
-```ts
-interface ThumbsEvent extends BaseEvent {
-  type: 'thumbs-up' | 'thumbs-down'
+interface VoiceEvent {
+  mp3Buffer: Buffer       // Converted MP3 ready to upload
+  filename: string        // e.g. "voice-feedback-hero-1234567890.mp3"
+  channelId: string       // Slack channel ID from config
+  sectionName: string     // Human-readable section label
+  sectionId: string       // Machine-readable section identifier
+  name: string            // User display name (defaults to "Anonymous")
+  email: string           // User email (empty string if unauthenticated)
+  projectName: string
+  note: string            // Optional note submitted with the recording
+  comment: string         // Pre-formatted message string for display
 }
 ```
 
 ## SupportEvent
 
-Fired when a user submits the support dialog.
+Passed to `onSupportRequest` when a user submits the support dialog.
 
 ```ts
-interface SupportEvent extends BaseEvent {
-  type: 'support'
-  topic: string                // User's explanation text
-  supportTeamEmails: string[]  // From SlackConfig
-  feedbackChannelId: string    // From SlackConfig
-  channelNamePrefix?: string   // From SlackConfig
+interface SupportEvent {
+  name: string
+  email: string
+  projectName: string
+  projectSlug: string
+  topic: string                 // User's message / explanation
+  sectionId: string
+  sectionName: string
+  supportTeamEmails: string[]   // From SlackConfig — team members to invite
+  feedbackChannelId?: string    // Fallback channel for anonymous requests
+  channelNamePrefix: string     // Default: "support"
+  isAuthenticated: boolean      // true if email is non-empty
 }
 ```
 
+`onSupportRequest` should return `{ channelId?: string }` — the channel ID is sent back to the client to open the support link.
+
 ## StandaloneEvent
 
-Fired in standalone mode — screenshot with optional voice.
+Passed to `onStandaloneFeedback` in standalone mode (screenshot + optional voice).
 
 ```ts
-interface StandaloneEvent extends BaseEvent {
-  type: 'standalone'
-  audioBuffer?: Buffer       // MP3, if voice was recorded
-  screenshotBuffer?: Buffer  // PNG, if screenshot was captured
+interface StandaloneEvent {
+  screenshotBuffer?: Buffer   // PNG/JPEG screenshot, if captured
+  screenshotFilename?: string
+  mp3Buffer?: Buffer          // Converted MP3, if voice was recorded
+  audioFilename?: string
+  channelId: string
+  name: string
+  email: string
+  projectName: string
+  note: string
+  sectionId: string
+  sectionName: string
+  metaComment: string         // Pre-formatted meta string for display
 }
 ```
 
@@ -74,7 +75,8 @@ interface StandaloneEvent extends BaseEvent {
 
 | Event | Adapter method |
 |-------|----------------|
-| `ThumbsEvent` | `onFeedback` |
 | `VoiceEvent` | `onVoiceUpload` |
 | `SupportEvent` | `onSupportRequest` |
 | `StandaloneEvent` | `onStandaloneFeedback` |
+
+Thumbs up/down feedback is sent directly to your Slack proxy URL — it does not go through the adapter system.

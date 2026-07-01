@@ -17,7 +17,9 @@ interface MusConfig {
     name?: string
     email?: string
   }
-  userResolver?: UserResolver  // React hook — see User Resolvers
+  // A React hook returning { name, email }. Use built-in resolver factories from
+  // @datachefhq/mus/resolvers/* or write your own. See User Resolvers.
+  userResolver?: UserResolver
 
   // Optional: action bar
   actions?: FeedbackAction[]   // Default: [support, thumbs-down, thumbs-up, voice]
@@ -27,6 +29,7 @@ interface MusConfig {
   triggerPosition?: TriggerPosition  // default: "top-right"
   theme?: 'light' | 'dark' | 'auto'
   enabled?: boolean            // set false to disable (default: true)
+  showWelcomeDialog?: boolean  // show onboarding dialog on first visit (default: true)
 
   // Optional: mode
   mode?: 'default' | 'standalone'
@@ -49,6 +52,7 @@ interface SlackConfig {
 
   channelNamePrefix?: string     // Prefix for support channels (default: "support")
   voiceUploadUrl?: string        // Override voice endpoint (default: "/api/mus/voice-upload")
+  supportChannelUrl?: string     // Override support-channel endpoint (default: "/api/mus/support-channel")
 }
 ```
 
@@ -58,6 +62,7 @@ interface SlackConfig {
 interface FeedbackAction {
   type: FeedbackActionType   // 'support' | 'voice' | 'thumbs-up' | 'thumbs-down' | 'video'
   label?: string             // Override the tooltip label
+  enabled?: boolean          // Set false to hide the action from the toolbar (default: true)
 }
 ```
 
@@ -91,6 +96,7 @@ interface FeedbackTargetProps {
   videoUrl?: string          // Required for 'video' action
   className?: string         // Additional CSS class names
   actions?: FeedbackAction[] // Override provider-level actions for this section
+  inset?: boolean            // When true, trigger sits fully inside the corner (default: false, straddles edge)
   children: React.ReactNode
 }
 ```

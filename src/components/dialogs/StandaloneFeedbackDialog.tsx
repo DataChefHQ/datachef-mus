@@ -2,11 +2,13 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useMusConfig } from '@/context/MusContext'
 import { useMusUser } from '@/hooks/useMusUser'
 import { sendStandaloneFeedback } from '@/lib/slack-client'
+import { simulateFeedback } from '@/lib/demo-mode'
 import {
   Mic,
   ChevronDown,
   CircleStop,
   CirclePlay,
+  CirclePause,
   RotateCcw,
   ImageOff,
 } from 'lucide-react'
@@ -99,8 +101,10 @@ export function StandaloneFeedbackDialog({
           return prev + 1
         })
       }, 1000)
-    } catch {
-      setShowPermissionAlert(false)
+    } catch (err) {
+      if ((err as Error)?.name === 'NotAllowedError') {
+        setShowPermissionAlert(true)
+      }
     }
   }, [selectedDevice])
 
@@ -171,16 +175,29 @@ export function StandaloneFeedbackDialog({
     setSubmitting(true)
 
     try {
-      await sendStandaloneFeedback(config.slack, config.projectName, {
-        name,
-        email,
-        audioBlob: audioBlob ?? undefined,
-        screenshotDataUrl: screenshot ?? undefined,
-        note: note.trim() || undefined,
-        uploadUrl: config.standalone?.uploadUrl,
-        sectionId,
-        sectionName,
-      })
+      if (config.demoMode) {
+        await simulateFeedback('standalone', {
+          projectName: config.projectName,
+          name,
+          email,
+          audioBlobSize: audioBlob?.size,
+          hasScreenshot: !!screenshot,
+          note: note.trim() || undefined,
+          sectionId,
+          sectionName,
+        })
+      } else {
+        await sendStandaloneFeedback(config.slack, config.projectName, {
+          name,
+          email,
+          audioBlob: audioBlob ?? undefined,
+          screenshotDataUrl: screenshot ?? undefined,
+          note: note.trim() || undefined,
+          uploadUrl: config.standalone?.uploadUrl,
+          sectionId,
+          sectionName,
+        })
+      }
       onClose()
     } catch {
       // TODO: surface error
@@ -286,7 +303,7 @@ export function StandaloneFeedbackDialog({
                 className="flex size-9 items-center justify-center rounded-mus-md bg-[#63a0e5] text-white shadow-xs"
                 aria-label={playing ? 'Pause' : 'Play'}
               >
-                <CirclePlay className="size-4" />
+                {playing ? <CirclePause className="size-4" /> : <CirclePlay className="size-4" />}
               </button>
               <button
                 onClick={reRecord}

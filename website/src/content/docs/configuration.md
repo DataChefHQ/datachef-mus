@@ -29,6 +29,7 @@ Wrap your app (or any subtree) with `<MusProvider>`. All `FeedbackTarget` compon
     triggerPosition: 'top-right',  // default: "top-right"
     theme: 'dark',                 // 'light' | 'dark' | 'auto'
     enabled: true,                 // set false to disable entirely
+    showWelcomeDialog: true,       // show onboarding dialog on first visit (default: true)
 
     // Optional: override default actions (order determines toolbar order)
     actions: [
@@ -57,6 +58,7 @@ Wrap your app (or any subtree) with `<MusProvider>`. All `FeedbackTarget` compon
 | `feedbackChannelId` | `string` | Yes | Slack channel ID for feedback messages |
 | `channelNamePrefix` | `string` | No | Prefix for support channel names (default: `"support"`) |
 | `voiceUploadUrl` | `string` | No | Override voice upload endpoint (default: `"/api/mus/voice-upload"`) |
+| `supportChannelUrl` | `string` | No | Override support-channel endpoint URL (default: `"/api/mus/support-channel"`) |
 
 ### Actions
 
@@ -68,6 +70,17 @@ Wrap your app (or any subtree) with `<MusProvider>`. All `FeedbackTarget` compon
 | `thumbs-down` | ThumbsDown | Fire-and-forget → posts to Slack |
 | `video` | Play | Opens dialog → shows a video (requires `videoUrl` on `FeedbackTarget`) |
 
+Each action accepts an optional `enabled?: boolean` field. Set it to `false` to hide that action from the toolbar without removing it from the array:
+
+```tsx
+actions: [
+  { type: 'support' },
+  { type: 'voice', enabled: false }, // hidden
+  { type: 'thumbs-up' },
+  { type: 'thumbs-down' },
+]
+```
+
 ### Trigger positions
 
 ```tsx
@@ -78,6 +91,18 @@ triggerPosition: 'bottom-left'
 ```
 
 The lightbulb trigger straddles the edge of the section — half inside, half outside.
+
+### `inset` prop
+
+`FeedbackTarget` accepts an `inset` prop. When `true`, the trigger sits fully inside the corner of the section rather than straddling the edge:
+
+```tsx
+<FeedbackTarget sectionId="hero" sectionName="Hero" inset>
+  <Hero />
+</FeedbackTarget>
+```
+
+Default is `false` (straddles edge).
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "@datachefhq/mus",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Contextual feedback toolbar for React apps — voice recording, thumbs, and Slack support exactly where interpretation happens.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -27,6 +27,56 @@
       "types": "./dist/vite-plugin.d.ts",
       "import": "./dist/vite-plugin.js",
       "require": "./dist/vite-plugin.cjs"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters.js",
+      "require": "./dist/adapters.cjs"
+    },
+    "./adapters/slack": {
+      "types": "./dist/adapters/slack.d.ts",
+      "import": "./dist/adapters/slack.js",
+      "require": "./dist/adapters/slack.cjs"
+    },
+    "./adapters/discord": {
+      "types": "./dist/adapters/discord.d.ts",
+      "import": "./dist/adapters/discord.js",
+      "require": "./dist/adapters/discord.cjs"
+    },
+    "./adapters/teams": {
+      "types": "./dist/adapters/teams.d.ts",
+      "import": "./dist/adapters/teams.js",
+      "require": "./dist/adapters/teams.cjs"
+    },
+    "./adapters/webhook": {
+      "types": "./dist/adapters/webhook.d.ts",
+      "import": "./dist/adapters/webhook.js",
+      "require": "./dist/adapters/webhook.cjs"
+    },
+    "./resolvers": {
+      "types": "./dist/resolvers/index.d.ts",
+      "import": "./dist/resolvers.js",
+      "require": "./dist/resolvers.cjs"
+    },
+    "./resolvers/stytch": {
+      "types": "./dist/resolvers/stytch.d.ts",
+      "import": "./dist/resolvers/stytch.js",
+      "require": "./dist/resolvers/stytch.cjs"
+    },
+    "./resolvers/clerk": {
+      "types": "./dist/resolvers/clerk.d.ts",
+      "import": "./dist/resolvers/clerk.js",
+      "require": "./dist/resolvers/clerk.cjs"
+    },
+    "./resolvers/auth0": {
+      "types": "./dist/resolvers/auth0.d.ts",
+      "import": "./dist/resolvers/auth0.js",
+      "require": "./dist/resolvers/auth0.cjs"
+    },
+    "./resolvers/next-auth": {
+      "types": "./dist/resolvers/next-auth.d.ts",
+      "import": "./dist/resolvers/next-auth.js",
+      "require": "./dist/resolvers/next-auth.cjs"
     }
   },
   "files": [
@@ -43,6 +93,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build",
     "release:patch": "./scripts/release.sh patch",
     "release:minor": "./scripts/release.sh minor",
@@ -51,36 +104,50 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "vite": ">=5.0.0"
+    "vite": ">=5.0.0",
+    "@stytch/react": ">=20.0.0",
+    "@clerk/clerk-react": ">=4.0.0",
+    "@auth0/auth0-react": ">=2.0.0",
+    "next-auth": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "vite": {
-      "optional": true
-    }
+    "vite": { "optional": true },
+    "@stytch/react": { "optional": true },
+    "@clerk/clerk-react": { "optional": true },
+    "@auth0/auth0-react": { "optional": true },
+    "next-auth": { "optional": true }
   },
   "dependencies": {
-    "@stytch/react": "^20.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "ffmpeg-static": "^5.3.0",
     "lucide-react": "^0.577.0",
     "tailwind-merge": "^3.0.2"
   },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.3.0"
+  },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^25.6.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "@vitest/coverage-v8": "^3.2.6",
     "eslint": "^9.0.0",
     "html-to-image": "^1.11.13",
+    "jsdom": "^26.1.0",
     "prettier": "^3.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
-    "vite-plugin-dts": "^4.5.0"
+    "vite-plugin-dts": "^4.5.0",
+    "vitest": "^3.2.6"
   },
   "license": "MIT",
   "publishConfig": {
@@ -92,6 +159,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DataChefHQ/internal-it_general_datachef-mus.git"
+    "url": "https://github.com/DataChefHQ/datachef-mus.git"
   }
 }

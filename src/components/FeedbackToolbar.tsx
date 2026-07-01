@@ -7,14 +7,24 @@ import {
   ThumbsUp,
   type LucideIcon,
 } from 'lucide-react'
-import type { FeedbackAction, FeedbackActionType } from '@/types'
+import { useMusConfig } from '@/context/MusContext'
+import type { FeedbackAction, FeedbackActionType, MusIcons } from '@/types'
+import type { ReactNode } from 'react'
 
-const ACTION_ICONS: Record<FeedbackActionType, LucideIcon> = {
+const DEFAULT_ICONS: Record<FeedbackActionType, LucideIcon> = {
   support: Slack,
   voice: Mic,
   video: Youtube,
   'thumbs-down': ThumbsDown,
   'thumbs-up': ThumbsUp,
+}
+
+const ICONS_KEY_MAP: Record<FeedbackActionType, keyof MusIcons> = {
+  support: 'support',
+  voice: 'voice',
+  video: 'video',
+  'thumbs-up': 'thumbsUp',
+  'thumbs-down': 'thumbsDown',
 }
 
 const ACTION_LABELS: Record<FeedbackActionType, string> = {
@@ -42,6 +52,7 @@ export function FeedbackToolbar({
   growOrigin = 'right center',
   activeThumb,
 }: FeedbackToolbarProps) {
+  const config = useMusConfig()
   // Video is rendered separately by FeedbackTarget — filter it out
   const enabledActions = actions.filter(
     (a) => a.enabled !== false && a.type !== 'video'
@@ -55,12 +66,15 @@ export function FeedbackToolbar({
       )}
     >
       {enabledActions.map((action, index) => {
-        const Icon = ACTION_ICONS[action.type]
+        const iconsKey = ICONS_KEY_MAP[action.type]
+        const customIcon: ReactNode | undefined = config.icons?.[iconsKey] as ReactNode | undefined
+        const DefaultIcon = DEFAULT_ICONS[action.type]
         const label = action.label ?? ACTION_LABELS[action.type]
         const isActiveThumbsDown =
           action.type === 'thumbs-down' && activeThumb === 'thumbs-down'
         const isActiveThumbsUp =
           action.type === 'thumbs-up' && activeThumb === 'thumbs-up'
+        // Per Figma 212:2977 — mic uses p-2.5 (36px outer); others use p-1.5 (28px outer)
         const isVoice = action.type === 'voice'
 
         return (
@@ -69,16 +83,16 @@ export function FeedbackToolbar({
             onClick={() => onAction(action.type)}
             className={cn(
               'flex items-center justify-center rounded-full',
-              'shadow-xs transition-all duration-150',
+              'shadow-[0_1px_2px_0_rgba(0,0,0,0.15)] transition-all duration-150',
               'hover:opacity-80',
               'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',
               'mus-grow',
-              isVoice ? 'size-8' : 'size-7',
+              isVoice ? 'size-9' : 'size-7',
               isActiveThumbsDown
-                ? 'bg-mus-destructive text-white shadow-[0_0_0_3px_rgba(220,38,38,0.2)]'
+                ? 'bg-[#b91c1c] text-white shadow-[0_0_0_3px_rgba(248,113,113,0.4)]'
                 : isActiveThumbsUp
-                  ? 'bg-[#41a148] text-white shadow-[0_0_0_3px_rgba(163,163,163,0.5)]'
-                  : 'bg-mus-accent-foreground text-mus-accent'
+                  ? 'bg-[#4bb052] text-white shadow-[0_0_0_3px_rgba(115,115,115,0.5)]'
+                  : 'bg-mus-accent-foreground text-mus-secondary-foreground'
             )}
             style={{
               transformOrigin: growOrigin,
@@ -87,7 +101,7 @@ export function FeedbackToolbar({
             aria-label={label}
             title={label}
           >
-            <Icon className={cn('pointer-events-none', isVoice ? 'size-5' : 'size-4')} />
+            {customIcon ?? <DefaultIcon className="size-4 pointer-events-none" />}
           </button>
         )
       })}

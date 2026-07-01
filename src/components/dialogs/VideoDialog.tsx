@@ -67,7 +67,7 @@ export function VideoDialog({
     const video = videoRef.current
     if (!video) return
     const rect = e.currentTarget.getBoundingClientRect()
-    const ratio = (e.clientX - rect.left) / rect.width
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
     video.currentTime = ratio * video.duration
   }
 
@@ -81,9 +81,9 @@ export function VideoDialog({
       className="max-w-2xl"
       footer={<CancelButton onClick={onClose} />}
     >
-      <div className="flex flex-col gap-2 rounded-mus-md overflow-hidden">
+      <div className="-mx-[24px] w-full overflow-hidden">
         {videoUrl ? (
-          <div className="relative aspect-video w-full rounded-mus-md overflow-hidden bg-black">
+          <div className="relative aspect-video w-full overflow-hidden bg-black">
             <video
               ref={videoRef}
               src={videoUrl}
@@ -128,7 +128,7 @@ export function VideoDialog({
             </div>
           </div>
         ) : (
-          <div className="flex aspect-video w-full items-center justify-center rounded-mus-md bg-mus-card">
+          <div className="flex aspect-video w-full items-center justify-center bg-mus-card">
             <p className="text-sm text-mus-muted-foreground">
               No video available for &ldquo;{sectionName}&rdquo;
             </p>

@@ -36,13 +36,13 @@ export function DialogShell({
         )}
         style={{ transformOrigin: 'center center' }}
       >
-        {/* Close button */}
+        {/* Close button — absolute top-right */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-mus-foreground/70 transition-colors hover:text-mus-foreground"
+          className="absolute right-4 top-4 p-1 text-mus-foreground/70 transition-colors hover:text-mus-foreground"
           aria-label="Close"
         >
-          <X className="size-4" />
+          <X className="size-5" />
         </button>
 
         {/* Header */}

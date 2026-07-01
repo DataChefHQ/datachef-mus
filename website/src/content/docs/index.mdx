@@ -1,14 +1,14 @@
 ---
-title: MUS — Contextual Feedback for React
-description: Add a voice-recording, thumbs, and support toolbar to any section of your React app — messages delivered to Slack, Discord, or any webhook.
+title: MUS — Explainability and feedback, embedded exactly where AI output is served
+description: Explainability and feedback, embedded exactly where AI output is served. When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen.
 template: splash
 hero:
-  tagline: Contextual feedback toolbar for React apps. Voice recording, thumbs, and Slack support exactly where interpretation happens.
+  tagline: When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen. Not in a form. Not in a meeting. MUS makes that possible for any AI product that has a web face.
   image:
     file: ../../assets/houston.webp
   actions:
-    - text: Get started
-      link: /getting-started
+    - text: See MUS in action →
+      link: /#try-it-now
       icon: right-arrow
       variant: primary
     - text: GitHub
@@ -18,10 +18,36 @@ hero:
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import PlaygroundDemo from '../../components/PlaygroundDemo';
 
-## What is MUS?
+## Try it now
 
-MUS is a React library that adds a contextual feedback toolbar to any section of your app. Users hover over a `<FeedbackTarget>` section and a lightbulb icon appears — clicking it reveals actions: voice recording, thumbs up/down, and Slack support channel creation. All feedback is routed server-side through a small sidecar image (`mus-server`).
+<PlaygroundDemo client:load />
+
+---
+
+## Why MUS exists
+
+In AI products, interpretation is not binary. Two people can look at the same result and reasonably disagree. Context and feedback are not optional — they are the product.
+
+We kept running into the same friction:
+
+- Users had questions about a *specific* section, not the whole app
+- Early testers disagreed with model outputs — and that disagreement lived in meetings, not in the product
+- Feedback required extra steps: forms, tickets, context switching
+- For urgent matters, frustrated users were left to email or message developers directly
+
+Traditional help systems are too detached. Traditional feedback flows are too heavy.
+
+**What if explanation and feedback lived exactly where interpretation happens?**
+
+That question became MUS.
+
+---
+
+## What MUS does
+
+MUS adds a contextual layer to any section of your web app. Wrap any output — a chart, an AI-generated summary, a recommendation, a score — with `<FeedbackTarget>`. Users hover and a toolbar appears, exactly where the output lives.
 
 ```tsx
 import { MusProvider, FeedbackTarget } from '@datachefhq/mus'
@@ -37,33 +63,126 @@ function App() {
         feedbackChannelId: 'C0XXXXXXXXX',
       },
     }}>
-      <FeedbackTarget sectionId="dashboard" sectionName="Dashboard">
-        <DashboardContent />
+      <FeedbackTarget sectionId="ai-summary" sectionName="AI Summary">
+        <AISummaryOutput />
       </FeedbackTarget>
     </MusProvider>
   )
 }
 ```
 
-## Features
+## Three things it does
 
-<CardGrid stagger>
-  <Card title="Voice feedback" icon="microphone">
-    Record audio directly in the browser. Automatically converted from WebM to MP3 and posted to Slack.
+<CardGrid>
+  <Card title="Contextual video insight" icon="youtube">
+    Attach an explainer video directly to any section. Users get clarity right where confusion happens — no redirects, no docs tab.
   </Card>
-  <Card title="Thumbs & text" icon="approve-check">
-    One-click thumbs up/down and text feedback — posts instantly to your feedback channel.
+  <Card title="Frictionless voice feedback" icon="microphone">
+    Testers react immediately at the exact point of judgment — in their own voice. No forms. No references. No detours.
   </Card>
-  <Card title="Support channels" icon="comment">
-    Creates a dedicated Slack channel per user, idempotent — same email always gets the same channel.
-  </Card>
-  <Card title="Pluggable adapters" icon="puzzle">
-    Send to Slack, Discord, Teams, or any webhook. Multiple adapters run in parallel.
-  </Card>
-  <Card title="Auth-system agnostic" icon="approve-check-circle">
-    Works without any auth system. Plug in Stytch, Clerk, Auth0, NextAuth — or write your own resolver.
-  </Card>
-  <Card title="Zero-config server" icon="rocket">
-    `mus-server` Docker image handles all server-side logic. Drop it in as a Docker Compose service or Kubernetes sidecar.
+  <Card title="One-click support channel" icon="comment">
+    A dedicated Slack channel opens instantly for urgent matters. Developers are reachable exactly where the issue surfaced.
   </Card>
 </CardGrid>
+
+---
+
+## What makes MUS different
+
+**Feedback happens inside the product, not around it.**
+Every reaction is attached to the exact element the user was looking at. No screenshots. No "which page were you on?" The context is the message.
+
+**Voice carries what text loses.**
+A 30-second voice clip captures hesitation, disagreement, and confusion in a way no form field can. Recorded in the user's own voice, attached to the exact section.
+
+**Explanation that stays.**
+Video insights aren't a one-time onboarding tour. They live where the output lives — available six months in, the moment a user asks "wait, why?"
+
+**An escape hatch for the urgent case.**
+When something can't wait, one click opens a dedicated Slack channel between the user and your team. No tickets. No bots. A real conversation, with full context already attached.
+
+**Your data, your destination.**
+Feedback can route to Slack, Discord, Teams, or any webhook — multiple destinations in parallel. Self-hostable. Open source. No vendor lock-in.
+
+**Zero backend to write.**
+Drop in the `mus-server` Docker sidecar and you're done. No Node.js server to maintain, no auth integration to build.
+
+---
+
+## What your team gets
+
+- **Higher-quality tester signals** — voice and in-context capture make feedback richer and easier to act on
+- **Faster refinement cycles** — disagreements with model outputs surface immediately, not in next quarter's review
+- **More engaged beta users** — friction-free feedback raises response rates
+- **Less ambiguity in model validation** — every output has a clear feedback trail tied to the exact section
+- **A direct line for urgent issues** — frustrated users reach developers in seconds, not days
+
+---
+
+## Built for AI products
+
+MUS transforms interfaces from static displays into collaborative environments where outputs can be questioned, validated, and refined — in context.
+
+If your product output is interpreted, debated, or challenged by users, MUS is built for you.
+
+If you've shipped a feedback form and watched it return one response per quarter, MUS is built for you.
+
+If your team relies on quarterly user interviews to learn what testers think, MUS is built for you.
+
+---
+
+## Common questions
+
+<div class="mus-faq">
+
+<details>
+<summary>Does MUS only work with React?</summary>
+
+The component library is React (18+ and 19). The `mus-server` is framework-agnostic and works behind any frontend — your backend doesn't need to be React or even JavaScript.
+
+</details>
+
+<details>
+<summary>Can I self-host everything?</summary>
+
+Yes. The package is open source under MIT, and `mus-server` ships as a pre-built Docker image you run alongside your app. No SaaS dependency.
+
+</details>
+
+<details>
+<summary>Does it have to go to Slack?</summary>
+
+No. Slack, Discord, Teams, and generic webhooks are built in. Custom adapters take a few lines of code — route feedback to Linear, Jira, your data warehouse, or any HTTP endpoint.
+
+</details>
+
+<details>
+<summary>Does it work with non-AI products?</summary>
+
+Yes. MUS is built around the idea of in-context feedback on specific sections — useful anywhere users interpret output. AI products are where it shines, but dashboards, reports, and internal tools benefit just as much.
+
+</details>
+
+<details>
+<summary>What about user identity?</summary>
+
+MUS auto-fills name and email from your auth system via pluggable resolvers (Stytch, Clerk, Auth0, NextAuth, or your own). If you don't have auth, users can type their info or stay anonymous.
+
+</details>
+
+<details>
+<summary>Is voice feedback really 60 seconds?</summary>
+
+Yes — that's the default cap, configurable. The recording is converted to MP3 server-side and uploaded to your chosen destination automatically.
+
+</details>
+
+</div>
+
+---
+
+## Philosophy
+
+Contextual. Frictionless. Respectful. Iterative.
+
+Small, precise moments of clarity — embedded exactly where interpretation happens.

@@ -10,7 +10,7 @@ export interface StandaloneConfig {
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
 
   /** Upload endpoint for screenshot + voice (default: '/api/mus/standalone-upload').
-   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTStandalone). */
+   *  The package provides a ready-made handler — see `@datachefhq/mus/server` (POSTStandalone). */
   uploadUrl?: string
 }
 
@@ -47,19 +47,61 @@ export interface SlackConfig {
   channelNamePrefix?: string
 
   /** URL for the voice upload endpoint (default: "/api/mus/voice-upload").
-   *  The package provides a ready-made handler — see `@datachef/mus/server`. */
+   *  The package provides a ready-made handler — see `@datachefhq/mus/server`. */
   voiceUploadUrl?: string
 
   /** URL for the support channel endpoint (default: "/api/mus/support-channel").
-   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTSupportChannel). */
+   *  The package provides a ready-made handler — see `@datachefhq/mus/server` (POSTSupportChannel). */
   supportChannelUrl?: string
 }
+
+/* ── Icon overrides ──────────────────────────────────────── */
+
+import type { ReactNode } from 'react'
+
+export interface MusIcons {
+  /** Trigger button icon (default: Lightbulb) */
+  trigger?: ReactNode
+  /** Support action icon (default: Slack) */
+  support?: ReactNode
+  /** Voice action icon (default: Mic) */
+  voice?: ReactNode
+  /** Video action icon (default: Youtube) */
+  video?: ReactNode
+  /** Thumbs up action icon (default: ThumbsUp) */
+  thumbsUp?: ReactNode
+  /** Thumbs down action icon (default: ThumbsDown) */
+  thumbsDown?: ReactNode
+  /** Standalone FAB icon (default: MessageCircle) */
+  standalone?: ReactNode
+}
+
+/* ── User resolver ───────────────────────────────────────── */
+
+/** Shape returned by useMusUser() and user resolvers. */
+export type MusUser = { name: string; email: string }
+
+/** A React hook that returns the current user's name and email.
+ *  Pass to MusProvider via config.userResolver.
+ *  Use a built-in resolver (stytchResolver, clerkResolver, etc.) or write your own. */
+export type UserResolver = () => MusUser
+
+/** Position of the FeedbackTarget trigger icon relative to the section. */
+export type TriggerPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
 /* ── Configuration ───────────────────────────────────────── */
 
 export interface MusConfig {
   /** Master switch — set to false to disable all mus widgets globally (default: true) */
   enabled?: boolean
+
+  /** Show the welcome/onboarding dialog on first visit (default: true) */
+  showWelcomeDialog?: boolean
+
+  /** Demo mode — when true, feedback actions are simulated locally (no network calls
+   *  are made to Slack or the server). The `slack` config can use placeholder values.
+   *  Useful for live playground demos on docs sites. */
+  demoMode?: boolean
 
   /** 'default' — embedded section widgets (existing behaviour).
    *  'standalone' — floating FAB button with screenshot + voice feedback. */
@@ -84,14 +126,21 @@ export interface MusConfig {
   /** Override user info — if not provided, falls back to Stytch session */
   user?: { name?: string; email?: string }
 
+  /** Pluggable auth resolver hook — see @datachefhq/mus/resolvers/* for built-ins.
+   *  Takes priority over automatic Stytch detection; config.user always wins. */
+  userResolver?: UserResolver
+
   /** Color theme for mus widgets: 'light' | 'dark' | 'auto' (default: 'auto') */
   theme?: 'light' | 'dark' | 'auto'
+
+  /** Override default icons with any React node */
+  icons?: MusIcons
 
   /** Delay in ms before showing the trigger icon on hover (default: 500) */
   hoverDelay?: number
 
   /** Position of the trigger relative to the target (default: "top-right") */
-  triggerPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  triggerPosition?: TriggerPosition
 
   /** Callbacks */
   onThumbsUp?: (sectionId: string, sectionName: string) => void

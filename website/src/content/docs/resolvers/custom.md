@@ -3,13 +3,25 @@ title: Custom Resolvers
 description: Write a user resolver for any auth system or data source.
 ---
 
-A resolver is just a React hook — a function that calls other hooks and returns `{ name, email }` or `null`.
+A `UserResolver` is a React hook — a function that calls other hooks and returns `{ name, email }` or `null`.
 
 ```ts
 type UserResolver = () => { name: string; email: string } | null
 ```
 
-Return `null` when the user isn't logged in. MUS falls back to `{ name: 'Anonymous', email: '' }`.
+Return `null` when the user is not logged in. MUS falls back to `{ name: 'Anonymous', email: '' }`.
+
+Pass it directly to `MusProvider`:
+
+```tsx
+import type { UserResolver } from '@datachefhq/mus'
+
+<MusProvider config={{
+  projectName: 'My App',
+  slack: { ... },
+  userResolver: myResolver,
+}}>
+```
 
 ## Your own auth context
 
@@ -24,16 +36,14 @@ const myResolver: UserResolver = () => {
     email: currentUser.email,
   }
 }
-
-<MusProvider config={{
-  ...
-  userResolver: myResolver,
-}}>
 ```
 
 ## localStorage
 
 ```ts
+import { useState, useEffect } from 'react'
+import type { UserResolver } from '@datachefhq/mus'
+
 const localStorageResolver: UserResolver = () => {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
@@ -54,6 +64,7 @@ const localStorageResolver: UserResolver = () => {
 
 ```ts
 import Cookies from 'js-cookie'
+import type { UserResolver } from '@datachefhq/mus'
 
 const cookieResolver: UserResolver = () => {
   const name = Cookies.get('user_name')
@@ -66,6 +77,8 @@ const cookieResolver: UserResolver = () => {
 ## React Query / SWR
 
 ```ts
+import type { UserResolver } from '@datachefhq/mus'
+
 const apiResolver: UserResolver = () => {
   const { data } = useQuery({
     queryKey: ['me'],
@@ -78,22 +91,35 @@ const apiResolver: UserResolver = () => {
 }
 ```
 
-## Combining resolvers
+## Resolver factory pattern
 
-Try multiple sources in order — first non-null wins:
+If you want to pass options (e.g. a config object), wrap the resolver in a factory function — the same pattern used by the built-in resolvers:
 
 ```ts
-const multiResolver: UserResolver = () => {
-  const fromStytch = stytchResolver()()
-  const fromClerk = clerkResolver()()
-  return fromStytch ?? fromClerk ?? null
+import type { UserResolver } from '@datachefhq/mus'
+
+function myAuthResolver(options?: { fallbackName?: string }): UserResolver {
+  return () => {
+    const { session } = useMyAuth()
+    if (!session?.user) return null
+    return {
+      name: session.user.name ?? options?.fallbackName ?? session.user.email,
+      email: session.user.email,
+    }
+  }
 }
+
+// Usage:
+<MusProvider config={{
+  ...
+  userResolver: myAuthResolver({ fallbackName: 'Team Member' }),
+}}>
 ```
 
 ## Rules
 
-A user resolver is a React hook, so the usual [Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks) apply:
+A user resolver is a React hook, so the [Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks) apply:
 
-- Don't call conditionally — the hook is always called inside `MusProvider`
-- Don't call inside loops or nested functions
+- Do not call conditionally — the hook is always called inside `MusProvider`
+- Do not call inside loops or nested functions
 - You can call other hooks (`useState`, `useEffect`, `useContext`, etc.) freely

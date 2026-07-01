@@ -18,14 +18,22 @@ export { useFeedbackActions } from './hooks/useFeedbackActions'
 export { useMusUser } from './hooks/useMusUser'
 export { useThumbsStore } from './hooks/useThumbsStore'
 
+/* ── Demo mode (for playground / docs site embeds) ────────── */
+export { onDemoFeedback } from './lib/demo-mode'
+export type { DemoEvent, DemoEventType } from './lib/demo-mode'
+
 /* ── Types ───────────────────────────────────────────────── */
 export type {
   MusConfig,
+  MusUser,
+  MusIcons,
   SlackConfig,
   StandaloneConfig,
   FeedbackAction,
   FeedbackActionType,
+  UserResolver,
+  TriggerPosition,
 } from './types'
 
-/* ── Styles (imported separately: import '@datachef/mus/styles.css') ── */
+/* ── Styles (imported separately: import '@datachefhq/mus/styles.css') ── */
 import './styles/index.css'

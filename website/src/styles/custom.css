@@ -1,3 +1,7 @@
+/* =====================================================
+   MUS — Theme & Landing Page Styles
+   ===================================================== */
+
 :root {
   --sl-color-accent-low: #1a3a2a;
   --sl-color-accent: #2d6a4f;
@@ -8,4 +12,870 @@
   --sl-color-accent-low: #d8f3dc;
   --sl-color-accent: #2d6a4f;
   --sl-color-accent-high: #1b4332;
+}
+
+/* =====================================================
+   Typography refinements
+   ===================================================== */
+
+.sl-markdown-content h2 {
+  position: relative;
+  font-size: 2rem;
+  letter-spacing: -0.015em;
+  margin-top: 4rem;
+  padding-bottom: 0.4rem;
+}
+
+.sl-markdown-content h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high));
+}
+
+.sl-markdown-content h3 {
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+}
+
+/* Higher specificity (0-2-1 vs 0-1-1) resets Starlight overrides inside mus components */
+.sl-markdown-content [data-mus-theme] h3 {
+  margin-top: 0;
+  font-size: 1.125rem;
+  letter-spacing: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.sl-markdown-content [data-mus-theme] p {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.sl-markdown-content [data-mus-theme] label {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.sl-markdown-content p {
+  line-height: 1.75;
+}
+
+/* Bold text — inherit from surrounding color, just emphasise weight */
+.sl-markdown-content strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+/* =====================================================
+   Hero
+   ===================================================== */
+
+.hero {
+  padding-block: 4rem 5rem;
+}
+
+.hero .tagline {
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  line-height: 1.55;
+  max-width: 38ch;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--sl-color-white) 0%, var(--sl-color-accent-high) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-block: 0.1em;
+}
+
+[data-theme='light'] .hero h1 {
+  background: linear-gradient(135deg, var(--sl-color-accent-high) 0%, var(--sl-color-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero .actions a[data-variant='primary'] {
+  background: linear-gradient(135deg, var(--sl-color-accent), var(--sl-color-accent-high));
+  border: none;
+  color: #fff;
+  box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--sl-color-accent) 50%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero .actions a[data-variant='primary']:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+}
+
+.hero .actions a[data-variant='minimal']:hover {
+  color: var(--sl-color-accent-high);
+}
+
+/* =====================================================
+   Card grid (the three pillars)
+   ===================================================== */
+
+.card-grid {
+  align-items: stretch;
+}
+
+.card-grid .card {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sl-color-accent) 6%, transparent),
+    transparent
+  );
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  border-radius: 14px;
+  padding: 1.5rem;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  position: relative;
+  z-index: 0;
+}
+
+.card-grid .card:hover {
+  transform: translateY(-6px);
+  border-color: var(--sl-color-accent-high);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sl-color-accent) 14%, transparent),
+    color-mix(in srgb, var(--sl-color-accent) 4%, transparent)
+  );
+  box-shadow:
+    0 20px 40px -20px color-mix(in srgb, var(--sl-color-accent) 60%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--sl-color-accent-high) 40%, transparent);
+  z-index: 1;
+}
+
+.card-grid .card .icon {
+  color: var(--sl-color-accent-high);
+}
+
+.card-grid .card .title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* =====================================================
+   Inline code & code blocks
+   ===================================================== */
+
+.sl-markdown-content :not(pre) > code {
+  background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+  color: var(--sl-color-accent-high);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+[data-theme='light'] .sl-markdown-content :not(pre) > code {
+  color: var(--sl-color-accent);
+}
+
+.expressive-code {
+  margin-block: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -16px rgba(0, 0, 0, 0.4);
+}
+
+/* =====================================================
+   Section dividers (the --- in markdown)
+   ===================================================== */
+
+.sl-markdown-content hr {
+  margin-block: 4rem;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--sl-color-accent) 40%, transparent),
+    transparent
+  );
+}
+
+/* =====================================================
+   Lists
+   ===================================================== */
+
+.sl-markdown-content ul,
+.sl-markdown-content ol {
+  padding-left: 1.4em;
+}
+
+.sl-markdown-content ul li,
+.sl-markdown-content ol li {
+  margin-block: 0.5em;
+  line-height: 1.7;
+}
+
+.sl-markdown-content ul li::marker {
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .sl-markdown-content ul li::marker {
+  color: var(--sl-color-accent);
+}
+
+/* =====================================================
+   Blockquotes
+   ===================================================== */
+
+.sl-markdown-content blockquote {
+  border-left: 3px solid var(--sl-color-accent-high);
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin-block: 1.5rem;
+  font-style: normal;
+}
+
+/* =====================================================
+   FAQ accordion (.mus-faq wrapper around <details>)
+   ===================================================== */
+
+.mus-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.mus-faq details {
+  background: color-mix(in srgb, var(--sl-color-accent) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mus-faq details:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 50%, transparent);
+}
+
+.mus-faq details[open] {
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+  border-color: var(--sl-color-accent-high);
+  box-shadow: 0 8px 24px -12px color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
+}
+
+/* Aggressively hide native disclosure markers across all browsers */
+.mus-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 1.1rem 1.4rem;
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: inherit;
+  text-align: left;
+  list-style: none;
+  list-style-type: none;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.mus-faq summary::-webkit-details-marker,
+.mus-faq summary::-moz-list-bullet {
+  display: none;
+  content: '';
+}
+
+.mus-faq summary::marker {
+  display: none;
+  content: '';
+  color: transparent;
+  font-size: 0;
+}
+
+/* Some Safari versions render the marker outside ::marker — force-disable list-item */
+.mus-faq details > summary:first-of-type {
+  list-style-type: none;
+}
+
+.mus-faq summary > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mus-faq summary::after {
+  content: '';
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2352b788' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.25s ease, background-color 0.2s ease;
+}
+
+.mus-faq details[open] summary {
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .mus-faq details[open] summary {
+  color: var(--sl-color-accent);
+}
+
+.mus-faq details[open] summary::after {
+  transform: rotate(180deg);
+  background-color: color-mix(in srgb, var(--sl-color-accent-high) 25%, transparent);
+}
+
+.mus-faq summary:hover {
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .mus-faq summary:hover {
+  color: var(--sl-color-accent);
+}
+
+.mus-faq details > *:not(summary) {
+  padding: 0 1.4rem 1.2rem;
+  line-height: 1.7;
+  animation: faq-slide-down 0.3s ease;
+}
+
+@keyframes faq-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   Pagination footer (Next/Previous buttons)
+   ===================================================== */
+
+.pagination-links {
+  margin-top: 4rem;
+  gap: 1rem;
+}
+
+.pagination-links a {
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: color-mix(in srgb, var(--sl-color-accent) 4%, transparent);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pagination-links a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--sl-color-accent) 15%, transparent),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.pagination-links a:hover {
+  border-color: var(--sl-color-accent-high);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -16px color-mix(in srgb, var(--sl-color-accent) 50%, transparent);
+}
+
+.pagination-links a:hover::before {
+  opacity: 1;
+}
+
+.pagination-links a > span:first-child {
+  color: var(--sl-color-accent-high);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme='light'] .pagination-links a > span:first-child {
+  color: var(--sl-color-accent);
+}
+
+.pagination-links a > span:last-child {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.pagination-links a svg {
+  color: var(--sl-color-accent-high);
+  transition: transform 0.2s ease;
+}
+
+[data-theme='light'] .pagination-links a svg {
+  color: var(--sl-color-accent);
+}
+
+.pagination-links a:hover svg {
+  transform: translateX(3px);
+}
+
+.pagination-links a[rel='prev']:hover svg {
+  transform: translateX(-3px);
+}
+
+/* =====================================================
+   Site header — glass effect, accent underline, polished nav
+   ===================================================== */
+
+header.header {
+  background: color-mix(in srgb, var(--sl-color-bg) 75%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme='light'] header.header {
+  background: color-mix(in srgb, #ffffff 80%, transparent);
+}
+
+/* Site title styling */
+header.header .site-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s ease;
+}
+
+header.header .site-title:hover {
+  opacity: 0.85;
+}
+
+/* Search input polish */
+header.header [data-open-modal] {
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  border-radius: 10px;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+header.header [data-open-modal]:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent-high) 50%, transparent);
+  background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+  box-shadow: 0 4px 12px -6px color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+}
+
+/* Hide individual key boxes — replaced by a single ⌘K badge pushed to the right */
+header.header [data-open-modal] kbd {
+  display: none;
+}
+
+header.header [data-open-modal] {
+  display: flex;
+  align-items: center;
+}
+
+header.header [data-open-modal]::after {
+  content: '⌘K';
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  color: var(--sl-color-accent-high);
+  border-radius: 5px;
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.15rem 0.45rem;
+  flex-shrink: 0;
+}
+
+[data-theme='light'] header.header [data-open-modal]::after {
+  color: var(--sl-color-accent);
+}
+
+/* Documentation button in header */
+.header-docs-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 28%, transparent);
+  color: var(--sl-color-accent-high);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.header-docs-btn:hover {
+  background: color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  border-color: var(--sl-color-accent-high);
+  transform: translateY(-1px);
+}
+
+[data-theme='light'] .header-docs-btn {
+  color: var(--sl-color-accent);
+  border-color: color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+}
+
+[data-theme='light'] .header-docs-btn:hover {
+  border-color: var(--sl-color-accent);
+}
+
+/* Social icon buttons in header */
+header.header .social-icons a {
+  padding: 0.4rem;
+  border-radius: 8px;
+  color: var(--sl-color-gray-2);
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme='light'] header.header .social-icons a {
+  color: var(--sl-color-gray-4);
+}
+
+header.header .social-icons a:hover {
+  color: var(--sl-color-accent-high);
+  background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+[data-theme='light'] header.header .social-icons a:hover {
+  color: var(--sl-color-accent);
+}
+
+/* Theme toggle button polish */
+header.header starlight-theme-select select,
+header.header .theme-toggle button {
+  transition: color 0.2s ease;
+}
+
+header.header starlight-theme-select select:hover,
+header.header .theme-toggle button:hover {
+  color: var(--sl-color-accent-high);
+}
+
+/* Mobile menu trigger */
+header.header starlight-menu-button button {
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+header.header starlight-menu-button button:hover {
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+}
+
+/* Sidebar nav items - subtle accent on hover/active */
+.sidebar-content a[aria-current='page'] {
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  color: var(--sl-color-accent-high);
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+[data-theme='light'] .sidebar-content a[aria-current='page'] {
+  color: var(--sl-color-accent);
+}
+
+.sidebar-content a:hover {
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .sidebar-content a:hover {
+  color: var(--sl-color-accent);
+}
+
+/* =====================================================
+   Playground demo
+   ===================================================== */
+
+.playground-wrapper {
+  margin: 2rem 0;
+  border-radius: 14px;
+  overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  background: color-mix(in srgb, var(--sl-color-accent) 4%, transparent);
+  box-shadow: 0 20px 50px -24px color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+}
+
+.playground-wrapper div {
+  margin: 0 !important;
+}
+
+.playground-wrapper svg {
+  margin: 0 !important;
+}
+
+.playground-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  line-height: 1;
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  border-radius: 14px 14px 0 0;
+}
+
+.playground-dot {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+
+.playground-url {
+  margin-left: 1rem;
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  color: var(--sl-color-gray-3);
+  opacity: 0.75;
+}
+
+.playground-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.playground-hint {
+  text-align: center;
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--sl-color-accent-high);
+  font-weight: 500;
+}
+
+[data-theme='light'] .playground-hint {
+  color: var(--sl-color-accent);
+}
+
+.playground-card {
+  background: var(--sl-color-bg);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease;
+}
+
+.playground-card:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+}
+
+.playground-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.playground-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  color: var(--sl-color-accent-high);
+}
+
+.playground-tag.tag-blue {
+  background: color-mix(in srgb, #3b82f6 18%, transparent);
+  color: #60a5fa;
+}
+
+[data-theme='light'] .playground-tag {
+  color: var(--sl-color-accent);
+}
+
+[data-theme='light'] .playground-tag.tag-blue {
+  color: #2563eb;
+}
+
+.playground-card-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.playground-card-body {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--sl-color-gray-2);
+}
+
+[data-theme='light'] .playground-card-body {
+  color: var(--sl-color-gray-4);
+}
+
+.playground-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.playground-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  border-radius: 6px;
+}
+
+.playground-score {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-weight: 600;
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .playground-score {
+  color: var(--sl-color-accent);
+}
+
+/* Toasts */
+.playground-toasts {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.playground-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--sl-color-bg);
+  border: 1px solid var(--sl-color-accent-high);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 12px 32px -12px color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+  animation: toast-in 0.25s ease;
+  min-width: 220px;
+}
+
+.playground-toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--sl-color-accent-high);
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+[data-theme='light'] .playground-toast-icon {
+  background: var(--sl-color-accent);
+}
+
+.playground-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.85rem;
+}
+
+.playground-toast-body strong {
+  text-transform: capitalize;
+  color: var(--sl-color-accent-high);
+}
+
+[data-theme='light'] .playground-toast-body strong {
+  color: var(--sl-color-accent);
+}
+
+.playground-toast-body span {
+  color: var(--sl-color-gray-2);
+}
+
+[data-theme='light'] .playground-toast-body span {
+  color: var(--sl-color-gray-4);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   Subtle background glow on the splash hero (dark mode only)
+   ===================================================== */
+
+body:has(.hero) {
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      color-mix(in srgb, var(--sl-color-accent) 10%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      color-mix(in srgb, var(--sl-color-accent-high) 6%, transparent) 0%,
+      transparent 50%
+    );
+  background-attachment: fixed;
+}
+
+[data-theme='light'] body:has(.hero) {
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      color-mix(in srgb, var(--sl-color-accent-high) 4%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      color-mix(in srgb, var(--sl-color-accent) 3%, transparent) 0%,
+      transparent 50%
+    );
+  background-attachment: fixed;
 }

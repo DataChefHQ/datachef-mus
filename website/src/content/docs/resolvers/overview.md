@@ -8,8 +8,9 @@ A **user resolver** is a React hook that returns the current user's `{ name, ema
 ## Priority order
 
 1. `config.user` — explicit override on `MusProvider`, always wins
-2. `config.userResolver` — your auth system
-3. Anonymous fallback `{ name: 'Anonymous', email: '' }`
+2. `config.userResolver` — your auth system (Stytch, Clerk, Auth0, NextAuth, or custom)
+3. Stytch auto-detection — if `@stytch/react` is installed and a session is active, MUS reads it automatically (no configuration needed)
+4. Anonymous fallback `{ name: 'Anonymous', email: '' }`
 
 ## Built-in resolvers
 

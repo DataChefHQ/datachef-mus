@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMusConfig } from '@/context/MusContext'
 import { useMusUser } from '@/hooks/useMusUser'
 import { createSupportChannel } from '@/lib/slack-client'
+import { simulateFeedback } from '@/lib/demo-mode'
 import { cn } from '@/lib/utils'
 import { DialogShell } from './DialogShell'
 
@@ -29,14 +30,26 @@ export function SupportDialog({
     setSubmitting(true)
 
     try {
-      await createSupportChannel(config.slack, config.projectName, {
-        name,
-        email,
-        topic: message.trim(),
-        sectionId,
-        sectionName,
-        projectSlug: config.projectSlug,
-      })
+      if (config.demoMode) {
+        await simulateFeedback('support', {
+          projectName: config.projectName,
+          name,
+          email,
+          topic: message.trim(),
+          sectionId,
+          sectionName,
+          projectSlug: config.projectSlug,
+        })
+      } else {
+        await createSupportChannel(config.slack, config.projectName, {
+          name,
+          email,
+          topic: message.trim(),
+          sectionId,
+          sectionName,
+          projectSlug: config.projectSlug,
+        })
+      }
 
       config.onFeedbackSubmitted?.('support', sectionId, sectionName)
       onClose()
@@ -53,15 +66,15 @@ export function SupportDialog({
       description="Need help? We'll create a dedicated Slack channel and invite you to chat directly with our support team."
       onClose={onClose}
     >
-      <div className="flex flex-col gap-4 px-0">
+      <div className="flex w-full flex-col gap-4">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="What you need help with?"
-          rows={4}
+          rows={5}
           className={cn(
-            'min-h-[60px] w-full resize-none rounded-mus-md border border-mus-input bg-white/5 px-3 py-2',
-            'text-sm leading-[20px] text-mus-foreground shadow-xs',
+            'w-full resize-none rounded-mus-md border border-mus-input bg-white/5 px-[12px] py-[10px]',
+            'text-[14px] leading-[20px] text-mus-foreground',
             'placeholder:text-mus-muted-foreground',
             'focus:outline-none focus:ring-2 focus:ring-mus-ring'
           )}
@@ -70,8 +83,8 @@ export function SupportDialog({
           onClick={handleSubmit}
           disabled={!canSubmit || submitting}
           className={cn(
-            'h-9 w-full rounded-mus-md bg-mus-primary',
-            'text-sm font-medium text-mus-primary-foreground shadow-xs',
+            'flex h-[40px] w-full items-center justify-center rounded-mus-md bg-mus-primary px-4',
+            'text-[14px] font-medium text-mus-primary-foreground',
             'hover:opacity-90 transition-opacity',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}

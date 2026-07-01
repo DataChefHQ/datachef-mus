@@ -2,11 +2,13 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useMusConfig } from '@/context/MusContext'
 import { useMusUser } from '@/hooks/useMusUser'
 import { sendVoiceFeedback } from '@/lib/slack-client'
+import { simulateFeedback } from '@/lib/demo-mode'
 import {
   Mic,
   ChevronDown,
   CircleStop,
   CirclePlay,
+  CirclePause,
   RotateCcw,
   Plus,
 } from 'lucide-react'
@@ -121,8 +123,10 @@ export function FeedbackDialog({
           return prev + 1
         })
       }, 1000)
-    } catch {
-      setShowPermissionAlert(false)
+    } catch (err) {
+      if ((err as Error)?.name === 'NotAllowedError') {
+        setShowPermissionAlert(true)
+      }
     }
   }, [selectedDevice])
 
@@ -224,14 +228,26 @@ export function FeedbackDialog({
     setSubmitting(true)
 
     try {
-      await sendVoiceFeedback(config.slack, config.projectName, {
-        name,
-        email,
-        sectionId,
-        sectionName,
-        audioBlob,
-        note: note.trim() || undefined,
-      })
+      if (config.demoMode) {
+        await simulateFeedback('voice', {
+          projectName: config.projectName,
+          name,
+          email,
+          sectionId,
+          sectionName,
+          audioBlobSize: audioBlob.size,
+          note: note.trim() || undefined,
+        })
+      } else {
+        await sendVoiceFeedback(config.slack, config.projectName, {
+          name,
+          email,
+          sectionId,
+          sectionName,
+          audioBlob,
+          note: note.trim() || undefined,
+        })
+      }
       config.onFeedbackSubmitted?.('voice', sectionId, sectionName)
       onClose()
     } catch {
@@ -243,184 +259,201 @@ export function FeedbackDialog({
 
   const hasRecording = !!audioBlob && !recording
 
+  const canSubmit = hasRecording || (showNote && note.trim().length > 0)
+  const isInteracting = recording || hasRecording
+  const showAlert = showPermissionAlert && !recording && !audioBlob && !hasRecording
+
   return (
     <DialogShell
       title="Feedback"
       description="Let us know what you think about this section"
       onClose={onClose}
-      className="!max-w-[500px]"
+      className="!max-w-[449px]"
     >
-      {/* Record or Add a note toggle */}
-      {!showNote && (
-        <div className="flex items-center justify-between px-0">
-          <span className="pr-2 text-sm text-mus-muted-foreground whitespace-nowrap">
+      {/* Top — note toggle OR note textarea */}
+      {!showNote ? (
+        <div className="flex w-full items-center justify-between">
+          <span className="pr-[8px] text-[14px] leading-[20px] text-mus-muted-foreground whitespace-nowrap">
             Record your message or
           </span>
           <div className="h-px flex-1 bg-mus-border" />
           <button
             onClick={() => setShowNote(true)}
-            className="flex h-8 items-center gap-2 rounded-mus-md px-3 py-2 text-xs font-medium text-mus-foreground whitespace-nowrap"
+            className={cn(
+              'flex h-[32px] items-center gap-[8px] rounded-mus-md px-[12px] py-[8px]',
+              'text-[12px] leading-[16px] font-medium text-mus-foreground',
+              'hover:bg-white/5 transition-colors whitespace-nowrap'
+            )}
           >
             <Plus className="size-4" />
             Add a note
           </button>
         </div>
-      )}
-
-      {/* Note textarea */}
-      {showNote && (
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium leading-none text-mus-foreground">
-            Note for your feedback
+      ) : (
+        <div className="flex w-full flex-col gap-[8px]">
+          <label className="text-[14px] leading-none font-medium text-mus-foreground">
+            Your feedback
           </label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Write your note here..."
             className={cn(
-              'min-h-[60px] w-full rounded-mus-md border border-mus-input bg-white/5 px-3 py-2',
-              'text-sm text-mus-foreground shadow-xs placeholder:text-mus-muted-foreground',
+              'min-h-[72px] w-full rounded-mus-md border border-mus-input bg-white/5 px-[12px] py-[8px]',
+              'text-[14px] leading-[20px] text-mus-foreground placeholder:text-mus-muted-foreground',
+              'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
               'focus:outline-none focus:ring-2 focus:ring-mus-ring resize-none'
             )}
           />
         </div>
       )}
 
-      {/* Bottom section */}
-      <div className="flex flex-col gap-5 rounded-mus-lg border border-[#272d38] bg-[#121b2b] p-4">
-        {/* Permission alert */}
-        {showPermissionAlert && !recording && !audioBlob && (
-          <div className="rounded-mus-lg border border-red-400/60 bg-mus-card px-4 py-3">
-            <div className="flex items-start gap-3">
-              <Mic className="mt-0.5 size-4 shrink-0 text-mus-foreground" />
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium text-mus-foreground">
-                  Microphone permission asked
-                </p>
-                <p className="text-sm text-mus-muted-foreground">
-                  Your browser will ask for permission. please allow it to continue
-                </p>
-              </div>
-            </div>
+      {/* Microphone + recording surface — Figma "Flex Vertical" (422:4952) gap-16 */}
+      <div className="flex w-full flex-col gap-[16px]">
+      {/* Microphone selector — h-40, rounded-md (12), input border */}
+      <div className="flex w-full flex-col gap-[8px]">
+        <label className="text-[14px] leading-none font-medium text-mus-foreground">
+          Microphone
+        </label>
+        <div className="relative">
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className={cn(
+              'h-[40px] w-full appearance-none rounded-mus-md border border-mus-input bg-white/5',
+              'px-[12px] pr-[36px] text-[14px] leading-[20px] text-mus-muted-foreground',
+              'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+              'focus:outline-none focus:ring-2 focus:ring-mus-ring'
+            )}
+          >
+            {devices.length === 0 && <option value="">Default</option>}
+            {devices.map((d) => (
+              <option key={d.deviceId} value={d.deviceId}>
+                {d.label || `Microphone ${d.deviceId.slice(0, 8)}`}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-[12px] top-1/2 size-4 -translate-y-1/2 text-mus-muted-foreground" />
+        </div>
+      </div>
+
+      {/* Recording surface — timer, optional progress bar, control buttons */}
+      <div className="flex flex-col items-center gap-[16px] w-full">
+        <p className="text-[18px] leading-[28px] text-mus-foreground tabular-nums">
+          {formatTime(
+            hasRecording ? (playing ? playbackTime : seconds) : seconds
+          )}
+        </p>
+
+        {isInteracting && (
+          <div
+            className={cn(
+              'h-[8px] w-full overflow-hidden rounded-full bg-black/80',
+              hasRecording && 'cursor-pointer'
+            )}
+            onClick={hasRecording ? handleProgressClick : undefined}
+          >
+            <div
+              className="h-full bg-mus-foreground transition-[width] duration-200"
+              style={{
+                width: `${(recording ? recordingProgress : playbackProgress) * 100}%`,
+              }}
+            />
           </div>
         )}
 
-        {/* Microphone select */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium leading-none text-mus-foreground">
-            Microphone
-          </label>
-          <div className="relative">
-            <select
-              value={selectedDevice}
-              onChange={(e) => setSelectedDevice(e.target.value)}
+        {recording ? (
+          <button
+            onClick={stopRecording}
+            className={cn(
+              'flex size-[48px] items-center justify-center rounded-mus-md',
+              'bg-mus-destructive text-white',
+              'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+              'hover:opacity-90 transition-opacity'
+            )}
+            aria-label="Stop recording"
+          >
+            <CircleStop className="size-6" />
+          </button>
+        ) : hasRecording ? (
+          <div className="flex items-center gap-[8px]">
+            <button
+              onClick={togglePlayback}
               className={cn(
-                'h-10 w-full appearance-none rounded-mus-md border border-mus-input bg-white/5 px-3 pr-8',
-                'text-sm text-mus-muted-foreground shadow-xs',
-                'focus:outline-none focus:ring-2 focus:ring-mus-ring'
+                'flex size-[40px] items-center justify-center rounded-mus-md',
+                'bg-[#63a0e5] text-white',
+                'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+                'hover:opacity-90 transition-opacity'
               )}
+              aria-label={playing ? 'Pause playback' : 'Play recording'}
             >
-              {devices.length === 0 && (
-                <option value="">Default</option>
+              {playing ? <CirclePause className="size-4" /> : <CirclePlay className="size-4" />}
+            </button>
+            <button
+              onClick={reRecord}
+              className={cn(
+                'flex size-[40px] items-center justify-center rounded-mus-md',
+                'border border-mus-input bg-white/[0.043] text-mus-foreground',
+                'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+                'hover:bg-white/[0.08] transition-colors'
               )}
-              {devices.map((d) => (
-                <option key={d.deviceId} value={d.deviceId}>
-                  {d.label || `Microphone ${d.deviceId.slice(0, 8)}`}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-mus-muted-foreground" />
+              aria-label="Re-record"
+            >
+              <RotateCcw className="size-4" />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={startRecording}
+            className={cn(
+              'flex size-[48px] items-center justify-center rounded-mus-md',
+              'bg-[#4bb052] text-white',
+              'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+              'hover:opacity-90 transition-opacity'
+            )}
+            aria-label="Start recording"
+          >
+            <Mic className="size-6" />
+          </button>
+        )}
+
+        <p className="text-[12px] leading-[16px] font-light text-mus-muted-foreground whitespace-nowrap">
+          tap the mic to start recording (Max 3 mins)
+        </p>
+      </div>
+      </div>
+
+      {/* Bottom: permission alert OR submit button */}
+      {showAlert ? (
+        <div className="rounded-mus-lg border border-[#f8717199] bg-mus-card px-[16px] py-[12px] w-full">
+          <div className="flex flex-col gap-[4px]">
+            <div className="flex items-center gap-[8px]">
+              <Mic className="size-4 shrink-0 text-mus-foreground" />
+              <p className="text-[14px] leading-[20px] font-medium text-mus-foreground">
+                Microphone permission asked
+              </p>
+            </div>
+            {/* pl = icon (16px) + gap (8px) = 24px, aligns description under title */}
+            <p className="pl-[24px] text-[14px] leading-[20px] text-mus-muted-foreground">
+              Your browser will ask for permission. please allow it to continue
+            </p>
           </div>
         </div>
-
-        {/* Controls row */}
-        <div className="flex items-start gap-3">
-          {recording ? (
-            /* Recording: red stop button */
-            <button
-              onClick={stopRecording}
-              className="flex size-9 shrink-0 items-center justify-center rounded-mus-md bg-mus-destructive text-white shadow-xs"
-              aria-label="Stop recording"
-            >
-              <CircleStop className="size-4" />
-            </button>
-          ) : hasRecording ? (
-            /* Recorded: play + re-record */
-            <div className="flex shrink-0 items-center gap-2">
-              <button
-                onClick={togglePlayback}
-                className="flex size-9 items-center justify-center rounded-mus-md bg-[#63a0e5] text-white shadow-xs"
-                aria-label={playing ? 'Pause playback' : 'Play recording'}
-              >
-                <CirclePlay className="size-4" />
-              </button>
-              <button
-                onClick={reRecord}
-                className={cn(
-                  'flex size-9 items-center justify-center rounded-mus-md shadow-xs',
-                  'border border-mus-input bg-white/5 text-mus-foreground'
-                )}
-                aria-label="Re-record"
-              >
-                <RotateCcw className="size-4" />
-              </button>
-            </div>
-          ) : (
-            /* Idle: green mic button */
-            <button
-              onClick={startRecording}
-              className="flex size-9 shrink-0 items-center justify-center rounded-mus-md bg-[#4bb052] text-white shadow-xs"
-              aria-label="Start recording"
-            >
-              <Mic className="size-4" />
-            </button>
+      ) : (
+        <button
+          onClick={handleSubmit}
+          disabled={!canSubmit || submitting}
+          className={cn(
+            'h-[40px] w-full rounded-mus-md px-[32px] text-[14px] leading-[20px] font-medium transition-all',
+            'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
+            canSubmit
+              ? 'bg-mus-primary text-mus-primary-foreground hover:opacity-90'
+              : 'border border-mus-input bg-transparent text-mus-muted-foreground cursor-not-allowed'
           )}
-
-          {/* Timer + progress or helper text */}
-          {recording || hasRecording ? (
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <p className="text-base font-light text-mus-foreground">
-                {hasRecording
-                  ? formatTime(playing ? playbackTime : seconds)
-                  : formatTime(seconds)}
-              </p>
-              <div
-                className={cn(
-                  'h-2 w-full overflow-hidden rounded-full bg-black/80',
-                  hasRecording && 'cursor-pointer'
-                )}
-                onClick={hasRecording ? handleProgressClick : undefined}
-              >
-                <div
-                  className="h-full bg-mus-foreground transition-[width] duration-200"
-                  style={{
-                    width: `${(recording ? recordingProgress : playbackProgress) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
-          ) : (
-            <p className="flex-1 self-center text-sm text-mus-muted-foreground">
-              tap the mic to start recording (Max 3 mins)
-            </p>
-          )}
-
-          {/* Submit button */}
-          <button
-            onClick={handleSubmit}
-            disabled={!hasRecording || submitting}
-            className={cn(
-              'h-9 shrink-0 rounded-mus-md bg-mus-primary px-4',
-              'text-sm font-medium text-mus-primary-foreground shadow-xs',
-              'hover:opacity-90 transition-opacity',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-              'w-[101px]'
-            )}
-          >
-            {submitting ? 'Sending...' : 'Submit'}
-          </button>
-        </div>
-      </div>
+        >
+          {submitting ? 'Sending...' : 'Submit'}
+        </button>
+      )}
     </DialogShell>
   )
 }

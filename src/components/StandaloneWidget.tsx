@@ -4,6 +4,7 @@ import { MessageCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMusConfig } from '@/context/MusContext'
 import { StandaloneFeedbackDialog } from './dialogs/StandaloneFeedbackDialog'
+import { MusThemeRoot } from '@/components/MusThemeRoot'
 
 const POSITION_CLASSES: Record<string, string> = {
   'bottom-right': 'bottom-6 right-6',
@@ -114,7 +115,7 @@ export function StandaloneWidget() {
   if (config.enabled === false) return null
 
   return (
-    <>
+    <MusThemeRoot>
       <button
         onClick={handleClick}
         disabled={capturing}
@@ -130,7 +131,7 @@ export function StandaloneWidget() {
         {capturing ? (
           <Loader2 className="size-6 animate-spin" />
         ) : (
-          <MessageCircle className="size-6" />
+          config.icons?.standalone ?? <MessageCircle className="size-6" />
         )}
       </button>
 
@@ -140,6 +141,6 @@ export function StandaloneWidget() {
           onClose={handleClose}
         />
       )}
-    </>
+    </MusThemeRoot>
   )
 }

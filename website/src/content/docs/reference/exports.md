@@ -16,19 +16,29 @@ import {
   FeedbackDialog,
   VideoDialog,
   DialogShell,
+  WelcomeDialog,
+  StandaloneWidget,
 } from '@datachefhq/mus'
 
 // Context & hooks
-import { useMusConfig, useFeedbackActions } from '@datachefhq/mus'
+import {
+  useMusConfig,
+  useFeedbackActions,
+  useMusUser,
+  useThumbsStore,
+} from '@datachefhq/mus'
 
 // Types
 import type {
   MusConfig,
   MusUser,
+  MusIcons,
   SlackConfig,
   FeedbackAction,
   FeedbackActionType,
+  StandaloneConfig,
   UserResolver,
+  TriggerPosition,
 } from '@datachefhq/mus'
 
 // Styles
@@ -42,19 +52,27 @@ import {
   POST,               // POST /api/mus/voice-upload
   POSTStandalone,     // POST /api/mus/standalone-upload
   POSTSupportChannel, // POST /api/mus/support-channel
-  createMusHandlers,  // Factory for custom adapters
+  createMusHandlers,  // Factory for adapter-based handlers
 } from '@datachefhq/mus/server'
+
+import type { MusAdapter } from '@datachefhq/mus/server'
 ```
 
 ## Adapters — `@datachefhq/mus/adapters/*`
+
+Each adapter is a separate sub-path import:
 
 ```ts
 import { slackAdapter }   from '@datachefhq/mus/adapters/slack'
 import { discordAdapter } from '@datachefhq/mus/adapters/discord'
 import { teamsAdapter }   from '@datachefhq/mus/adapters/teams'
 import { webhookAdapter } from '@datachefhq/mus/adapters/webhook'
+```
 
-import type { MusAdapter } from '@datachefhq/mus/adapters'
+The `MusAdapter` interface (also re-exported from `@datachefhq/mus/server`):
+
+```ts
+import type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '@datachefhq/mus/server'
 ```
 
 ## User resolvers — `@datachefhq/mus/resolvers/*`

@@ -1,3 +1,23 @@
+## 0.4.0 (2026-06-29)
+
+### Breaking Changes
+- **Stytch auto-detection removed** — if you use Stytch, add `userResolver: stytchResolver()` explicitly. See [Upgrade Guide](./website/src/content/docs/migration.md).
+
+### Features
+- Adapter system: `slackAdapter`, `discordAdapter`, `teamsAdapter`, `webhookAdapter` — route feedback to any destination
+- `createMusHandlers` factory — wire adapters to your server handlers
+- User resolver system: `stytchResolver`, `clerkResolver`, `auth0Resolver`, `nextAuthResolver`
+- `userResolver` config option — plug in any React hook returning `{ name, email }`
+- All sub-path imports now work: `@datachefhq/mus/adapters/slack`, `@datachefhq/mus/resolvers/clerk`, etc.
+
+### Bug Fixes
+- Fixed React hooks rules violation in `useMusUser` — hooks count is now stable across renders
+- `@stytch/react` no longer bundled into every user's app — moved to optional peer dependency
+- `ffmpeg-static` moved to `optionalDependencies` — no longer a mandatory 44MB install
+
+### Other Changes
+- 65 tests added across adapters, resolvers, server handlers, and all hooks/components
+
 ## 0.3.2 (2026-05-13)
 
 ### Other Changes

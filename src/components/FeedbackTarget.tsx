@@ -9,6 +9,7 @@ import { SupportDialog } from '@/components/dialogs/SupportDialog'
 import { FeedbackDialog } from '@/components/dialogs/FeedbackDialog'
 import { VideoDialog } from '@/components/dialogs/VideoDialog'
 import { StandaloneFeedbackDialog } from '@/components/dialogs/StandaloneFeedbackDialog'
+import { MusThemeRoot } from '@/components/MusThemeRoot'
 import type { FeedbackAction, FeedbackActionType } from '@/types'
 
 interface FeedbackTargetProps {
@@ -59,7 +60,10 @@ export function FeedbackTarget({
     }, hoverDelay)
   }, [hoverDelay])
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // If moving to a descendant (e.g. trigger button positioned outside card bounds), keep visible
+    if (containerRef.current?.contains(e.relatedTarget as Node)) return
+
     if (hoverTimerRef.current) {
       clearTimeout(hoverTimerRef.current)
       hoverTimerRef.current = null
@@ -209,92 +213,94 @@ export function FeedbackTarget({
     >
       {children}
 
-      {/* Feedback module — vertical layout; invisible during screenshot capture */}
-      {showTrigger && (
-        <div
-          className={cn(
-            'absolute z-40 flex flex-col gap-3',
-            !inset && positionClasses[position],
-            columnAlign,
-            capturing && 'invisible'
-          )}
-          style={insetStyle}
-        >
-          {/* Row 1: Toolbar actions + Trigger */}
-          <div className={cn('flex items-center gap-3', toolbarDirection)}>
-            {/* Trigger (lightbulb) */}
-            <FeedbackTrigger
-              onClick={handleTriggerClick}
-              isActive={showToolbar}
-              loading={capturing}
-              style={{ transformOrigin: growOrigin[position] }}
-            />
-
-            {/* Toolbar — expands opposite to trigger (default mode only) */}
-            {showToolbar && config.mode !== 'standalone' && (
-              <FeedbackToolbar
-                actions={resolvedActions}
-                onAction={handleActionClick}
-                growOrigin={position.includes('right') ? 'right center' : 'left center'}
-                activeThumb={activeThumb}
+      {/* All mus UI lives in a shadow root — fully isolated from host-app styles */}
+      <MusThemeRoot>
+        {/* Trigger + toolbar overlay — invisible during screenshot capture */}
+        {showTrigger && (
+          <div
+            className={cn(
+              'absolute z-40 flex flex-col gap-3',
+              !inset && positionClasses[position],
+              columnAlign,
+              capturing && 'invisible'
+            )}
+            style={insetStyle}
+          >
+            {/* Row 1: Toolbar actions + Trigger */}
+            <div className={cn('flex items-center gap-3', toolbarDirection)}>
+              <FeedbackTrigger
+                onClick={handleTriggerClick}
+                isActive={showToolbar}
+                loading={capturing}
+                style={{ transformOrigin: growOrigin[position] }}
+                icon={config.icons?.trigger}
               />
+
+              {showToolbar && config.mode !== 'standalone' && (
+                <FeedbackToolbar
+                  actions={resolvedActions}
+                  onAction={handleActionClick}
+                  growOrigin={position.includes('right') ? 'right center' : 'left center'}
+                  activeThumb={activeThumb}
+                />
+              )}
+            </div>
+
+            {/* Row 2: Video button (default mode only) */}
+            {hasVideo && config.mode !== 'standalone' && (
+              <button
+                onClick={() => handleActionClick('video')}
+                className={cn(
+                  'flex size-9 items-center justify-center rounded-[12px]',
+                  'bg-mus-accent-foreground text-mus-secondary-foreground',
+                  'shadow-[0_3px_3px_0_rgba(0,0,0,0.12)]',
+                  'hover:opacity-80 transition-opacity',
+                  'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(115,115,115,0.5)]',
+                  'mus-grow'
+                )}
+                aria-label="Introduction video"
+                title="Introduction video"
+              >
+                <Youtube className="size-4 pointer-events-none" />
+              </button>
             )}
           </div>
+        )}
 
-          {/* Row 2: Video button (default mode only) */}
-          {hasVideo && config.mode !== 'standalone' && (
-            <button
-              onClick={() => handleActionClick('video')}
-              className={cn(
-                'flex size-9 items-center justify-center rounded-[12px]',
-                'bg-mus-accent-foreground text-mus-accent',
-                'shadow-[0_3px_3px_0_rgba(0,0,0,0.12)]',
-                'hover:opacity-80 transition-opacity',
-                'focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(163,163,163,0.5)]',
-                'mus-grow'
-              )}
-              aria-label="Introduction video"
-              title="Introduction video"
-            >
-              <Youtube className="size-4 pointer-events-none" />
-            </button>
-          )}
-        </div>
-      )}
+        {/* Dialogs — default mode */}
+        {activeDialog === 'support' && (
+          <SupportDialog
+            sectionId={sectionId}
+            sectionName={sectionName}
+            onClose={handleDialogClose}
+          />
+        )}
+        {activeDialog === 'voice' && (
+          <FeedbackDialog
+            sectionId={sectionId}
+            sectionName={sectionName}
+            onClose={handleDialogClose}
+          />
+        )}
+        {activeDialog === 'video' && (
+          <VideoDialog
+            sectionId={sectionId}
+            sectionName={sectionName}
+            onClose={handleDialogClose}
+            videoUrl={videoUrl}
+          />
+        )}
 
-      {/* Dialogs — default mode */}
-      {activeDialog === 'support' && (
-        <SupportDialog
-          sectionId={sectionId}
-          sectionName={sectionName}
-          onClose={handleDialogClose}
-        />
-      )}
-      {activeDialog === 'voice' && (
-        <FeedbackDialog
-          sectionId={sectionId}
-          sectionName={sectionName}
-          onClose={handleDialogClose}
-        />
-      )}
-      {activeDialog === 'video' && (
-        <VideoDialog
-          sectionId={sectionId}
-          sectionName={sectionName}
-          onClose={handleDialogClose}
-          videoUrl={videoUrl}
-        />
-      )}
-
-      {/* Dialog — standalone mode */}
-      {standaloneOpen && (
-        <StandaloneFeedbackDialog
-          sectionId={sectionId}
-          sectionName={sectionName}
-          screenshot={standaloneScreenshot}
-          onClose={handleStandaloneClose}
-        />
-      )}
+        {/* Dialog — standalone mode */}
+        {standaloneOpen && (
+          <StandaloneFeedbackDialog
+            sectionId={sectionId}
+            sectionName={sectionName}
+            screenshot={standaloneScreenshot}
+            onClose={handleStandaloneClose}
+          />
+        )}
+      </MusThemeRoot>
     </div>
   )
 }
