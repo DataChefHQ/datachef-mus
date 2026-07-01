@@ -1,5 +1,5 @@
 ---
-title: CLI — mus init
+title: CLI mus init
 description: Use the mus init wizard to scaffold MUS configuration in your project.
 ---
 
@@ -15,10 +15,10 @@ npx @datachef/mus init
 
 The wizard asks four questions:
 
-1. **Project name** — used in Slack messages and support channel names
-2. **Slack feedback channel ID** — the channel where feedback posts land
-3. **Support team email(s)** — invited to new support channels
-4. **Slack proxy URL** — your backend endpoint that forwards to Slack (e.g. `/api/slack-proxy`)
+1. **Project name:** used in Slack messages and support channel names
+2. **Slack feedback channel ID:** the channel where feedback posts land
+3. **Support team email(s):** invited to new support channels
+4. **Slack proxy URL:** your backend endpoint that forwards to Slack (e.g. `/api/slack-proxy`)
 
 Then it:
 
@@ -77,4 +77,4 @@ cd mus && docker compose up -d
 
 ## Skipping the wizard
 
-You can also copy the config above and edit it manually — there's nothing magic about the init command. It's just a convenience.
+You can also copy the config above and edit it manually. There's nothing magic about the init command; it's just a convenience.

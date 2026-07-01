@@ -56,9 +56,9 @@ Set `MUS_SERVER_ADDR` via environment variable:
 | Deployment | Value |
 |------------|-------|
 | Docker Compose | `mus-server:3001` |
-| Kubernetes sidecar | omit — default `127.0.0.1:3001` applies |
+| Kubernetes sidecar | omit; default `127.0.0.1:3001` applies |
 
-## Permissions-Policy — critical for voice
+## Permissions-Policy: critical for voice
 
 :::caution[Voice recording will silently fail without this]
 If your nginx sets a `Permissions-Policy` header that blocks the microphone, voice recording fails with no visible error to the user.
@@ -74,7 +74,7 @@ add_header Permissions-Policy "microphone=(self)" always;
 
 ### nginx inheritance gotcha
 
-`add_header` inheritance is all-or-nothing per config level. Any `location` block that sets its own `add_header` must **repeat all security headers** — including `Permissions-Policy` — otherwise they are silently dropped for that location.
+`add_header` inheritance is all-or-nothing per config level. Any `location` block that sets its own `add_header` must **repeat all security headers**, including `Permissions-Policy`, otherwise they are silently dropped for that location.
 
 ```nginx
 # ✅ Both headers present in every location that uses add_header
@@ -111,4 +111,4 @@ Use the variable proxy pattern above. Direct `proxy_pass http://mus-server:3001`
 nginx's default body size is 1 MB. Voice recordings are larger. Add `client_max_body_size 15m;` to the `/api/mus/` location block.
 
 ### Voice works locally but fails in production
-Check `Permissions-Policy`. Local dev uses the Vite proxy (no nginx headers). Production nginx may have `microphone=()` — change to `microphone=(self)` in every location block that sets `add_header`.
+Check `Permissions-Policy`. Local dev uses the Vite proxy (no nginx headers). Production nginx may have `microphone=()`; change it to `microphone=(self)` in every location block that sets `add_header`.

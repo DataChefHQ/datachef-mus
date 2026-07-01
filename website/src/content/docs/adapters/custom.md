@@ -3,7 +3,7 @@ title: Custom Adapters
 description: Implement the MusAdapter interface to send feedback anywhere.
 ---
 
-If none of the built-in adapters fit your stack, implement `MusAdapter` directly. You only handle the event types you care about — unimplemented methods are silently skipped.
+If none of the built-in adapters fit your stack, implement `MusAdapter` directly. You only handle the event types you care about; unimplemented methods are silently skipped.
 
 ## Minimal example
 
@@ -52,7 +52,7 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 
 ## Adapter factory pattern
 
-When your adapter needs configuration, export a factory function — the same pattern as the built-in adapters:
+When your adapter needs configuration, export a factory function. This is the same pattern as the built-in adapters:
 
 ```ts
 import type { MusAdapter } from '@datachef/mus/adapters'

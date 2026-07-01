@@ -3,7 +3,7 @@ title: Next.js App Router
 description: Set up MUS server handlers in a Next.js App Router project.
 ---
 
-Create three route files — that's the entire backend setup.
+Create three route files. That's the entire backend setup.
 
 ```ts
 // app/api/mus/voice-upload/route.ts

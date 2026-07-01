@@ -1,9 +1,9 @@
 ---
-title: Adapters — Overview
+title: Adapters Overview
 description: Route MUS feedback to Slack, Discord, Teams, webhooks, or any custom destination.
 ---
 
-MUS is notification-agnostic. An **adapter** tells MUS where to send feedback. You configure it once in `createMusHandlers` and every event — voice, thumbs, support requests, standalone — flows through it.
+MUS is notification-agnostic. An **adapter** tells MUS where to send feedback. You configure it once in `createMusHandlers` and every event (voice, thumbs, support requests, standalone) flows through it.
 
 ## Quick setup
 
@@ -20,15 +20,15 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 
 | Adapter | Import | Use case |
 |---------|--------|----------|
-| [Slack](/adapters/slack) | `@datachef/mus/adapters/slack` | Full Slack integration — threads, channels, file uploads |
+| [Slack](/adapters/slack) | `@datachef/mus/adapters/slack` | Full Slack integration: threads, channels, file uploads |
 | [Discord](/adapters/discord) | `@datachef/mus/adapters/discord` | Discord channel via incoming webhook |
 | [Microsoft Teams](/adapters/teams) | `@datachef/mus/adapters/teams` | Teams channel via incoming webhook |
-| [Webhook](/adapters/webhook) | `@datachef/mus/adapters/webhook` | Any HTTP endpoint — Zapier, n8n, custom API |
-| [Custom](/adapters/custom) | — | Implement `MusAdapter` for any destination |
+| [Webhook](/adapters/webhook) | `@datachef/mus/adapters/webhook` | Any HTTP endpoint: Zapier, n8n, custom API |
+| [Custom](/adapters/custom) | (none) | Implement `MusAdapter` for any destination |
 
 ## Multiple adapters
 
-Pass an array to fan out to multiple destinations simultaneously. All adapters run in parallel — a failure in one doesn't block the others.
+Pass an array to fan out to multiple destinations simultaneously. All adapters run in parallel, so a failure in one doesn't block the others.
 
 ```ts
 createMusHandlers({
@@ -54,7 +54,7 @@ createMusHandlers({
 
 ## The MusAdapter interface
 
-Every adapter implements this interface. Only the methods you define are called — unimplemented methods are silently skipped.
+Every adapter implements this interface. Only the methods you define are called; unimplemented methods are silently skipped.
 
 ```ts
 interface MusAdapter {

@@ -15,8 +15,9 @@ const shouldRenderSearch =
 	<div class="title-wrapper sl-flex">
 		<SiteTitle />
 	</div>
-	<div class="sl-flex print:hidden">
+	<div class="sl-flex print:hidden center-group">
 		{shouldRenderSearch && <Search />}
+		<a href="/getting-started" class="header-docs-btn mobile-docs-btn md:sl-hidden">Documentation</a>
 	</div>
 	<div class="sl-hidden md:sl-flex print:hidden right-group">
 		<a href="/getting-started" class="header-docs-btn">Documentation</a>
@@ -43,6 +44,11 @@ const shouldRenderSearch =
 			padding: 0.25rem;
 			margin: -0.25rem;
 			min-width: 0;
+		}
+
+		.center-group {
+			align-items: center;
+			gap: 0.5rem;
 		}
 
 		.right-group,

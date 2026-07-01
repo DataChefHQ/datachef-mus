@@ -3,7 +3,7 @@ title: Vite SPA + Docker
 description: Run mus-server as a Docker container alongside a Vite React app.
 ---
 
-If your app has no backend (pure Vite SPA), run `mus-server` as a pre-built Docker container. No Node.js server to write — the image handles everything.
+If your app has no backend (pure Vite SPA), run `mus-server` as a pre-built Docker container. The image handles everything with no Node.js server to write.
 
 ## Development
 

@@ -22,7 +22,7 @@ The `actions` array determines toolbar order. List them in the order you want, l
       { type: 'support' },
       { type: 'thumbs-down' },
       { type: 'thumbs-up' },
-      { type: 'voice' },   // rightmost — closest to trigger
+      { type: 'voice' },   // rightmost, closest to trigger
     ],
   }}
 >
@@ -78,7 +78,7 @@ Each `FeedbackTarget` can override the provider-level actions:
 </FeedbackTarget>
 ```
 
-This section shows only the two thumbs — the voice and support actions from the provider are not shown here.
+This section shows only the two thumbs. The voice and support actions from the provider are not shown here.
 
 ## Adding the video action
 

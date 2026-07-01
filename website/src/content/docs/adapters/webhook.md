@@ -3,7 +3,7 @@ title: Webhook Adapter
 description: Post MUS feedback as JSON to any HTTP endpoint.
 ---
 
-The webhook adapter posts a JSON payload to any URL — useful for custom backends, Zapier, Make, n8n, or any service that accepts HTTP webhooks.
+The webhook adapter posts a JSON payload to any URL, making it useful for custom backends, Zapier, Make, n8n, or any service that accepts HTTP webhooks.
 
 ## Setup
 
@@ -77,8 +77,8 @@ webhookAdapter({
 
 ## Use cases
 
-- **Zapier / Make** — trigger a Zap or scenario from any MUS event
-- **n8n** — route feedback to any workflow
-- **Linear / Jira** — create issues from support requests
-- **Analytics** — log feedback events to your own data pipeline
-- **Custom notification service** — fan out to multiple channels with your own logic
+- **Zapier / Make:** trigger a Zap or scenario from any MUS event
+- **n8n:** route feedback to any workflow
+- **Linear / Jira:** create issues from support requests
+- **Analytics:** log feedback events to your own data pipeline
+- **Custom notification service:** fan out to multiple channels with your own logic

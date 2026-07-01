@@ -85,7 +85,7 @@ app.post('/api/mus/support-channel', async (c) => {
 })
 ```
 
-Hono's `c.req.raw` is already a Web `Request` — no adapter needed.
+Hono's `c.req.raw` is already a Web `Request`, so no adapter is needed.
 
 ---
 

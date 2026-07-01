@@ -7,18 +7,42 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const distMusCss = path.resolve(__dirname, '../dist/mus.css')
+const srcIndexTs = path.resolve(__dirname, '../src/index.ts')
+
 export default defineConfig({
 	site: 'https://mus.datachef.co',
 	vite: {
+		server: {
+			fs: {
+				// Allow serving files from the monorepo root (needed for /@fs/ access to ../src/)
+				allow: [path.resolve(__dirname, '..')],
+			},
+		},
 		resolve: {
 			alias: [
-				// Point main entry directly at source TS — no dist rebuild needed for component changes
-				{ find: '@datachef/mus', replacement: path.resolve(__dirname, '../src/index.ts') },
-				// Resolve the package's internal @/ alias
+				// Internal @/ path alias for the mus source package
 				{ find: '@/', replacement: path.resolve(__dirname, '../src/') + '/' },
-				// styles.css resolves via package exports to dist/mus.css (pre-compiled Tailwind)
+				// Force lucide-react to the root version — the website ships 1.23.0 which
+				// dropped Youtube; the MUS source requires the root's 0.577.0 icons.
+				{ find: 'lucide-react', replacement: path.resolve(__dirname, '../node_modules/lucide-react') },
 			],
 		},
+		plugins: [
+			{
+				// Resolve @datachefhq/mus imports directly to source TS in both client and SSR.
+				// Also redirects src/index.ts's raw CSS import to the pre-compiled dist/mus.css
+				// (the source CSS contains @tailwind directives that require the Tailwind plugin).
+				name: 'mus-resolve',
+				enforce: 'pre',
+				resolveId(id, importer) {
+					if (id === '@datachefhq/mus/styles.css') return distMusCss
+					if (id === '@datachefhq/mus') return srcIndexTs
+					// Suppress the raw Tailwind source CSS from src/index.ts (no Tailwind plugin here)
+					if (id === './styles/index.css' && importer?.includes('/src/index.ts')) return distMusCss
+				},
+			},
+		],
 	},
 	integrations: [
 		react(),
@@ -29,22 +53,22 @@ export default defineConfig({
 				// Open Graph
 				{ tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
 				{ tag: 'meta', attrs: { property: 'og:url', content: 'https://mus.datachef.co' } },
-				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS — Explainability and feedback, embedded exactly where AI output is served' } },
-				{ tag: 'meta', attrs: { property: 'og:description', content: 'When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen. Not in a form. Not in a meeting.' } },
+				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
+				{ tag: 'meta', attrs: { property: 'og:description', content: 'When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen. Embedded in any AI product with a face.' } },
 				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://mus.datachef.co/og-image.png' } },
 				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
 				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
 				// Twitter card
 				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
-				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS — Explainability and feedback, embedded exactly where AI output is served' } },
-				{ tag: 'meta', attrs: { name: 'twitter:description', content: 'When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen.' } },
+				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
+				{ tag: 'meta', attrs: { name: 'twitter:description', content: 'When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen.' } },
 				{ tag: 'meta', attrs: { name: 'twitter:image', content: 'https://mus.datachef.co/og-image.png' } },
 				// Theme color
 				{ tag: 'meta', attrs: { name: 'theme-color', content: '#2d6a4f' } },
 			],
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/DataChefHQ/datachef-mus' },
-				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachef/mus' },
+				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachefhq/mus' },
 			],
 			logo: {
 				light: './src/assets/logo-light.svg',

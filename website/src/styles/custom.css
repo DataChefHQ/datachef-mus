@@ -124,14 +124,60 @@
 }
 
 /* =====================================================
+   Demo notice
+   ===================================================== */
+
+.demo-notice {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+  background: color-mix(in srgb, var(--sl-color-accent) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  margin: 3rem 0 0.75rem;
+  line-height: 1.4;
+}
+
+.demo-notice::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sl-color-accent-high);
+  flex-shrink: 0;
+  margin-top: 0.6em;
+}
+
+[data-theme='light'] .demo-notice {
+  color: #374151;
+}
+
+/* =====================================================
    Card grid (the three pillars)
    ===================================================== */
 
-.card-grid {
+.feature-cards {
+  display: flex;
   align-items: stretch;
+  gap: 1rem;
+  margin-block: 1.5rem;
 }
 
-.card-grid .card {
+@media (max-width: 720px) {
+  .feature-cards {
+    flex-direction: column;
+  }
+}
+
+.feature-card {
+  margin-top: 0 !important;
+  flex: 1 1 0;
+  align-self: stretch !important;
+  min-height: 0;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--sl-color-accent) 6%, transparent),
@@ -145,7 +191,7 @@
   z-index: 0;
 }
 
-.card-grid .card:hover {
+.feature-card:hover {
   transform: translateY(-6px);
   border-color: var(--sl-color-accent-high);
   background: linear-gradient(
@@ -159,14 +205,45 @@
   z-index: 1;
 }
 
-.card-grid .card .icon {
-  color: var(--sl-color-accent-high);
+.feature-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.card-grid .card .title {
+.feature-card-header strong {
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.feature-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 28%, transparent);
+  color: var(--sl-color-accent-high);
+  flex-shrink: 0;
+}
+
+[data-theme='light'] .feature-card-icon {
+  color: var(--sl-color-accent);
+}
+
+.feature-card > p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--sl-color-gray-2);
+}
+
+[data-theme='light'] .feature-card > p {
+  color: var(--sl-color-gray-4);
 }
 
 /* =====================================================
@@ -274,7 +351,7 @@
   box-shadow: 0 8px 24px -12px color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
 }
 
-/* Aggressively hide native disclosure markers across all browsers */
+/* Hide all disclosure markers — native, Starlight's ::before, and browser-specific */
 .mus-faq summary {
   display: flex;
   align-items: center;
@@ -290,6 +367,11 @@
   list-style-type: none;
   transition: color 0.2s ease;
   user-select: none;
+}
+
+.mus-faq summary::before {
+  display: none !important;
+  content: '' !important;
 }
 
 .mus-faq summary::-webkit-details-marker,
@@ -488,6 +570,20 @@ header.header [data-open-modal]:hover {
 /* Hide individual key boxes — replaced by a single ⌘K badge pushed to the right */
 header.header [data-open-modal] kbd {
   display: none;
+}
+
+
+/* Mobile-only docs button: hidden on desktop (desktop has it in the right group) */
+@media (min-width: 50rem) {
+  .mobile-docs-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 50rem) {
+    header.header [data-open-modal] {
+    display: none !important;
+  }
 }
 
 header.header [data-open-modal] {

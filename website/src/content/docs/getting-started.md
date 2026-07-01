@@ -20,7 +20,7 @@ yarn add @datachef/mus
 
 ### 1. Import styles
 
-Add the CSS import once — usually in your entry file or root layout:
+Add the CSS import once, usually in your entry file or root layout:
 
 ```tsx
 import '@datachef/mus/styles.css'
@@ -28,7 +28,7 @@ import '@datachef/mus/styles.css'
 
 ### 2. Wrap your app with `MusProvider`
 
-`MusProvider` provides configuration to all `FeedbackTarget` components in the tree. Put it high up — above your router.
+`MusProvider` provides configuration to all `FeedbackTarget` components in the tree. Put it high up, above your router.
 
 ```tsx
 import { MusProvider } from '@datachef/mus'
@@ -116,6 +116,6 @@ The CLI detects your framework (Vite / Next.js), package manager, and TypeScript
 
 ## Next steps
 
-- [Configuration reference](/configuration) — full `MusConfig` options
-- [Server setup](/server/overview) — Next.js, Express, Vite+Docker
-- [Deployment](/deployment/docker) — Docker Compose, nginx, Kubernetes
+- [Configuration reference](/configuration): full `MusConfig` options
+- [Server setup](/server/overview): Next.js, Express, Vite+Docker
+- [Deployment](/deployment/docker): Docker Compose, nginx, Kubernetes

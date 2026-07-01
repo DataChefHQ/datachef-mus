@@ -18,7 +18,7 @@ Wrap your app (or any subtree) with `<MusProvider>`. All `FeedbackTarget` compon
       feedbackChannelId: 'C0XXXXXXXXX',
     },
 
-    // Optional user info — pre-fills forms
+    // Optional user info (pre-fills forms)
     user: {
       name: 'Jane Doe',
       email: 'jane@example.com',
@@ -90,7 +90,7 @@ triggerPosition: 'bottom-right'
 triggerPosition: 'bottom-left'
 ```
 
-The lightbulb trigger straddles the edge of the section — half inside, half outside.
+The lightbulb trigger straddles the edge of the section, half inside and half outside.
 
 ### `inset` prop
 

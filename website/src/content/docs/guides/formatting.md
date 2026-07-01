@@ -5,7 +5,7 @@ description: Customise how MUS messages look in Slack, Discord, Teams, or any ad
 
 Every built-in adapter has an opinionated default message format. Override it globally or per event type.
 
-## Slack — per event type
+## Slack: per event type
 
 ```ts
 slackAdapter({
@@ -33,7 +33,7 @@ slackAdapter({
 })
 ```
 
-## Slack — global override
+## Slack: global override
 
 A single function receives every event:
 
@@ -66,7 +66,7 @@ discordAdapter({
 })
 ```
 
-## Webhook — custom payload shape
+## Webhook: custom payload shape
 
 ```ts
 webhookAdapter({

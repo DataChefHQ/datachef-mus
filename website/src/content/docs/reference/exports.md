@@ -3,7 +3,7 @@ title: Package Exports
 description: All exports from @datachef/mus and its sub-paths.
 ---
 
-## Main package — `@datachef/mus`
+## Main package: `@datachef/mus`
 
 ```ts
 // Components
@@ -45,7 +45,7 @@ import type {
 import '@datachef/mus/styles.css'
 ```
 
-## Server — `@datachef/mus/server`
+## Server: `@datachef/mus/server`
 
 ```ts
 import {
@@ -58,7 +58,7 @@ import {
 import type { MusAdapter } from '@datachef/mus/server'
 ```
 
-## Adapters — `@datachef/mus/adapters/*`
+## Adapters: `@datachef/mus/adapters/*`
 
 Each adapter is a separate sub-path import:
 
@@ -75,7 +75,7 @@ The `MusAdapter` interface (also re-exported from `@datachef/mus/server`):
 import type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '@datachef/mus/server'
 ```
 
-## User resolvers — `@datachef/mus/resolvers/*`
+## User resolvers: `@datachef/mus/resolvers/*`
 
 ```ts
 import { stytchResolver }   from '@datachef/mus/resolvers/stytch'
@@ -84,7 +84,7 @@ import { auth0Resolver }    from '@datachef/mus/resolvers/auth0'
 import { nextAuthResolver } from '@datachef/mus/resolvers/next-auth'
 ```
 
-## Vite plugin — `@datachef/mus/vite`
+## Vite plugin: `@datachef/mus/vite`
 
 ```ts
 import { musVitePlugins } from '@datachef/mus/vite'
@@ -92,7 +92,7 @@ import { musVitePlugins } from '@datachef/mus/vite'
 
 Used in `vite.config.ts` to start a local development server with `SLACK_BOT_TOKEN` from the environment.
 
-## Chrome extension — `@datachef/mus/chrome`
+## Chrome extension: `@datachef/mus/chrome`
 
 ```ts
 import { ... } from '@datachef/mus/chrome'

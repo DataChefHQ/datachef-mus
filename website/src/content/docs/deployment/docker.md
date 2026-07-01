@@ -3,7 +3,7 @@ title: Docker Compose
 description: Run mus-server alongside your frontend with Docker Compose.
 ---
 
-Add `mus-server` as a service in `docker-compose.yml`. Your frontend's nginx reaches it by service name over the internal Docker network — no exposed port needed.
+Add `mus-server` as a service in `docker-compose.yml`. Your frontend's nginx reaches it by service name over the internal Docker network with no exposed port needed.
 
 ```yaml
 services:

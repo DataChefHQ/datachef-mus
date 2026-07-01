@@ -11,7 +11,7 @@ When AI outputs need to be questioned, explained, or challenged, that should hap
 
 ## What it looks like
 
-Wrap any output with `<FeedbackTarget>`. Users hover. A toolbar appears — exactly where the output lives.
+Wrap any output with `<FeedbackTarget>`. Users hover. A toolbar appears exactly where the output lives.
 
 ```tsx
 import { MusProvider, FeedbackTarget } from '@datachef/mus'
@@ -35,7 +35,7 @@ function App() {
 }
 ```
 
-One hover. No forms. No context switching. The reaction lands in your Slack — attached to the exact section.
+One hover. No forms. No context switching. The reaction lands in your Slack, attached to the exact section.
 
 ---
 
@@ -43,10 +43,10 @@ One hover. No forms. No context switching. The reaction lands in your Slack — 
 
 | Action | What happens |
 |--------|--------------|
-| 💬 **Support** | Opens a dedicated Slack channel between the user and your team — one click, full context already attached |
-| 🎤 **Voice** | Records a voice clip (up to 3 min) — converted to MP3 and posted to Slack with the section name |
-| 👍 / 👎 **Thumbs** | Fire-and-forget — instant signal, zero friction |
-| ▶ **Video** | Plays an explainer video attached to that section — context that stays, not a one-time tour |
+| 💬 **Support** | Opens a dedicated Slack channel between the user and your team. One click, full context already attached |
+| 🎤 **Voice** | Records a voice clip (up to 3 min), converted to MP3 and posted to Slack with the section name |
+| 👍 / 👎 **Thumbs** | Fire-and-forget: instant signal, zero friction |
+| ▶ **Video** | Plays an explainer video attached to that section. Context that stays, not a one-time tour |
 
 ---
 
@@ -59,14 +59,14 @@ npm install @datachef/mus
 For voice feedback, also install the optional audio converter:
 
 ```bash
-npm install ffmpeg-static   # optional — falls back to system ffmpeg
+npm install ffmpeg-static   # optional; falls back to system ffmpeg
 ```
 
 ---
 
 ## Server setup
 
-The package ships ready-made server handlers. Keep `SLACK_BOT_TOKEN` on the server — never in the browser.
+The package ships ready-made server handlers. Keep `SLACK_BOT_TOKEN` on the server and never in the browser.
 
 ### Next.js (App Router)
 
@@ -112,7 +112,7 @@ export default defineConfig({
 })
 ```
 
-Production: run the pre-built `mus-server` Docker image alongside your app — no Node.js server to maintain:
+Production: run the pre-built `mus-server` Docker image alongside your app. No Node.js server to maintain:
 
 ```yaml
 services:
@@ -137,19 +137,19 @@ import { clerkResolver } from '@datachef/mus/resolvers/clerk'
 }}>
 ```
 
-Built-in resolvers: `stytchResolver`, `clerkResolver`, `auth0Resolver`, `nextAuthResolver`. Or write your own — a resolver is just a React hook that returns `{ name, email }`.
+Built-in resolvers: `stytchResolver`, `clerkResolver`, `auth0Resolver`, `nextAuthResolver`. Or write your own: a resolver is just a React hook that returns `{ name, email }`.
 
 ---
 
 ## Full docs
 
-**[mus.datachef.co](https://mus.datachef.co)** — configuration reference, adapters, resolvers, server setup guides for Next.js / Express / Hono / Vite.
+**[mus.datachef.co](https://mus.datachef.co)**: configuration reference, adapters, resolvers, and server setup guides for Next.js / Express / Hono / Vite.
 
 ---
 
 ## Non-React backends
 
-The component library is React (18 and 19). The server handlers and `mus-server` Docker image are framework-agnostic — your backend can be anything.
+The component library is React (18 and 19). The server handlers and `mus-server` Docker image are framework-agnostic, so your backend can be anything.
 
 ---
 

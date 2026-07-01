@@ -3,7 +3,7 @@ title: Slack Adapter
 description: Send MUS feedback directly to Slack via bot token.
 ---
 
-The Slack adapter posts feedback messages, uploads voice recordings, creates support channels, and invites users — all via the Slack API using a bot token.
+The Slack adapter posts feedback messages, uploads voice recordings, creates support channels, and invites users, all via the Slack API using a bot token.
 
 ## Setup
 
@@ -82,4 +82,4 @@ slackAdapter({
 1. Open Slack → right-click the channel → **View channel details**
 2. The channel ID is at the bottom (e.g. `C0XXXXXXXXX`)
 
-Or from the channel URL: `https://app.slack.com/client/T.../C0XXXXXXXXX` — the `C0XXXXXXXXX` part.
+Or from the channel URL: `https://app.slack.com/client/T.../C0XXXXXXXXX`. The channel ID is the `C0XXXXXXXXX` part.

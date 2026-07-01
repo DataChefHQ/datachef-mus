@@ -3,7 +3,7 @@ title: Theming & Icons
 description: Customize MUS colors and icons to match your brand.
 ---
 
-MUS renders in the light DOM, so its colors are controlled by CSS custom properties with a `--mus-` prefix. Override any of them in your own stylesheet — no config changes needed.
+MUS renders in the light DOM, so its colors are controlled by CSS custom properties with a `--mus-` prefix. Override any of them in your own stylesheet with no config changes needed.
 
 ## Quick start
 
@@ -50,7 +50,7 @@ To style MUS differently on one page without affecting others, scope your overri
 
 ## Light mode
 
-MUS respects the `theme` prop passed to `MusProvider` (`'light'`, `'dark'`, or `'auto'`). Light-mode defaults are defined separately — override them the same way:
+MUS respects the `theme` prop passed to `MusProvider` (`'light'`, `'dark'`, or `'auto'`). Light-mode defaults are defined separately; override them the same way:
 
 ```css
 [data-mus-theme="light"] {
@@ -93,7 +93,7 @@ import { Star, HeartHandshake, Mic, ThumbsUp, ThumbsDown, Play } from 'lucide-re
 }}>
 ```
 
-You can pass any React node — Lucide icons, custom SVGs, emoji, images. Omit any key to keep the default.
+You can pass any React node: Lucide icons, custom SVGs, emoji, images. Omit any key to keep the default.
 
 | Key | Default icon | Used in |
 |---|---|---|

@@ -5,7 +5,7 @@ description: Common MUS issues and how to fix them.
 
 ## Voice recording silently fails
 
-**Cause:** The browser's `Permissions-Policy` header blocks microphone access. The browser doesn't show an error — recording just never starts.
+**Cause:** The browser's `Permissions-Policy` header blocks microphone access. The browser doesn't show an error; recording just never starts.
 
 **Fix:** Change `microphone=()` to `microphone=(self)` in your nginx config:
 
@@ -17,7 +17,7 @@ add_header Permissions-Policy "microphone=()" always;
 add_header Permissions-Policy "microphone=(self)" always;
 ```
 
-Repeat this change in **every** `location` block that sets its own `add_header` — nginx's header inheritance is all-or-nothing per level.
+Repeat this change in **every** `location` block that sets its own `add_header`, because nginx's header inheritance is all-or-nothing per level.
 
 ---
 
@@ -42,7 +42,7 @@ See [nginx](/deployment/nginx) for the full entrypoint script.
 
 ## Voice upload returns 413
 
-**Cause:** nginx's default body size limit is 1 MB — too small for audio files.
+**Cause:** nginx's default body size limit is 1 MB, which is too small for audio files.
 
 **Fix:** Add `client_max_body_size 15m;` to the `/api/mus/` location block.
 
@@ -52,9 +52,9 @@ See [nginx](/deployment/nginx) for the full entrypoint script.
 
 Check in order:
 
-1. `enabled: true` in `musConfig` (or omit it — default is `true`)
+1. `enabled: true` in `musConfig` (or omit it; the default is `true`)
 2. `MusProvider` wraps the full app tree, above the router
-3. Browser console — look for `useMusConfig must be used within a <MusProvider>`
+3. Browser console: look for `useMusConfig must be used within a <MusProvider>`
 4. CSS import: `import '@datachef/mus/styles.css'`
 5. No z-index conflicts with a sticky header or overlay
 
@@ -78,7 +78,7 @@ The PAT needs `read:packages` scope.
 
 **Cause:** The automatic `GITHUB_TOKEN` in GitHub Actions cannot read packages from other repos.
 
-**Fix:** Create a personal PAT with `read:packages` scope, store it as a repo secret (e.g. `PACKAGES_READ_TOKEN`), and pass it to the Docker build as a secret — not as a plain env var that ends up in image layers.
+**Fix:** Create a personal PAT with `read:packages` scope, store it as a repo secret (e.g. `PACKAGES_READ_TOKEN`), and pass it to the Docker build as a secret rather than as a plain env var that ends up in image layers.
 
 ---
 

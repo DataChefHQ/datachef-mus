@@ -41,14 +41,14 @@ interface SupportEvent {
   topic: string                 // User's message / explanation
   sectionId: string
   sectionName: string
-  supportTeamEmails: string[]   // From SlackConfig — team members to invite
+  supportTeamEmails: string[]   // From SlackConfig: team members to invite
   feedbackChannelId?: string    // Fallback channel for anonymous requests
   channelNamePrefix: string     // Default: "support"
   isAuthenticated: boolean      // true if email is non-empty
 }
 ```
 
-`onSupportRequest` should return `{ channelId?: string }` — the channel ID is sent back to the client to open the support link.
+`onSupportRequest` should return `{ channelId?: string }`. The channel ID is sent back to the client to open the support link.
 
 ## StandaloneEvent
 
@@ -79,4 +79,4 @@ interface StandaloneEvent {
 | `SupportEvent` | `onSupportRequest` |
 | `StandaloneEvent` | `onStandaloneFeedback` |
 
-Thumbs up/down feedback is sent directly to your Slack proxy URL — it does not go through the adapter system.
+Thumbs up/down feedback is sent directly to your Slack proxy URL and does not go through the adapter system.

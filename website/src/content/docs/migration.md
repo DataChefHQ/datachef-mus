@@ -3,7 +3,7 @@ title: Upgrade Guide
 description: How to adopt new MUS features while keeping existing integrations working.
 ---
 
-All existing `POST`, `POSTStandalone`, and `POSTSupportChannel` exports continue to work unchanged. Nothing is removed or deprecated — you can adopt new features incrementally.
+All existing `POST`, `POSTStandalone`, and `POSTSupportChannel` exports continue to work unchanged. Nothing is removed or deprecated, so you can adopt new features incrementally.
 
 ## Server handlers
 
@@ -57,7 +57,7 @@ See [Adapters](/adapters/overview) for all built-in adapters and how to write a 
 
 ## Upgrading to v0.4.0
 
-### Stytch auto-detection removed — action required for Stytch users
+### Stytch auto-detection removed: action required for Stytch users
 
 Prior to v0.4.0, MUS automatically detected a Stytch session if `@stytch/react` was installed. This has been removed. If your app uses Stytch, add `userResolver` explicitly:
 
@@ -108,7 +108,7 @@ import { auth0Resolver }    from '@datachef/mus/resolvers/auth0'
 import { nextAuthResolver } from '@datachef/mus/resolvers/next-auth'
 ```
 
-You can also write your own — see [Custom Resolvers](/resolvers/custom).
+You can also write your own. See [Custom Resolvers](/resolvers/custom).
 
 ---
 

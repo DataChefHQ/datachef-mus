@@ -3,7 +3,7 @@ title: Custom Resolvers
 description: Write a user resolver for any auth system or data source.
 ---
 
-A `UserResolver` is a React hook — a function that calls other hooks and returns `{ name, email }` or `null`.
+A `UserResolver` is a React hook: a function that calls other hooks and returns `{ name, email }` or `null`.
 
 ```ts
 type UserResolver = () => { name: string; email: string } | null
@@ -93,7 +93,7 @@ const apiResolver: UserResolver = () => {
 
 ## Resolver factory pattern
 
-If you want to pass options (e.g. a config object), wrap the resolver in a factory function — the same pattern used by the built-in resolvers:
+If you want to pass options (e.g. a config object), wrap the resolver in a factory function. This is the same pattern used by the built-in resolvers:
 
 ```ts
 import type { UserResolver } from '@datachef/mus'
@@ -120,6 +120,6 @@ function myAuthResolver(options?: { fallbackName?: string }): UserResolver {
 
 A user resolver is a React hook, so the [Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks) apply:
 
-- Do not call conditionally — the hook is always called inside `MusProvider`
+- Do not call conditionally; the hook is always called inside `MusProvider`
 - Do not call inside loops or nested functions
 - You can call other hooks (`useState`, `useEffect`, `useContext`, etc.) freely

@@ -3,7 +3,7 @@ title: Kubernetes
 description: Run mus-server as a sidecar container in your Kubernetes deployment.
 ---
 
-Run `mus-server` as a sidecar in the same pod as your frontend. nginx reaches it at `127.0.0.1:3001` — no Kubernetes service or DNS needed.
+Run `mus-server` as a sidecar in the same pod as your frontend. nginx reaches it at `127.0.0.1:3001` with no Kubernetes service or DNS needed.
 
 ## Deployment spec
 
@@ -94,7 +94,7 @@ frontend:
 
 ## nginx config
 
-With `MUS_SERVER_ADDR=127.0.0.1:3001`, the entrypoint substitutes the variable and nginx proxies to the sidecar on localhost. No `resolver` directive is needed (no DNS lookup — it's loopback).
+With `MUS_SERVER_ADDR=127.0.0.1:3001`, the entrypoint substitutes the variable and nginx proxies to the sidecar on localhost. No `resolver` directive is needed because there is no DNS lookup; it's loopback.
 
 For the full nginx setup see [nginx](/deployment/nginx).
 
