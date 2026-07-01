@@ -1,3 +1,18 @@
+## 1.0.0 (2026-07-01)
+
+### Features
+- feat: add adapter for auth and notify flow
+
+### Bug Fixes
+- fix: build issue on cloudflare
+
+### Other Changes
+- chore: update package scope to @datachef/mus
+- chore: add wrangler.toml for Cloudflare static asset deployment
+- chore: update readme
+- docs: add documentation for configuring MUS
+- chore: prepare for open source release — MIT license, npm publish, CLI init, contributors
+
 ## 0.4.0 (2026-06-29)
 
 ### Breaking Changes
