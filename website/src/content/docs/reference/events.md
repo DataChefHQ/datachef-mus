@@ -3,10 +3,10 @@ title: Event Types
 description: TypeScript interfaces for all MUS adapter events.
 ---
 
-These are the event objects passed to adapter methods. All types are importable from `@datachefhq/mus/server`.
+These are the event objects passed to adapter methods. All types are importable from `@datachef/mus/server`.
 
 ```ts
-import type { VoiceEvent, SupportEvent, StandaloneEvent } from '@datachefhq/mus/server'
+import type { VoiceEvent, SupportEvent, StandaloneEvent } from '@datachef/mus/server'
 ```
 
 ## VoiceEvent

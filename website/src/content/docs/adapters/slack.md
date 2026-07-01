@@ -8,8 +8,8 @@ The Slack adapter posts feedback messages, uploads voice recordings, creates sup
 ## Setup
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+import { createMusHandlers } from '@datachef/mus/server'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: slackAdapter({

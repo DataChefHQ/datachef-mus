@@ -19,7 +19,7 @@ Import the resolver for your auth system and pass it to `MusProvider`:
 ### Stytch
 
 ```ts
-import { stytchResolver } from '@datachefhq/mus/resolvers/stytch'
+import { stytchResolver } from '@datachef/mus/resolvers/stytch'
 
 <MusProvider config={{
   projectName: 'My App',
@@ -33,7 +33,7 @@ Requires `@stytch/react` in your project.
 ### Clerk
 
 ```ts
-import { clerkResolver } from '@datachefhq/mus/resolvers/clerk'
+import { clerkResolver } from '@datachef/mus/resolvers/clerk'
 
 <MusProvider config={{
   ...
@@ -46,7 +46,7 @@ Requires `@clerk/clerk-react` in your project.
 ### Auth0
 
 ```ts
-import { auth0Resolver } from '@datachefhq/mus/resolvers/auth0'
+import { auth0Resolver } from '@datachef/mus/resolvers/auth0'
 
 <MusProvider config={{
   ...
@@ -59,7 +59,7 @@ Requires `@auth0/auth0-react` in your project.
 ### NextAuth
 
 ```ts
-import { nextAuthResolver } from '@datachefhq/mus/resolvers/next-auth'
+import { nextAuthResolver } from '@datachef/mus/resolvers/next-auth'
 
 <MusProvider config={{
   ...

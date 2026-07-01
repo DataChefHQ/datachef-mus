@@ -7,13 +7,13 @@ description: Install MUS and add the feedback toolbar to your React app in minut
 
 ```bash
 # npm
-npm install @datachefhq/mus
+npm install @datachef/mus
 
 # pnpm
-pnpm add @datachefhq/mus
+pnpm add @datachef/mus
 
 # yarn
-yarn add @datachefhq/mus
+yarn add @datachef/mus
 ```
 
 ## Quick start
@@ -23,7 +23,7 @@ yarn add @datachefhq/mus
 Add the CSS import once — usually in your entry file or root layout:
 
 ```tsx
-import '@datachefhq/mus/styles.css'
+import '@datachef/mus/styles.css'
 ```
 
 ### 2. Wrap your app with `MusProvider`
@@ -31,8 +31,8 @@ import '@datachefhq/mus/styles.css'
 `MusProvider` provides configuration to all `FeedbackTarget` components in the tree. Put it high up — above your router.
 
 ```tsx
-import { MusProvider } from '@datachefhq/mus'
-import '@datachefhq/mus/styles.css'
+import { MusProvider } from '@datachef/mus'
+import '@datachef/mus/styles.css'
 
 function App() {
   return (
@@ -57,7 +57,7 @@ function App() {
 Wrap any part of your UI to make it feedback-able. Users hover for 500 ms and the lightbulb icon appears.
 
 ```tsx
-import { FeedbackTarget } from '@datachefhq/mus'
+import { FeedbackTarget } from '@datachef/mus'
 
 function Dashboard() {
   return (
@@ -105,7 +105,7 @@ server: {
 Run the init wizard to get an interactive setup:
 
 ```bash
-npx @datachefhq/mus init
+npx @datachef/mus init
 ```
 
 The CLI detects your framework (Vite / Next.js), package manager, and TypeScript usage, then:

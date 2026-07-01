@@ -139,7 +139,7 @@ async function uploadToSlack(
  *
  * @example
  * ```ts
- * import { slackAdapter } from '@datachefhq/mus/adapters'
+ * import { slackAdapter } from '@datachef/mus/adapters'
  *
  * const adapter = slackAdapter({ token: process.env.SLACK_BOT_TOKEN! })
  * ```

@@ -10,7 +10,7 @@ export interface StandaloneConfig {
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
 
   /** Upload endpoint for screenshot + voice (default: '/api/mus/standalone-upload').
-   *  The package provides a ready-made handler — see `@datachefhq/mus/server` (POSTStandalone). */
+   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTStandalone). */
   uploadUrl?: string
 }
 
@@ -47,11 +47,11 @@ export interface SlackConfig {
   channelNamePrefix?: string
 
   /** URL for the voice upload endpoint (default: "/api/mus/voice-upload").
-   *  The package provides a ready-made handler — see `@datachefhq/mus/server`. */
+   *  The package provides a ready-made handler — see `@datachef/mus/server`. */
   voiceUploadUrl?: string
 
   /** URL for the support channel endpoint (default: "/api/mus/support-channel").
-   *  The package provides a ready-made handler — see `@datachefhq/mus/server` (POSTSupportChannel). */
+   *  The package provides a ready-made handler — see `@datachef/mus/server` (POSTSupportChannel). */
   supportChannelUrl?: string
 }
 
@@ -126,7 +126,7 @@ export interface MusConfig {
   /** Override user info — if not provided, falls back to Stytch session */
   user?: { name?: string; email?: string }
 
-  /** Pluggable auth resolver hook — see @datachefhq/mus/resolvers/* for built-ins.
+  /** Pluggable auth resolver hook — see @datachef/mus/resolvers/* for built-ins.
    *  Takes priority over automatic Stytch detection; config.user always wins. */
   userResolver?: UserResolver
 

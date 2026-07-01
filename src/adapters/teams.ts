@@ -34,7 +34,7 @@ async function postCard(webhookUrl: string, card: TeamsMessageCard): Promise<voi
  *
  * @example
  * ```ts
- * import { teamsAdapter } from '@datachefhq/mus/adapters'
+ * import { teamsAdapter } from '@datachef/mus/adapters'
  *
  * const adapter = teamsAdapter({ webhookUrl: process.env.TEAMS_WEBHOOK_URL! })
  * ```

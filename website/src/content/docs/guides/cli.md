@@ -8,7 +8,7 @@ The `mus init` command walks you through a quick setup and generates config file
 ## Usage
 
 ```bash
-npx @datachefhq/mus init
+npx @datachef/mus init
 ```
 
 ## What it does
@@ -32,7 +32,7 @@ Then it:
 ### `src/lib/mus.config.js`
 
 ```js
-/** @type {import('@datachefhq/mus').MusConfig} */
+/** @type {import('@datachef/mus').MusConfig} */
 export const musConfig = {
   projectName: 'Your App',
   projectSlug: 'your-app',

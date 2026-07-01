@@ -14,7 +14,7 @@ Return `null` when the user is not logged in. MUS falls back to `{ name: 'Anonym
 Pass it directly to `MusProvider`:
 
 ```tsx
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 <MusProvider config={{
   projectName: 'My App',
@@ -26,7 +26,7 @@ import type { UserResolver } from '@datachefhq/mus'
 ## Your own auth context
 
 ```ts
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 const myResolver: UserResolver = () => {
   const { currentUser } = useMyAuthContext()  // your own hook
@@ -42,7 +42,7 @@ const myResolver: UserResolver = () => {
 
 ```ts
 import { useState, useEffect } from 'react'
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 const localStorageResolver: UserResolver = () => {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
@@ -64,7 +64,7 @@ const localStorageResolver: UserResolver = () => {
 
 ```ts
 import Cookies from 'js-cookie'
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 const cookieResolver: UserResolver = () => {
   const name = Cookies.get('user_name')
@@ -77,7 +77,7 @@ const cookieResolver: UserResolver = () => {
 ## React Query / SWR
 
 ```ts
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 const apiResolver: UserResolver = () => {
   const { data } = useQuery({
@@ -96,7 +96,7 @@ const apiResolver: UserResolver = () => {
 If you want to pass options (e.g. a config object), wrap the resolver in a factory function — the same pattern used by the built-in resolvers:
 
 ```ts
-import type { UserResolver } from '@datachefhq/mus'
+import type { UserResolver } from '@datachef/mus'
 
 function myAuthResolver(options?: { fallbackName?: string }): UserResolver {
   return () => {

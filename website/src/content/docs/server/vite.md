@@ -13,7 +13,7 @@ Add a Vite proxy so browser requests reach the local `mus-server`:
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { musVitePlugins } from '@datachefhq/mus/vite'
+import { musVitePlugins } from '@datachef/mus/vite'
 
 export default defineConfig({
   plugins: [react(), ...musVitePlugins()],

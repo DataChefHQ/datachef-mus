@@ -9,7 +9,7 @@ The MUS handlers use the Web Request/Response API (same as `fetch`). Use a small
 
 ```ts
 import express from 'express'
-import { POST, POSTStandalone, POSTSupportChannel } from '@datachefhq/mus/server'
+import { POST, POSTStandalone, POSTSupportChannel } from '@datachef/mus/server'
 
 function toWebHandler(fn: (req: Request) => Promise<Response>) {
   return async (req: express.Request, res: express.Response) => {
@@ -43,7 +43,7 @@ SLACK_BOT_TOKEN=xoxb-your-bot-token
 
 ```ts
 import Fastify from 'fastify'
-import { POST, POSTSupportChannel } from '@datachefhq/mus/server'
+import { POST, POSTSupportChannel } from '@datachef/mus/server'
 
 const app = Fastify()
 
@@ -70,7 +70,7 @@ Fastify requires `addContentTypeParser` or `rawBody` plugin to get the raw buffe
 
 ```ts
 import { Hono } from 'hono'
-import { POST, POSTSupportChannel } from '@datachefhq/mus/server'
+import { POST, POSTSupportChannel } from '@datachef/mus/server'
 
 const app = new Hono()
 
@@ -92,8 +92,8 @@ Hono's `c.req.raw` is already a Web `Request` — no adapter needed.
 ## With a custom adapter
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+import { createMusHandlers } from '@datachef/mus/server'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
 
 const { POST, POSTSupportChannel } = createMusHandlers({
   adapter: discordAdapter({ webhookUrl: process.env.DISCORD_WEBHOOK_URL! }),

@@ -6,8 +6,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "paths": {
-      "@datachefhq/mus": ["../src/index.ts"],
-      "@datachefhq/mus/*": ["../src/*"]
+      "@datachef/mus": ["../src/index.ts"],
+      "@datachef/mus/*": ["../src/*"]
     }
   }
 }

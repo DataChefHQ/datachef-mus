@@ -8,7 +8,7 @@ If none of the built-in adapters fit your stack, implement `MusAdapter` directly
 ## Minimal example
 
 ```ts
-import type { MusAdapter } from '@datachefhq/mus/adapters'
+import type { MusAdapter } from '@datachef/mus/adapters'
 
 const myAdapter: MusAdapter = {
   async onFeedback(event) {
@@ -55,8 +55,8 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 When your adapter needs configuration, export a factory function — the same pattern as the built-in adapters:
 
 ```ts
-import type { MusAdapter } from '@datachefhq/mus/adapters'
-import { createMusHandlers } from '@datachefhq/mus/server'
+import type { MusAdapter } from '@datachef/mus/adapters'
+import { createMusHandlers } from '@datachef/mus/server'
 
 interface LinearAdapterOptions {
   apiKey: string

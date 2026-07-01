@@ -4,7 +4,7 @@
 
 When AI outputs need to be questioned, explained, or challenged, that should happen right there on the screen. Not in a form. Not in a meeting. MUS makes that possible for any AI product that has a web face.
 
-[![npm](https://img.shields.io/npm/v/@datachefhq/mus)](https://www.npmjs.com/package/@datachefhq/mus)
+[![npm](https://img.shields.io/npm/v/@datachef/mus)](https://www.npmjs.com/package/@datachef/mus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 ---
@@ -14,8 +14,8 @@ When AI outputs need to be questioned, explained, or challenged, that should hap
 Wrap any output with `<FeedbackTarget>`. Users hover. A toolbar appears — exactly where the output lives.
 
 ```tsx
-import { MusProvider, FeedbackTarget } from '@datachefhq/mus'
-import '@datachefhq/mus/styles.css'
+import { MusProvider, FeedbackTarget } from '@datachef/mus'
+import '@datachef/mus/styles.css'
 
 function App() {
   return (
@@ -53,7 +53,7 @@ One hover. No forms. No context switching. The reaction lands in your Slack — 
 ## Installation
 
 ```bash
-npm install @datachefhq/mus
+npm install @datachef/mus
 ```
 
 For voice feedback, also install the optional audio converter:
@@ -72,13 +72,13 @@ The package ships ready-made server handlers. Keep `SLACK_BOT_TOKEN` on the serv
 
 ```ts
 // app/api/mus/voice-upload/route.ts
-export { POST } from '@datachefhq/mus/server'
+export { POST } from '@datachef/mus/server'
 
 // app/api/mus/standalone-upload/route.ts
-export { POSTStandalone as POST } from '@datachefhq/mus/server'
+export { POSTStandalone as POST } from '@datachef/mus/server'
 
 // app/api/mus/support-channel/route.ts
-export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
+export { POSTSupportChannel as POST } from '@datachef/mus/server'
 ```
 
 ```bash
@@ -89,9 +89,9 @@ SLACK_BOT_TOKEN=xoxb-your-bot-token
 ### Adapter pattern (Slack, Discord, Teams, or custom)
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+import { createMusHandlers } from '@datachef/mus/server'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: [
@@ -105,7 +105,7 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 
 ```ts
 // vite.config.ts
-import { musVitePlugins } from '@datachefhq/mus/vite'
+import { musVitePlugins } from '@datachef/mus/vite'
 
 export default defineConfig({
   plugins: [react(), ...musVitePlugins()],
@@ -129,7 +129,7 @@ services:
 MUS auto-fills name and email from your auth system via pluggable resolvers:
 
 ```ts
-import { clerkResolver } from '@datachefhq/mus/resolvers/clerk'
+import { clerkResolver } from '@datachef/mus/resolvers/clerk'
 
 <MusProvider config={{
   ...

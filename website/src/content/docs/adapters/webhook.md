@@ -8,8 +8,8 @@ The webhook adapter posts a JSON payload to any URL — useful for custom backen
 ## Setup
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { webhookAdapter } from '@datachefhq/mus/adapters/webhook'
+import { createMusHandlers } from '@datachef/mus/server'
+import { webhookAdapter } from '@datachef/mus/adapters/webhook'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: webhookAdapter({

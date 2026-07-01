@@ -13,7 +13,7 @@ export default defineConfig({
 		resolve: {
 			alias: [
 				// Point main entry directly at source TS — no dist rebuild needed for component changes
-				{ find: '@datachefhq/mus', replacement: path.resolve(__dirname, '../src/index.ts') },
+				{ find: '@datachef/mus', replacement: path.resolve(__dirname, '../src/index.ts') },
 				// Resolve the package's internal @/ alias
 				{ find: '@/', replacement: path.resolve(__dirname, '../src/') + '/' },
 				// styles.css resolves via package exports to dist/mus.css (pre-compiled Tailwind)
@@ -44,7 +44,7 @@ export default defineConfig({
 			],
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/DataChefHQ/datachef-mus' },
-				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachefhq/mus' },
+				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachef/mus' },
 			],
 			logo: {
 				light: './src/assets/logo-light.svg',

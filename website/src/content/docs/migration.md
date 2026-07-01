@@ -13,13 +13,13 @@ Export the handlers directly. They read `SLACK_BOT_TOKEN` from `process.env` and
 
 ```ts
 // app/api/mus/voice-upload/route.ts
-export { POST } from '@datachefhq/mus/server'
+export { POST } from '@datachef/mus/server'
 
 // app/api/mus/standalone-upload/route.ts
-export { POSTStandalone as POST } from '@datachefhq/mus/server'
+export { POSTStandalone as POST } from '@datachef/mus/server'
 
 // app/api/mus/support-channel/route.ts
-export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
+export { POSTSupportChannel as POST } from '@datachef/mus/server'
 ```
 
 ### New way: adapter pattern
@@ -28,8 +28,8 @@ Use `createMusHandlers` when you want to route feedback to a non-Slack destinati
 
 ```ts
 // app/api/mus/[...mus]/route.ts  (or individual route files)
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+import { createMusHandlers } from '@datachef/mus/server'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
@@ -39,9 +39,9 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 Multiple adapters run in parallel:
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+import { createMusHandlers } from '@datachef/mus/server'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: [
@@ -62,7 +62,7 @@ See [Adapters](/adapters/overview) for all built-in adapters and how to write a 
 Prior to v0.4.0, MUS automatically detected a Stytch session if `@stytch/react` was installed. This has been removed. If your app uses Stytch, add `userResolver` explicitly:
 
 ```tsx
-import { stytchResolver } from '@datachefhq/mus/resolvers/stytch'
+import { stytchResolver } from '@datachef/mus/resolvers/stytch'
 
 <MusProvider config={{
   projectName: 'My App',
@@ -90,7 +90,7 @@ npm install ffmpeg-static
 Import the resolver for your auth system and pass it to `MusProvider`. This works for Stytch, Clerk, Auth0, NextAuth, or any custom source:
 
 ```tsx
-import { stytchResolver } from '@datachefhq/mus/resolvers/stytch'
+import { stytchResolver } from '@datachef/mus/resolvers/stytch'
 
 <MusProvider config={{
   projectName: 'My App',
@@ -102,10 +102,10 @@ import { stytchResolver } from '@datachefhq/mus/resolvers/stytch'
 Available built-in resolvers:
 
 ```ts
-import { stytchResolver }   from '@datachefhq/mus/resolvers/stytch'
-import { clerkResolver }    from '@datachefhq/mus/resolvers/clerk'
-import { auth0Resolver }    from '@datachefhq/mus/resolvers/auth0'
-import { nextAuthResolver } from '@datachefhq/mus/resolvers/next-auth'
+import { stytchResolver }   from '@datachef/mus/resolvers/stytch'
+import { clerkResolver }    from '@datachef/mus/resolvers/clerk'
+import { auth0Resolver }    from '@datachef/mus/resolvers/auth0'
+import { nextAuthResolver } from '@datachef/mus/resolvers/next-auth'
 ```
 
 You can also write your own — see [Custom Resolvers](/resolvers/custom).

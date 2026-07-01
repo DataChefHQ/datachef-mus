@@ -13,7 +13,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.6",
     "@astrojs/starlight": "^0.39.2",
-    "@datachefhq/mus": "file:..",
+    "@datachef/mus": "file:..",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "astro": "^6.3.1",

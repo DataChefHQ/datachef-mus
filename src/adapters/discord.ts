@@ -28,7 +28,7 @@ async function postEmbed(webhookUrl: string, embeds: DiscordEmbed[]): Promise<vo
  *
  * @example
  * ```ts
- * import { discordAdapter } from '@datachefhq/mus/adapters'
+ * import { discordAdapter } from '@datachef/mus/adapters'
  *
  * const adapter = discordAdapter({ webhookUrl: process.env.DISCORD_WEBHOOK_URL! })
  * ```

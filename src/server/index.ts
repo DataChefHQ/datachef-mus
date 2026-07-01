@@ -1,13 +1,13 @@
 /**
- * Server-side handlers for @datachefhq/mus.
+ * Server-side handlers for @datachef/mus.
  *
  * Voice upload usage:
  *   // app/api/mus/voice-upload/route.ts
- *   export { POST } from '@datachefhq/mus/server'
+ *   export { POST } from '@datachef/mus/server'
  *
  * Support channel usage:
  *   // app/api/mus/support-channel/route.ts
- *   export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
+ *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
  *
  * Requires:
  *   - SLACK_BOT_TOKEN environment variable
@@ -89,7 +89,7 @@ async function postMessage(token: string, channelId: string, text: string): Prom
  *
  * Usage:
  *   // app/api/mus/support-channel/route.ts
- *   export { POSTSupportChannel as POST } from '@datachefhq/mus/server'
+ *   export { POSTSupportChannel as POST } from '@datachef/mus/server'
  *
  * Authenticated users get a private per-user channel (idempotent by name).
  * Unauthenticated users route to a shared {projectSlug}-general-support channel.
@@ -309,7 +309,7 @@ async function uploadToSlack(
  *
  * Usage:
  *   // app/api/mus/standalone-upload/route.ts
- *   export { POSTStandalone as POST } from '@datachefhq/mus/server'
+ *   export { POSTStandalone as POST } from '@datachef/mus/server'
  *
  * Accepts multipart/form-data with:
  *   - screenshotFile  (optional, image/png or image/jpeg)
@@ -453,8 +453,8 @@ export type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '../a
  * Factory that returns Next.js App Router handlers backed by one or more adapters.
  *
  * Usage:
- *   import { createMusHandlers } from '@datachefhq/mus/server'
- *   import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+ *   import { createMusHandlers } from '@datachef/mus/server'
+ *   import { slackAdapter } from '@datachef/mus/adapters/slack'
  *
  *   export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
  *     adapter: slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),

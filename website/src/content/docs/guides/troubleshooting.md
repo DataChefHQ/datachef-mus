@@ -55,7 +55,7 @@ Check in order:
 1. `enabled: true` in `musConfig` (or omit it — default is `true`)
 2. `MusProvider` wraps the full app tree, above the router
 3. Browser console — look for `useMusConfig must be used within a <MusProvider>`
-4. CSS import: `import '@datachefhq/mus/styles.css'`
+4. CSS import: `import '@datachef/mus/styles.css'`
 5. No z-index conflicts with a sticky header or overlay
 
 ---

@@ -7,7 +7,7 @@ const cwd = process.cwd()
 const args = process.argv.slice(2)
 
 if (args[0] !== 'init') {
-  console.log('Usage: npx @datachefhq/mus init')
+  console.log('Usage: npx @datachef/mus init')
   process.exit(0)
 }
 
@@ -95,7 +95,7 @@ async function main() {
   const slugLine = projectSlug ? `\n  projectSlug: '${projectSlug}',` : ''
 
   const configContent = isTs
-    ? `import type { MusConfig } from '@datachefhq/mus'
+    ? `import type { MusConfig } from '@datachef/mus'
 
 export const musConfig: MusConfig = {
   projectName: '${projectName}',${slugLine}
@@ -118,7 +118,7 @@ export const musConfig: MusConfig = {
   ],
 }
 `
-    : `/** @type {import('@datachefhq/mus').MusConfig} */
+    : `/** @type {import('@datachef/mus').MusConfig} */
 export const musConfig = {
   projectName: '${projectName}',${slugLine}
 
@@ -158,17 +158,17 @@ export const musConfig = {
         {
           dir: join(cwd, appDir, 'api/mus/voice-upload'),
           file: `route.${ext}`,
-          content: `export { POST } from '@datachefhq/mus/server'\n`,
+          content: `export { POST } from '@datachef/mus/server'\n`,
         },
         {
           dir: join(cwd, appDir, 'api/mus/standalone-upload'),
           file: `route.${ext}`,
-          content: `export { POSTStandalone as POST } from '@datachefhq/mus/server'\n`,
+          content: `export { POSTStandalone as POST } from '@datachef/mus/server'\n`,
         },
         {
           dir: join(cwd, appDir, 'api/mus/support-channel'),
           file: `route.${ext}`,
-          content: `export { POSTSupportChannel as POST } from '@datachefhq/mus/server'\n`,
+          content: `export { POSTSupportChannel as POST } from '@datachef/mus/server'\n`,
         },
         {
           dir: join(cwd, appDir, 'api/slack-proxy'),
@@ -222,13 +222,13 @@ export const musConfig = {
       console.log(`\n⚠️  Add these API routes to your ${appDir}/api/ directory:`)
       console.log(`
   // ${appDir}/api/mus/voice-upload.${ext}
-  export { POST as default } from '@datachefhq/mus/server'
+  export { POST as default } from '@datachef/mus/server'
 
   // ${appDir}/api/mus/standalone-upload.${ext}
-  export { POSTStandalone as default } from '@datachefhq/mus/server'
+  export { POSTStandalone as default } from '@datachef/mus/server'
 
   // ${appDir}/api/mus/support-channel.${ext}
-  export { POSTSupportChannel as default } from '@datachefhq/mus/server'`)
+  export { POSTSupportChannel as default } from '@datachef/mus/server'`)
     }
 
     console.log(`\n⚠️  Add to your .env.local:
@@ -264,9 +264,9 @@ export const musConfig = {
   // ── 3. MusProvider wrap instructions ─────────────────────
 
   console.log(`\n⚠️  Wrap your app in ${entry ?? 'your entry point'}:
-    import { MusProvider } from '@datachefhq/mus'
+    import { MusProvider } from '@datachef/mus'
     import { musConfig } from './lib/mus.config'
-    import '@datachefhq/mus/styles.css'
+    import '@datachef/mus/styles.css'
 
     <MusProvider config={musConfig}>
       <App />

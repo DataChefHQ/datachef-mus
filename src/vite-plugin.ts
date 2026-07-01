@@ -55,7 +55,7 @@ function makeHandler(
  *   POST /api/mus/support-channel
  *
  * Usage in vite.config.ts / vite.config.js:
- *   import { musVitePlugins } from '@datachefhq/mus/vite'
+ *   import { musVitePlugins } from '@datachef/mus/vite'
  *   export default defineConfig({ plugins: [react(), ...musVitePlugins()] })
  *
  * Requires SLACK_BOT_TOKEN in your .env / .env.local file.

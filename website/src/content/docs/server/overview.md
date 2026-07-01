@@ -12,7 +12,7 @@ There are two ways to provide this handler:
 | Path | Best for |
 |------|----------|
 | **`mus-server` Docker image** | Vite SPAs, any app without a backend |
-| **`@datachefhq/mus/server` handlers** | Next.js, Express, Fastify, Hono, Remix |
+| **`@datachef/mus/server` handlers** | Next.js, Express, Fastify, Hono, Remix |
 
 ---
 

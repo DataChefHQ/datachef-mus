@@ -35,5 +35,5 @@ export type {
   TriggerPosition,
 } from './types'
 
-/* ── Styles (imported separately: import '@datachefhq/mus/styles.css') ── */
+/* ── Styles (imported separately: import '@datachef/mus/styles.css') ── */
 import './styles/index.css'

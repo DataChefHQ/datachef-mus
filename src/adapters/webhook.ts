@@ -22,7 +22,7 @@ async function postJson(
  *
  * @example
  * ```ts
- * import { webhookAdapter } from '@datachefhq/mus/adapters'
+ * import { webhookAdapter } from '@datachef/mus/adapters'
  *
  * const adapter = webhookAdapter({
  *   url: process.env.WEBHOOK_URL!,

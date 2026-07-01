@@ -35,10 +35,10 @@ This guide walks through a full integration from install to production Kubernete
 
 ```sh
 # npm
-npm install @datachefhq/mus
+npm install @datachef/mus
 
 # pnpm
-pnpm add @datachefhq/mus
+pnpm add @datachef/mus
 ```
 
 > **GitHub Packages auth** — until the package moves to the public npm registry, you need a GitHub PAT with `read:packages` scope.
@@ -62,7 +62,7 @@ pnpm add @datachefhq/mus
 Create `src/lib/mus.config.js` (or `.ts`) in your project. This is the single file that controls all MUS behaviour.
 
 ```js
-/** @type {import('@datachefhq/mus').MusConfig} */
+/** @type {import('@datachef/mus').MusConfig} */
 export const musConfig = {
   projectName: 'Your App Name',
   projectSlug: 'your-app',
@@ -109,9 +109,9 @@ export const musConfig = {
 In your entry point (`main.jsx` / `main.tsx`):
 
 ```jsx
-import { MusProvider } from '@datachefhq/mus'
+import { MusProvider } from '@datachef/mus'
 import { musConfig } from './lib/mus.config'
-import '@datachefhq/mus/styles'
+import '@datachef/mus/styles'
 
 createRoot(document.getElementById('root')).render(
   <MusProvider config={musConfig}>

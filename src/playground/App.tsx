@@ -185,7 +185,7 @@ export function App() {
           <div className="flex items-center gap-3">
             <img src={logo} alt="DataChef" className="size-8 rounded-full" />
             <div>
-              <h1 className="text-lg font-semibold text-mus-foreground">@datachefhq/mus</h1>
+              <h1 className="text-lg font-semibold text-mus-foreground">@datachef/mus</h1>
               <p className="text-xs text-mus-muted-foreground">Playground</p>
             </div>
           </div>

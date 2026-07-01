@@ -1,9 +1,9 @@
 ---
 title: Package Exports
-description: All exports from @datachefhq/mus and its sub-paths.
+description: All exports from @datachef/mus and its sub-paths.
 ---
 
-## Main package — `@datachefhq/mus`
+## Main package — `@datachef/mus`
 
 ```ts
 // Components
@@ -18,7 +18,7 @@ import {
   DialogShell,
   WelcomeDialog,
   StandaloneWidget,
-} from '@datachefhq/mus'
+} from '@datachef/mus'
 
 // Context & hooks
 import {
@@ -26,7 +26,7 @@ import {
   useFeedbackActions,
   useMusUser,
   useThumbsStore,
-} from '@datachefhq/mus'
+} from '@datachef/mus'
 
 // Types
 import type {
@@ -39,13 +39,13 @@ import type {
   StandaloneConfig,
   UserResolver,
   TriggerPosition,
-} from '@datachefhq/mus'
+} from '@datachef/mus'
 
 // Styles
-import '@datachefhq/mus/styles.css'
+import '@datachef/mus/styles.css'
 ```
 
-## Server — `@datachefhq/mus/server`
+## Server — `@datachef/mus/server`
 
 ```ts
 import {
@@ -53,49 +53,49 @@ import {
   POSTStandalone,     // POST /api/mus/standalone-upload
   POSTSupportChannel, // POST /api/mus/support-channel
   createMusHandlers,  // Factory for adapter-based handlers
-} from '@datachefhq/mus/server'
+} from '@datachef/mus/server'
 
-import type { MusAdapter } from '@datachefhq/mus/server'
+import type { MusAdapter } from '@datachef/mus/server'
 ```
 
-## Adapters — `@datachefhq/mus/adapters/*`
+## Adapters — `@datachef/mus/adapters/*`
 
 Each adapter is a separate sub-path import:
 
 ```ts
-import { slackAdapter }   from '@datachefhq/mus/adapters/slack'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
-import { teamsAdapter }   from '@datachefhq/mus/adapters/teams'
-import { webhookAdapter } from '@datachefhq/mus/adapters/webhook'
+import { slackAdapter }   from '@datachef/mus/adapters/slack'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
+import { teamsAdapter }   from '@datachef/mus/adapters/teams'
+import { webhookAdapter } from '@datachef/mus/adapters/webhook'
 ```
 
-The `MusAdapter` interface (also re-exported from `@datachefhq/mus/server`):
+The `MusAdapter` interface (also re-exported from `@datachef/mus/server`):
 
 ```ts
-import type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '@datachefhq/mus/server'
+import type { MusAdapter, VoiceEvent, SupportEvent, StandaloneEvent } from '@datachef/mus/server'
 ```
 
-## User resolvers — `@datachefhq/mus/resolvers/*`
+## User resolvers — `@datachef/mus/resolvers/*`
 
 ```ts
-import { stytchResolver }   from '@datachefhq/mus/resolvers/stytch'
-import { clerkResolver }    from '@datachefhq/mus/resolvers/clerk'
-import { auth0Resolver }    from '@datachefhq/mus/resolvers/auth0'
-import { nextAuthResolver } from '@datachefhq/mus/resolvers/next-auth'
+import { stytchResolver }   from '@datachef/mus/resolvers/stytch'
+import { clerkResolver }    from '@datachef/mus/resolvers/clerk'
+import { auth0Resolver }    from '@datachef/mus/resolvers/auth0'
+import { nextAuthResolver } from '@datachef/mus/resolvers/next-auth'
 ```
 
-## Vite plugin — `@datachefhq/mus/vite`
+## Vite plugin — `@datachef/mus/vite`
 
 ```ts
-import { musVitePlugins } from '@datachefhq/mus/vite'
+import { musVitePlugins } from '@datachef/mus/vite'
 ```
 
 Used in `vite.config.ts` to start a local development server with `SLACK_BOT_TOKEN` from the environment.
 
-## Chrome extension — `@datachefhq/mus/chrome`
+## Chrome extension — `@datachef/mus/chrome`
 
 ```ts
-import { ... } from '@datachefhq/mus/chrome'
+import { ... } from '@datachef/mus/chrome'
 ```
 
 Used internally for the browser extension build. Not intended for direct use in applications.

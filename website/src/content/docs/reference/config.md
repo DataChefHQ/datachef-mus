@@ -18,7 +18,7 @@ interface MusConfig {
     email?: string
   }
   // A React hook returning { name, email }. Use built-in resolver factories from
-  // @datachefhq/mus/resolvers/* or write your own. See User Resolvers.
+  // @datachef/mus/resolvers/* or write your own. See User Resolvers.
   userResolver?: UserResolver
 
   // Optional: action bar

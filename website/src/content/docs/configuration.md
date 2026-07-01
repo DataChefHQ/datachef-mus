@@ -149,7 +149,7 @@ Wrap any element you want to make feedback-able:
 Import the stylesheet once (typically in your root layout or entry file):
 
 ```tsx
-import '@datachefhq/mus/styles.css'
+import '@datachef/mus/styles.css'
 ```
 
 The package uses CSS custom properties. Dark mode is enabled by adding `class="dark"` to `<html>` or any parent element.

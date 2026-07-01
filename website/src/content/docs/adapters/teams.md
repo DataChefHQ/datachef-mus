@@ -8,8 +8,8 @@ The Teams adapter posts adaptive card messages to a Microsoft Teams channel usin
 ## Setup
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { teamsAdapter } from '@datachefhq/mus/adapters/teams'
+import { createMusHandlers } from '@datachef/mus/server'
+import { teamsAdapter } from '@datachef/mus/adapters/teams'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: teamsAdapter({

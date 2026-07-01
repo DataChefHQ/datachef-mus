@@ -8,8 +8,8 @@ The Discord adapter posts feedback to a Discord channel using an incoming webhoo
 ## Setup
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+import { createMusHandlers } from '@datachef/mus/server'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: discordAdapter({
