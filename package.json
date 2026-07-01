@@ -1,6 +1,6 @@
 {
   "name": "@datachef/mus",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Contextual feedback toolbar for React apps — voice recording, thumbs, and Slack support exactly where interpretation happens.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -111,11 +111,21 @@
     "next-auth": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "vite": { "optional": true },
-    "@stytch/react": { "optional": true },
-    "@clerk/clerk-react": { "optional": true },
-    "@auth0/auth0-react": { "optional": true },
-    "next-auth": { "optional": true }
+    "vite": {
+      "optional": true
+    },
+    "@stytch/react": {
+      "optional": true
+    },
+    "@clerk/clerk-react": {
+      "optional": true
+    },
+    "@auth0/auth0-react": {
+      "optional": true
+    },
+    "next-auth": {
+      "optional": true
+    }
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
