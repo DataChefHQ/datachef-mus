@@ -29,6 +29,41 @@ const shouldRenderSearch =
 	</div>
 </div>
 
+<script is:inline>
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a.sl-anchor-link');
+    if (!a) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var url = location.origin + location.pathname + a.getAttribute('href');
+    navigator.clipboard.writeText(url).catch(function () {});
+
+    var rect = a.getBoundingClientRect();
+    var tip = document.createElement('span');
+    tip.textContent = 'Copied!';
+    tip.style.cssText = [
+      'position:fixed',
+      'top:' + (rect.top - 32) + 'px',
+      'left:' + (rect.left + rect.width / 2) + 'px',
+      'transform:translateX(-50%)',
+      'background:#52b788',
+      'color:#0d1f14',
+      'font-size:12px',
+      'font-weight:600',
+      'padding:3px 10px',
+      'border-radius:6px',
+      'pointer-events:none',
+      'white-space:nowrap',
+      'opacity:1',
+      'transition:opacity 0.35s',
+      'z-index:9999',
+    ].join(';');
+    document.body.appendChild(tip);
+    setTimeout(function () { tip.style.opacity = '0'; }, 900);
+    setTimeout(function () { tip.remove(); }, 1300);
+  }, true);
+</script>
+
 <style>
 	@layer starlight.core {
 		.header {

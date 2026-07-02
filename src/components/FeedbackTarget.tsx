@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react'
+import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Youtube } from 'lucide-react'
 import { useMusConfig } from '@/context/MusContext'
@@ -11,6 +11,10 @@ import { VideoDialog } from '@/components/dialogs/VideoDialog'
 import { StandaloneFeedbackDialog } from '@/components/dialogs/StandaloneFeedbackDialog'
 import { MusThemeRoot } from '@/components/MusThemeRoot'
 import type { FeedbackAction, FeedbackActionType } from '@/types'
+
+export interface FeedbackTargetHandle {
+  reset(): void
+}
 
 interface FeedbackTargetProps {
   /** Unique ID for this section — used in API payloads */
@@ -27,7 +31,7 @@ interface FeedbackTargetProps {
   inset?: boolean
 }
 
-export function FeedbackTarget({
+export const FeedbackTarget = forwardRef<FeedbackTargetHandle, FeedbackTargetProps>(function FeedbackTarget({
   sectionId,
   sectionName,
   children,
@@ -35,7 +39,7 @@ export function FeedbackTarget({
   videoUrl,
   actions,
   inset = false,
-}: FeedbackTargetProps) {
+}, ref) {
   const config = useMusConfig()
   const { handleAction, activeThumb } = useFeedbackActions(sectionId, sectionName)
   const resolvedActions = actions ?? config.actions
@@ -59,6 +63,18 @@ export function FeedbackTarget({
       setShowTrigger(true)
     }, hoverDelay)
   }, [hoverDelay])
+
+  useImperativeHandle(ref, () => ({
+    reset() {
+      if (hoverTimerRef.current) {
+        clearTimeout(hoverTimerRef.current)
+        hoverTimerRef.current = null
+      }
+      if (!showToolbar && !activeDialog && !standaloneOpen && !capturing) {
+        setShowTrigger(false)
+      }
+    },
+  }), [showToolbar, activeDialog, standaloneOpen, capturing])
 
   const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     // If moving to a descendant (e.g. trigger button positioned outside card bounds), keep visible
@@ -303,4 +319,4 @@ export function FeedbackTarget({
       </MusThemeRoot>
     </div>
   )
-}
+})

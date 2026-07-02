@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { MusProvider, FeedbackTarget, onDemoFeedback, type DemoEvent } from '@datachefhq/mus'
+import { useEffect, useRef, useState } from 'react'
+import { MusProvider, FeedbackTarget, onDemoFeedback, type DemoEvent, type FeedbackTargetHandle } from '@datachefhq/mus'
 import '@datachefhq/mus/styles.css'
 
 interface ToastEntry {
@@ -18,6 +18,16 @@ const ACTION_LABELS: Record<string, string> = {
 
 export default function PlaygroundDemo() {
   const [toasts, setToasts] = useState<ToastEntry[]>([])
+
+  const summaryRef = useRef<FeedbackTargetHandle>(null)
+  const forecastRef = useRef<FeedbackTargetHandle>(null)
+  const rankingRef = useRef<FeedbackTargetHandle>(null)
+
+  const handlePlaygroundMouseLeave = () => {
+    summaryRef.current?.reset()
+    forecastRef.current?.reset()
+    rankingRef.current?.reset()
+  }
 
   useEffect(() => {
     let nextId = 1
@@ -57,7 +67,7 @@ export default function PlaygroundDemo() {
         ],
       }}
     >
-      <div className="playground-wrapper">
+      <div className="playground-wrapper" onMouseLeave={handlePlaygroundMouseLeave}>
         <div className="playground-header">
           <div className="playground-dot dot-red" />
           <div className="playground-dot dot-yellow" />
@@ -71,7 +81,7 @@ export default function PlaygroundDemo() {
           </p>
 
           {/* Card 1 — AI-generated summary */}
-          <FeedbackTarget sectionId="ai-summary" sectionName="AI Summary">
+          <FeedbackTarget ref={summaryRef} sectionId="ai-summary" sectionName="AI Summary">
             <div className="playground-card">
               <div className="playground-card-header">
                 <span className="playground-tag">AI-generated</span>
@@ -87,7 +97,7 @@ export default function PlaygroundDemo() {
           </FeedbackTarget>
 
           {/* Card 2 — Forecast */}
-          <FeedbackTarget sectionId="forecast" sectionName="Revenue Forecast">
+          <FeedbackTarget ref={forecastRef} sectionId="forecast" sectionName="Revenue Forecast">
             <div className="playground-card">
               <div className="playground-card-header">
                 <span className="playground-tag">Forecast</span>
@@ -111,7 +121,7 @@ export default function PlaygroundDemo() {
           </FeedbackTarget>
 
           {/* Card 3 — Ranked recommendations */}
-          <FeedbackTarget sectionId="ranking" sectionName="Top Recommendations">
+          <FeedbackTarget ref={rankingRef} sectionId="ranking" sectionName="Top Recommendations">
             <div className="playground-card">
               <div className="playground-card-header">
                 <span className="playground-tag tag-blue">Ranked</span>

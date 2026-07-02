@@ -1,5 +1,6 @@
 /* ── Components ───────────────────────────────────────────── */
 export { FeedbackTarget } from './components/FeedbackTarget'
+export type { FeedbackTargetHandle } from './components/FeedbackTarget'
 export { FeedbackToolbar } from './components/FeedbackToolbar'
 export { FeedbackTrigger } from './components/FeedbackTrigger'
 export { SupportDialog } from './components/dialogs/SupportDialog'

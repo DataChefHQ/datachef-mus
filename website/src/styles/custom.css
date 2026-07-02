@@ -706,6 +706,46 @@ header.header starlight-menu-button button:hover {
 }
 
 /* =====================================================
+   Playground — MUS theme overrides (green palette)
+   ===================================================== */
+
+.playground-wrapper [data-mus-theme] {
+  --mus-primary: #52b788;
+  --mus-primary-foreground: #0d1f14;
+  --mus-background: #060b08;
+  --mus-card: #112016;
+  --mus-card-foreground: #f5f8fd;
+  --mus-foreground: #f5f8fd;
+  --mus-muted: #1a2e1f;
+  --mus-muted-foreground: #8db8a0;
+  --mus-accent: rgba(82, 183, 136, 0.08);
+  --mus-border: rgba(82, 183, 136, 0.18);
+  --mus-input: rgba(82, 183, 136, 0.15);
+  --mus-ring: rgba(82, 183, 136, 0.45);
+  --mus-destructive: #f87171;
+  --mus-popover: rgba(13, 26, 18, 0.95);
+  --mus-popover-foreground: #f5f8fd;
+}
+
+[data-theme='light'] .playground-wrapper [data-mus-theme] {
+  --mus-primary: #2d6a4f;
+  --mus-primary-foreground: #ffffff;
+  --mus-background: #f0f9f4;
+  --mus-card: #ffffff;
+  --mus-card-foreground: #0f2419;
+  --mus-foreground: #0f2419;
+  --mus-muted: #e8f5ee;
+  --mus-muted-foreground: #4a7a5e;
+  --mus-accent: rgba(45, 106, 79, 0.06);
+  --mus-border: rgba(45, 106, 79, 0.2);
+  --mus-input: rgba(45, 106, 79, 0.12);
+  --mus-ring: rgba(45, 106, 79, 0.4);
+  --mus-destructive: #dc2626;
+  --mus-popover: rgba(240, 249, 244, 0.97);
+  --mus-popover-foreground: #0f2419;
+}
+
+/* =====================================================
    Playground demo
    ===================================================== */
 
