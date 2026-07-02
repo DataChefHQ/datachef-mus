@@ -171,6 +171,10 @@
   .feature-cards {
     flex-direction: column;
   }
+  .feature-card {
+    flex: none !important;
+    align-self: stretch !important;
+  }
 }
 
 .feature-card {
@@ -748,6 +752,65 @@ header.header starlight-menu-button button:hover {
 /* =====================================================
    Playground demo
    ===================================================== */
+
+.playground-container {
+  position: relative;
+}
+
+.playground-mobile-notice {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .playground-wrapper {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .playground-toasts {
+    display: none !important;
+  }
+
+  .playground-mobile-notice {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: calc(100% - 3rem);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--sl-color-bg) 85%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+  }
+
+  .playground-mobile-notice-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .playground-mobile-notice strong {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--sl-color-white);
+  }
+
+  .playground-mobile-notice p {
+    margin: 0 !important;
+    font-size: 0.9rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.5;
+  }
+}
 
 .playground-wrapper {
   margin: 2rem 0;

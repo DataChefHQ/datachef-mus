@@ -67,6 +67,15 @@ export default function PlaygroundDemo() {
         ],
       }}
     >
+      <div className="playground-container">
+      <div className="playground-mobile-notice">
+        <span className="playground-mobile-notice-icon">🖥️</span>
+        <div>
+          <strong>Desktop only</strong>
+          <p>The interactive demo requires a desktop browser. Open this page on your computer to try it.</p>
+        </div>
+      </div>
+
       <div className="playground-wrapper" onMouseLeave={handlePlaygroundMouseLeave}>
         <div className="playground-header">
           <div className="playground-dot dot-red" />
@@ -158,6 +167,7 @@ export default function PlaygroundDemo() {
           </div>
         ))}
       </div>
+      </div>{/* end playground-container */}
     </MusProvider>
   )
 }
