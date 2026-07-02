@@ -1,3 +1,23 @@
+## 1.1.0 (2026-07-02)
+
+### Features
+- feat: update server to handle multiple adapter configuration
+- feat: add theme to playground
+- feat(website): fix playground hydration, add mobile docs nav, and refresh landing styles
+- feat: add adapter for auth and notify flow
+
+### Bug Fixes
+- fix: disable demo on mobile
+- fix: build issue on cloudflare
+
+### Other Changes
+- chore: update version to v1.0.0
+- chore: update package scope to @datachef/mus
+- chore: add wrangler.toml for Cloudflare static asset deployment
+- chore: update readme
+- docs: add documentation for configuring MUS
+- chore: prepare for open source release — MIT license, npm publish, CLI init, contributors
+
 ## 1.0.0 (2026-07-01)
 
 ### Features
