@@ -78,7 +78,7 @@ export const FeedbackTarget = forwardRef<FeedbackTargetHandle, FeedbackTargetPro
 
   const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     // If moving to a descendant (e.g. trigger button positioned outside card bounds), keep visible
-    if (containerRef.current?.contains(e.relatedTarget as Node)) return
+    if (e.relatedTarget instanceof Node && containerRef.current?.contains(e.relatedTarget)) return
 
     if (hoverTimerRef.current) {
       clearTimeout(hoverTimerRef.current)
