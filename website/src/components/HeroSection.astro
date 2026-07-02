@@ -1,0 +1,136 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+---
+
+<section class="custom-hero">
+  <div class="custom-hero-inner" data-animate>
+    <h1 class="custom-hero-headline">
+      <span class="hero-line-plain">Feedback and context,</span>
+      <span class="hero-line-accent">right where your product speaks.</span>
+    </h1>
+    <p class="custom-hero-tagline">
+      From AI summaries to dashboards to reports — users react right where it happened.
+      Voice notes, thumbs, support requests. Your team adds context that lives there permanently. One component. No forms.
+    </p>
+    <div class="custom-hero-actions">
+      <a href="/#try-it-now" class="hero-btn-primary">See it live</a>
+      <a href="https://github.com/DataChefHQ/datachef-mus" target="_blank" rel="noopener noreferrer" class="hero-btn-secondary">GitHub</a>
+    </div>
+    <p class="custom-hero-trust">
+      <span>Open source</span>
+      <span>·</span>
+      <span>MIT license</span>
+      <span>·</span>
+      <span>Self-hostable</span>
+      <span>·</span>
+      <span>No vendor lock-in</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .custom-hero {
+    padding: 5rem 1.5rem 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  .custom-hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 760px;
+  }
+  .custom-hero-headline {
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05em;
+  }
+  .hero-line-plain { color: var(--sl-color-white); }
+  .hero-line-accent {
+    background: linear-gradient(135deg, var(--sl-color-accent-high), color-mix(in srgb, var(--sl-color-accent-high) 70%, #74c69d));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  [data-theme='light'] .hero-line-plain { color: #0d1f14; }
+  [data-theme='light'] .hero-line-accent {
+    background: linear-gradient(135deg, var(--sl-color-accent), var(--sl-color-accent-high));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .custom-hero-tagline {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.6;
+    color: var(--sl-color-gray-2);
+    max-width: 52ch;
+    margin: 0;
+  }
+  [data-theme='light'] .custom-hero-tagline { color: var(--sl-color-gray-4); }
+  .custom-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--sl-color-accent), var(--sl-color-accent-high));
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: 0 4px 20px -4px color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hero-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px -6px color-mix(in srgb, var(--sl-color-accent) 70%, transparent);
+  }
+  .hero-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, var(--sl-color-accent-high) 40%, transparent);
+    color: var(--sl-color-white) !important;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  }
+  .hero-btn-secondary:hover {
+    border-color: var(--sl-color-accent-high);
+    background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+    transform: translateY(-2px);
+  }
+  [data-theme='light'] .hero-btn-secondary {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+    color: #0d1f14 !important;
+  }
+  [data-theme='light'] .hero-btn-secondary:hover {
+    border-color: var(--sl-color-accent);
+  }
+  .custom-hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--sl-color-gray-3);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>

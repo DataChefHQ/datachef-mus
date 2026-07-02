@@ -64,6 +64,29 @@ const shouldRenderSearch =
   }, true);
 </script>
 
+<script is:inline>
+  (function () {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    function observe() {
+      document.querySelectorAll('[data-animate]').forEach(function (el) {
+        io.observe(el);
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', observe);
+    } else {
+      observe();
+    }
+  })();
+</script>
+
 <style>
 	@layer starlight.core {
 		.header {

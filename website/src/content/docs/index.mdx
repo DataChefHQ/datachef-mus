@@ -1,14 +1,12 @@
 ---
-title: MUS - Explainability, right on the screen where AI speaks
-description: When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen, embedded in any AI product with a face.
+title: MUS — Feedback and context, right where your product speaks
+description: MUS adds a two-way feedback layer to any section of your product. Users react in context. Teams add explanations that stay. One component, no forms, no backend to write.
 template: splash
 hero:
-  title: Explainability, right on the screen where AI speaks
-  tagline: When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen. Embedded in any AI product with a face.
-  image:
-    file: ../../assets/houston.webp
+  title: Feedback and context, right where your product speaks
+  tagline: Users hover and react — voice notes, thumbs, support requests — exactly where it happened. Your team adds context that lives there permanently. One component. No forms.
   actions:
-    - text: See MUS in action
+    - text: See it live
       link: /#try-it-now
       icon: right-arrow
       variant: primary
@@ -18,8 +16,17 @@ hero:
       variant: minimal
 ---
 
+import ThreePillars from '../../components/ThreePillars';
 import PlaygroundDemo from '../../components/PlaygroundDemo';
 import FeatureCards from '../../components/FeatureCards';
+import BeforeAfter from '../../components/BeforeAfter';
+import HowItWorks from '../../components/HowItWorks';
+import UseCases from '../../components/UseCases';
+import FinalCTA from '../../components/FinalCTA';
+
+<ThreePillars client:load />
+
+---
 
 ## Try it now
 
@@ -29,98 +36,21 @@ import FeatureCards from '../../components/FeatureCards';
 
 ---
 
-## Why MUS exists
-
-In AI products, interpretation is not binary. Two people can look at the same result and reasonably disagree. Context and feedback are not optional. They are the product.
-
-We kept running into the same friction:
-
-- Users had questions about a *specific* section, not the whole app
-- Early testers disagreed with model outputs, and that disagreement lived in meetings instead of in the product
-- Feedback required extra steps: forms, tickets, context switching
-- For urgent matters, frustrated users were left to email or message developers directly
-
-Traditional help systems are too detached. Traditional feedback flows are too heavy.
-
-**What if explanation and feedback lived exactly where interpretation happens?**
-
-That question became MUS.
+<BeforeAfter client:load />
 
 ---
 
-## What MUS does
+<HowItWorks client:load />
 
-MUS adds a contextual layer to any section of your web app. Wrap any output (a chart, an AI-generated summary, a recommendation, a score) with `<FeedbackTarget>`. Users hover and a toolbar appears, exactly where the output lives.
+---
 
-```tsx
-import { MusProvider, FeedbackTarget } from '@datachefhq/mus'
-import '@datachefhq/mus/styles.css'
-
-function App() {
-  return (
-    <MusProvider config={{
-      projectName: 'My App',
-      slack: {
-        proxyUrl: '/api/slack-proxy',
-        supportTeamEmails: ['you@company.com'],
-        feedbackChannelId: 'C0XXXXXXXXX',
-      },
-    }}>
-      <FeedbackTarget sectionId="ai-summary" sectionName="AI Summary">
-        <AISummaryOutput />
-      </FeedbackTarget>
-    </MusProvider>
-  )
-}
-```
-
-## Three things it does
+## What you get
 
 <FeatureCards client:load />
 
 ---
 
-## What makes MUS different
-
-**Feedback happens inside the product, not around it.**
-Every reaction is attached to the exact element the user was looking at. No screenshots. No "which page were you on?" The context is the message.
-
-**Voice carries what text loses.**
-A 30-second voice clip captures hesitation, disagreement, and confusion in a way no form field can. Recorded in the user's own voice, attached to the exact section.
-
-**Explanation that stays.**
-Video insights aren't a one-time onboarding tour. They live where the output lives, available six months in the moment a user asks "wait, why?"
-
-**An escape hatch for the urgent case.**
-When something can't wait, one click opens a dedicated Slack channel between the user and your team. No tickets. No bots. A real conversation, with full context already attached.
-
-**Your data, your destination.**
-Feedback can route to Slack, Discord, Teams, or any webhook, with multiple destinations running in parallel. Self-hostable. Open source. No vendor lock-in.
-
-**Zero backend to write.**
-Drop in the `mus-server` Docker sidecar and you're done. No Node.js server to maintain, no auth integration to build.
-
----
-
-## What your team gets
-
-- **Higher-quality tester signals:** voice and in-context capture make feedback richer and easier to act on
-- **Faster refinement cycles:** disagreements with model outputs surface immediately, not in next quarter's review
-- **More engaged beta users:** friction-free feedback raises response rates
-- **Less ambiguity in model validation:** every output has a clear feedback trail tied to the exact section
-- **A direct line for urgent issues:** frustrated users reach developers in seconds, not days
-
----
-
-## Built for AI products
-
-MUS transforms interfaces from static displays into collaborative environments where outputs can be questioned, validated, and refined in context.
-
-If your product output is interpreted, debated, or challenged by users, MUS is built for you.
-
-If you've shipped a feedback form and watched it return one response per quarter, MUS is built for you.
-
-If your team relies on quarterly user interviews to learn what testers think, MUS is built for you.
+<UseCases client:load />
 
 ---
 
@@ -174,8 +104,4 @@ Yes, that's the default cap and it's configurable. The recording is converted to
 
 ---
 
-## Philosophy
-
-Contextual. Frictionless. Respectful. Iterative.
-
-Small, precise moments of clarity, embedded exactly where interpretation happens.
+<FinalCTA client:load />

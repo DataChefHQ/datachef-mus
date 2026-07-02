@@ -48,20 +48,22 @@ export default defineConfig({
 		react(),
 		starlight({
 			title: 'MUS',
-			description: 'Explainability and feedback, embedded exactly where AI output is served.',
+			description: 'Add a two-way feedback layer to any section of your product. Users react in context. Teams add explanations that stay.',
 			head: [
+				// Favicon — light/dark mode variants
+				{ tag: 'link', attrs: { rel: 'icon', href: '/favicon-light.svg', type: 'image/svg+xml' } },
 				// Open Graph
 				{ tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
 				{ tag: 'meta', attrs: { property: 'og:url', content: 'https://mus.datachef.co' } },
-				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
-				{ tag: 'meta', attrs: { property: 'og:description', content: 'When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen. Embedded in any AI product with a face.' } },
+				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS — Feedback and context, right where your product speaks' } },
+				{ tag: 'meta', attrs: { property: 'og:description', content: 'MUS adds a two-way feedback layer to any section of your product. Users react in context. Teams add explanations that stay. One component, no forms, no backend to write.' } },
 				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://mus.datachef.co/og-image.png' } },
 				{ tag: 'meta', attrs: { property: 'og:image:width', content: '2560' } },
 				{ tag: 'meta', attrs: { property: 'og:image:height', content: '1424' } },
 				// Twitter card
 				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
-				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
-				{ tag: 'meta', attrs: { name: 'twitter:description', content: 'When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen.' } },
+				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS — Feedback and context, right where your product speaks' } },
+				{ tag: 'meta', attrs: { name: 'twitter:description', content: 'MUS adds a two-way feedback layer to any section of your product. Users react in context. Teams add explanations that stay.' } },
 				{ tag: 'meta', attrs: { name: 'twitter:image', content: 'https://mus.datachef.co/og-image.png' } },
 				// Theme color
 				{ tag: 'meta', attrs: { name: 'theme-color', content: '#2d6a4f' } },
@@ -141,6 +143,7 @@ export default defineConfig({
 			],
 			components: {
 				Header: './src/components/Header.astro',
+				Hero: './src/components/HeroSection.astro',
 			},
 			customCss: ['./src/styles/custom.css'],
 		}),

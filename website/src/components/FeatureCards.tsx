@@ -2,19 +2,19 @@ import { Clapperboard, Mic, MessageSquare } from 'lucide-react'
 
 const cards = [
   {
-    icon: Clapperboard,
-    title: 'Contextual video insight',
-    body: 'Attach an explainer video directly to any section. Users get clarity right where confusion happens, with no redirects and no docs tab.',
+    icon: Mic,
+    title: 'React in the moment',
+    body: 'Users leave a voice note, thumbs reaction, or support request right where it happened — on an AI output, a chart, a report row. No forms, no context switching.',
   },
   {
-    icon: Mic,
-    title: 'Frictionless voice feedback',
-    body: 'Testers react immediately at the exact point of judgment, in their own voice. No forms. No references. No detours.',
+    icon: Clapperboard,
+    title: 'Explain once, answer forever',
+    body: 'Attach a video or written explanation directly to any section. It lives there permanently — available the moment a user asks "wait, why?"',
   },
   {
     icon: MessageSquare,
-    title: 'One-click support channel',
-    body: 'A dedicated Slack channel opens instantly for urgent matters. Developers are reachable exactly where the issue surfaced.',
+    title: 'A direct line when it matters',
+    body: 'One click opens a dedicated channel between the user and your team. No tickets, no bots — a real conversation with full context already attached.',
   },
 ]
 
