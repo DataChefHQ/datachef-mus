@@ -1,3 +1,8 @@
+## 1.1.1 (2026-07-02)
+
+### Other Changes
+- chore: update workflow token name
+
 ## 1.1.0 (2026-07-02)
 
 ### Features
