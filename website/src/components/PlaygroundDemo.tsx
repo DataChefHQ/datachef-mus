@@ -86,7 +86,7 @@ export default function PlaygroundDemo() {
 
         <div className="playground-body">
           <p className="playground-hint">
-            Hover any card for 300 ms — then try voice feedback, thumbs, support, or video.
+            Hover over any card — then try voice feedback, thumbs, support, or video.
           </p>
 
           {/* Card 1 — AI-generated summary */}

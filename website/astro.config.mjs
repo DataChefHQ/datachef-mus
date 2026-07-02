@@ -56,8 +56,8 @@ export default defineConfig({
 				{ tag: 'meta', attrs: { property: 'og:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
 				{ tag: 'meta', attrs: { property: 'og:description', content: 'When AI outputs need to be questioned, explained, or challenged, MUS puts explainability and feedback exactly where they happen. Embedded in any AI product with a face.' } },
 				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://mus.datachef.co/og-image.png' } },
-				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
-				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+				{ tag: 'meta', attrs: { property: 'og:image:width', content: '2560' } },
+				{ tag: 'meta', attrs: { property: 'og:image:height', content: '1424' } },
 				// Twitter card
 				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
 				{ tag: 'meta', attrs: { name: 'twitter:title', content: 'MUS - Explainability, right on the screen where AI speaks' } },
