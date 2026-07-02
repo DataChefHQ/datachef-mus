@@ -1,36 +1,64 @@
 ---
-title: Adapters Overview
-description: Route MUS feedback to Slack, Discord, Teams, webhooks, or any custom destination.
+title: Adapters
+description: Route MUS feedback to Slack, Discord, Teams, a webhook, or anywhere else.
 ---
 
-MUS is notification-agnostic. An **adapter** tells MUS where to send feedback. You configure it once in `createMusHandlers` and every event (voice, thumbs, support requests, standalone) flows through it.
+MUS doesn't care where feedback goes. An adapter is the thing that decides. You configure it once — either as an env var for the Docker image, or as code in your own server — and every event flows through it automatically.
 
-## Quick setup
+---
+
+## Choosing an adapter
+
+| Adapter | Env var (Docker) | Code import |
+|---------|-----------------|-------------|
+| [Slack](/adapters/slack) | `SLACK_BOT_TOKEN` | `slackAdapter` |
+| [Discord](/adapters/discord) | `DISCORD_WEBHOOK_URL` | `discordAdapter` |
+| [Microsoft Teams](/adapters/teams) | `TEAMS_WEBHOOK_URL` | `teamsAdapter` |
+| [Webhook](/adapters/webhook) | `WEBHOOK_URL` | `webhookAdapter` |
+| [Custom](/adapters/custom) | — | implement `MusAdapter` |
+
+---
+
+## Docker image
+
+If you're using the `mus-server` Docker image, just set the env var. No code needed.
+
+```bash
+docker run -d -p 3001:3001 \
+  -e SLACK_BOT_TOKEN=xoxb-your-token \
+  ghcr.io/datachefhq/mus-server:latest
+```
+
+Set multiple env vars to fan out to several destinations at once:
+
+```bash
+docker run -d -p 3001:3001 \
+  -e SLACK_BOT_TOKEN=xoxb-your-token \
+  -e DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/... \
+  ghcr.io/datachefhq/mus-server:latest
+```
+
+---
+
+## Framework handlers (Next.js, Express, Fastify, Hono)
+
+Import `createMusHandlers` and pass whichever adapters you want:
 
 ```ts
-import { createMusHandlers } from '@datachef/mus/server'
-import { slackAdapter } from '@datachef/mus/adapters/slack'
+import { createMusHandlers } from '@datachefhq/mus/server'
+import { slackAdapter } from '@datachefhq/mus/adapters/slack'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
 })
 ```
 
-## Available adapters
-
-| Adapter | Import | Use case |
-|---------|--------|----------|
-| [Slack](/adapters/slack) | `@datachef/mus/adapters/slack` | Full Slack integration: threads, channels, file uploads |
-| [Discord](/adapters/discord) | `@datachef/mus/adapters/discord` | Discord channel via incoming webhook |
-| [Microsoft Teams](/adapters/teams) | `@datachef/mus/adapters/teams` | Teams channel via incoming webhook |
-| [Webhook](/adapters/webhook) | `@datachef/mus/adapters/webhook` | Any HTTP endpoint: Zapier, n8n, custom API |
-| [Custom](/adapters/custom) | (none) | Implement `MusAdapter` for any destination |
-
-## Multiple adapters
-
-Pass an array to fan out to multiple destinations simultaneously. All adapters run in parallel, so a failure in one doesn't block the others.
+Pass an array to run multiple adapters in parallel. A failure in one won't block the others:
 
 ```ts
+import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+
 createMusHandlers({
   adapter: [
     slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
@@ -39,22 +67,11 @@ createMusHandlers({
 })
 ```
 
-Conditionally include adapters:
-
-```ts
-createMusHandlers({
-  adapter: [
-    slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
-    process.env.DISCORD_WEBHOOK_URL
-      ? discordAdapter({ webhookUrl: process.env.DISCORD_WEBHOOK_URL })
-      : null,
-  ].filter(Boolean),
-})
-```
+---
 
 ## The MusAdapter interface
 
-Every adapter implements this interface. Only the methods you define are called; unimplemented methods are silently skipped.
+Every adapter implements this interface. Only the methods you define are called — unimplemented ones are silently skipped.
 
 ```ts
 interface MusAdapter {
@@ -64,4 +81,4 @@ interface MusAdapter {
 }
 ```
 
-See [Event Types](/reference/events) for the full event shapes.
+See [Event Types](/reference/events) for the full shape of each event.

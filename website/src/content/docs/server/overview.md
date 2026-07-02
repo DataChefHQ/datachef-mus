@@ -1,28 +1,28 @@
 ---
-title: Server Setup Overview
-description: How the MUS server works and which setup path to follow for your stack.
+title: Server Setup
+description: Why MUS needs a server, what it does, and which setup path fits your stack.
 ---
 
-## Why a server is needed
+The browser can't talk to Slack, Discord, or Teams directly — it would expose your credentials. MUS routes those calls through a server-side handler that keeps your tokens safe.
 
-The browser can't call the Slack API directly because it would expose your bot token. MUS routes all Slack communication through a server-side handler that reads `SLACK_BOT_TOKEN` from the environment.
-
-There are two ways to provide this handler:
+There are two ways to provide that handler:
 
 | Path | Best for |
 |------|----------|
-| **`mus-server` Docker image** | Vite SPAs, any app without a backend |
-| **`@datachef/mus/server` handlers** | Next.js, Express, Fastify, Hono, Remix |
+| **`mus-server` Docker image** | Vite SPAs and any app without a backend |
+| **`@datachefhq/mus/server` handlers** | Next.js, Express, Fastify, Hono — wire into your existing server |
+
+Both paths support every adapter: Slack, Discord, Teams, and generic webhooks.
 
 ---
 
 ## What the server handles
 
-- **Voice upload:** receives WebM audio from the browser, converts to MP3 with ffmpeg, uploads to Slack
-- **Standalone upload:** receives screenshot PNG + optional voice, posts both to Slack
-- **Support channel:** creates (or finds existing) private Slack channel, invites user + support team
+- **Voice upload** — receives a WebM recording from the browser, converts it to MP3 using ffmpeg, and forwards it to your configured adapter
+- **Support channel** — creates (or finds) a per-user support channel and notifies your team
+- **Standalone feedback** — receives a screenshot and optional voice note together
 
-All three endpoints are under `/api/mus/`:
+All three are mounted under `/api/mus/`:
 
 | Endpoint | Handler |
 |----------|---------|
@@ -34,22 +34,21 @@ All three endpoints are under `/api/mus/`:
 
 ## Pick your path
 
-- **[Next.js App Router](/server/nextjs):** three route files, done
-- **[Express / Fastify / Hono](/server/express):** wrap the handlers in your framework adapter
-- **[Vite SPA + Docker](/server/vite):** run `mus-server` alongside your app, proxy `/api/mus/` in Vite config
+- **[Next.js App Router](/server/nextjs)** — three route files, done in five minutes
+- **[Express / Fastify / Hono](/server/express)** — wrap the handlers in your framework adapter
+- **[Vite SPA + Docker](/server/vite)** — run `mus-server` alongside your app, proxy `/api/mus/` in Vite config
 
 ---
 
-## Environment variable
+## Environment variables
 
-All paths require one environment variable:
+Configure adapters by setting the env vars for whichever destinations you want. You can mix and match — all configured adapters run in parallel.
 
-```bash
-SLACK_BOT_TOKEN=xoxb-your-token
-```
+| Adapter | Env var |
+|---------|---------|
+| Slack | `SLACK_BOT_TOKEN` |
+| Discord | `DISCORD_WEBHOOK_URL` |
+| Microsoft Teams | `TEAMS_WEBHOOK_URL` |
+| Generic webhook | `WEBHOOK_URL` |
 
-The token needs these Slack bot scopes:
-- `chat:write`: post messages
-- `files:write`: upload voice recordings
-- `channels:manage` or `groups:write`: create support channels
-- `users:read.email`: look up users by email for channel invites
+The Slack bot token needs these scopes: `chat:write`, `files:write`, `channels:manage` or `groups:write`, `users:read.email`.

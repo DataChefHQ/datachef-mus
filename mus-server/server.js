@@ -1,5 +1,30 @@
 import { createServer } from 'node:http'
-import { POST, POSTStandalone, POSTSupportChannel } from './dist/server.js'
+import { createMusHandlers } from './dist/server.js'
+import { slackAdapter } from './dist/adapters/slack.js'
+import { discordAdapter } from './dist/adapters/discord.js'
+import { teamsAdapter } from './dist/adapters/teams.js'
+import { webhookAdapter } from './dist/adapters/webhook.js'
+
+// Build the adapter list from whatever env vars are present.
+// Every configured adapter runs in parallel on each incoming event.
+const adapters = [
+  process.env.SLACK_BOT_TOKEN     && slackAdapter({ token: process.env.SLACK_BOT_TOKEN }),
+  process.env.DISCORD_WEBHOOK_URL && discordAdapter({ webhookUrl: process.env.DISCORD_WEBHOOK_URL }),
+  process.env.TEAMS_WEBHOOK_URL   && teamsAdapter({ webhookUrl: process.env.TEAMS_WEBHOOK_URL }),
+  process.env.WEBHOOK_URL         && webhookAdapter({ url: process.env.WEBHOOK_URL }),
+].filter(Boolean)
+
+if (adapters.length === 0) {
+  console.error(
+    '[mus-server] No adapter configured.\n' +
+    'Set at least one of: SLACK_BOT_TOKEN, DISCORD_WEBHOOK_URL, TEAMS_WEBHOOK_URL, WEBHOOK_URL'
+  )
+  process.exit(1)
+}
+
+console.log(`[mus-server] Starting with ${adapters.length} adapter(s)`)
+
+const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({ adapter: adapters })
 
 const ROUTES = {
   '/api/mus/voice-upload': POST,
