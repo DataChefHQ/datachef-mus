@@ -70,7 +70,7 @@ export default defineConfig({
 			],
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/DataChefHQ/datachef-mus' },
-				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachefhq/mus' },
+				{ icon: 'npm', label: 'npm', href: 'https://www.npmjs.com/package/@datachef/mus' },
 			],
 			logo: {
 				light: './src/assets/logo-light.svg',
