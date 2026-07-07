@@ -1,3 +1,16 @@
+## 1.1.2 (2026-07-07)
+
+### Features
+- feat: update the site content and design
+
+### Bug Fixes
+- fix: broken links and change them from @datachefhq to @datachef
+- fix: broken npm link
+- fix: check for Node availability
+
+### Other Changes
+- chore: change preview image
+
 ## 1.1.1 (2026-07-02)
 
 ### Other Changes
