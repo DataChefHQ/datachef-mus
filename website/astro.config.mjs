@@ -30,14 +30,14 @@ export default defineConfig({
 		},
 		plugins: [
 			{
-				// Resolve @datachefhq/mus imports directly to source TS in both client and SSR.
+				// Resolve @datachef/mus imports directly to source TS in both client and SSR.
 				// Also redirects src/index.ts's raw CSS import to the pre-compiled dist/mus.css
 				// (the source CSS contains @tailwind directives that require the Tailwind plugin).
 				name: 'mus-resolve',
 				enforce: 'pre',
 				resolveId(id, importer) {
-					if (id === '@datachefhq/mus/styles.css') return distMusCss
-					if (id === '@datachefhq/mus') return srcIndexTs
+					if (id === '@datachef/mus/styles.css') return distMusCss
+					if (id === '@datachef/mus') return srcIndexTs
 					// Suppress the raw Tailwind source CSS from src/index.ts (no Tailwind plugin here)
 					if (id === './styles/index.css' && importer?.includes('/src/index.ts')) return distMusCss
 				},

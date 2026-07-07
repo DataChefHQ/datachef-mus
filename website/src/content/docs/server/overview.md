@@ -10,7 +10,7 @@ There are two ways to provide that handler:
 | Path | Best for |
 |------|----------|
 | **`mus-server` Docker image** | Vite SPAs and any app without a backend |
-| **`@datachefhq/mus/server` handlers** | Next.js, Express, Fastify, Hono — wire into your existing server |
+| **`@datachef/mus/server` handlers** | Next.js, Express, Fastify, Hono — wire into your existing server |
 
 Both paths support every adapter: Slack, Discord, Teams, and generic webhooks.
 

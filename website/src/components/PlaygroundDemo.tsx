@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { MusProvider, FeedbackTarget, onDemoFeedback, type DemoEvent, type FeedbackTargetHandle } from '@datachefhq/mus'
-import '@datachefhq/mus/styles.css'
+import { MusProvider, FeedbackTarget, onDemoFeedback, type DemoEvent, type FeedbackTargetHandle } from '@datachef/mus'
+import '@datachef/mus/styles.css'
 
 interface ToastEntry {
   id: number

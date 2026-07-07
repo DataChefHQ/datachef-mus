@@ -13,7 +13,7 @@ export default function HowItWorks() {
             <pre
               className="hiw-code"
               dangerouslySetInnerHTML={{ __html:
-`<span class="tok-kw">import</span> { MusProvider, FeedbackTarget } <span class="tok-kw">from</span> <span class="tok-str">'@datachefhq/mus'</span>
+`<span class="tok-kw">import</span> { MusProvider, FeedbackTarget } <span class="tok-kw">from</span> <span class="tok-str">'@datachef/mus'</span>
 
 <span class="tok-tag">&lt;MusProvider</span> <span class="tok-attr">config</span>={{ projectName: <span class="tok-str">'My App'</span>, ... }}<span class="tok-tag">&gt;</span>
   <span class="tok-tag">&lt;FeedbackTarget</span>

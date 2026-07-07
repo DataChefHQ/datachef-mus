@@ -5,7 +5,7 @@ export default function FinalCTA() {
       <p className="final-cta-sub">Install the package, wrap a section, configure your destination. That's it.</p>
       <div className="final-cta-install">
         <span className="final-cta-install-label">npm</span>
-        <span>npm install @datachefhq/mus</span>
+        <span>npm install @datachef/mus</span>
       </div>
       <div className="final-cta-actions">
         <a href="/getting-started" className="final-cta-btn-primary">Get started →</a>

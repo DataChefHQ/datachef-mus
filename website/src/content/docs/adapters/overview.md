@@ -45,8 +45,8 @@ docker run -d -p 3001:3001 \
 Import `createMusHandlers` and pass whichever adapters you want:
 
 ```ts
-import { createMusHandlers } from '@datachefhq/mus/server'
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
+import { createMusHandlers } from '@datachef/mus/server'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
 
 export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
   adapter: slackAdapter({ token: process.env.SLACK_BOT_TOKEN! }),
@@ -56,8 +56,8 @@ export const { POST, POSTStandalone, POSTSupportChannel } = createMusHandlers({
 Pass an array to run multiple adapters in parallel. A failure in one won't block the others:
 
 ```ts
-import { slackAdapter } from '@datachefhq/mus/adapters/slack'
-import { discordAdapter } from '@datachefhq/mus/adapters/discord'
+import { slackAdapter } from '@datachef/mus/adapters/slack'
+import { discordAdapter } from '@datachef/mus/adapters/discord'
 
 createMusHandlers({
   adapter: [
